@@ -1,23 +1,18 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {useEffect} from 'react';
-import {Text} from 'react-native';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useAuthStore} from '../store/authStore';
-import {Button} from 'react-native-paper';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useEffect } from 'react';
+import { Text } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '../store/authStore';
+import HomeScreen from '../screens/HomeScreen';
+import AddVenueScreen from '../screens/AddVenueScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   Details: undefined;
 };
 
-const HomeScreen = () => (
-  <SafeAreaView className="flex-1 items-center justify-center bg-white">
-    <Text>Home Screen</Text>
-    <Button mode="contained-tonal">Click me</Button>
-  </SafeAreaView>
-);
 
 const ProfileScreen = () => (
   <SafeAreaView className="flex-1 items-center justify-center bg-white">
@@ -44,7 +39,7 @@ function MainTabs() {
 }
 
 export default function AppNavigator() {
-  const {isAuthenticated, initializeAuth} = useAuthStore();
+  const { isAuthenticated, initializeAuth } = useAuthStore();
 
   useEffect(() => {
     const initialize = async () => {
@@ -58,9 +53,10 @@ export default function AppNavigator() {
         <Stack.Screen
           name="MainTabs"
           component={MainTabs}
-          options={{headerShown: false}}
+          options={{ headerShown: false }}
         />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Addvenue" component={AddVenueScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
