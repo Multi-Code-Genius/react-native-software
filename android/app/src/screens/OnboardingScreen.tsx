@@ -54,28 +54,30 @@ const OnboardingScreen = () => {
         {
           backgroundColor: paperTheme.dark ? '#000' : '#fff',
           image: (
-            <View style={styles.container}>
-              <Text style={styles.title}>Login</Text>
-              <Text variant="bodyLarge" style={styles.subtitle}>
-                Let's get started
-              </Text>
+            <View
+              className="w-full"
+              style={{justifyContent: 'center', padding: 10, gap: 10}}>
               <View>
-                <TextInput
-                  label="Email"
-                  mode="outlined"
-                  keyboardType="email-address"
-                  value={email}
-                  onChangeText={setEmail}
-                  style={styles.input}
-                />
-                <Button
-                  mode="contained"
-                  onPress={sendOtp}
-                  loading={isPending}
-                  style={styles.button}>
-                  Send OTP
-                </Button>
+                <Text variant="headlineLarge">Login</Text>
+                <Text variant="bodyMedium">
+                  otp chaahiye? niche ka button daba. kisiko batane ka nahi otp
+                  thik hai!
+                </Text>
               </View>
+              <TextInput
+                label="Email"
+                mode="outlined"
+                keyboardType="email-address"
+                value={email}
+                onChangeText={setEmail}
+              />
+              <Button
+                mode="contained"
+                onPress={sendOtp}
+                loading={isPending}
+                className="w-[50%] mx-auto">
+                Send OTP
+              </Button>
             </View>
           ),
           title: '',
