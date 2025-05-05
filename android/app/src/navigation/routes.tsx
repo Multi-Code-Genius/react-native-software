@@ -6,6 +6,7 @@ import {Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 import {Button} from 'react-native-paper';
+import OnboardingScreen from '../screens/OnboardingScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -54,14 +55,18 @@ export default function AppNavigator() {
   }, [initializeAuth]);
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="MainTabs"
-          component={MainTabs}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Details" component={DetailsScreen} />
-      </Stack.Navigator>
+      {isAuthenticated ? (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="MainTabs"
+            component={MainTabs}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Details" component={DetailsScreen} />
+        </Stack.Navigator>
+      ) : (
+        <OnboardingScreen />
+      )}
     </NavigationContainer>
   );
 }
