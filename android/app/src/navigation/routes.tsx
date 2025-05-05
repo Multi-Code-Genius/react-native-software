@@ -5,6 +5,7 @@ import {useEffect} from 'react';
 import {Text} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
+import {Button} from 'react-native-paper';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -14,6 +15,7 @@ export type RootStackParamList = {
 const HomeScreen = () => (
   <SafeAreaView className="flex-1 items-center justify-center bg-white">
     <Text>Home Screen</Text>
+    <Button mode="contained-tonal">Click me</Button>
   </SafeAreaView>
 );
 

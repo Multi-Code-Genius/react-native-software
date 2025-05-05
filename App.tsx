@@ -4,12 +4,23 @@ import queryClient from './android/app/src/config/queryClient';
 import AppNavigator from './android/app/src/navigation/routes';
 import './global.css';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {DefaultTheme, PaperProvider} from 'react-native-paper';
 
 export default function App() {
+  const theme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: 'tomato',
+      secondary: 'yellow',
+    },
+  };
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <AppNavigator />
+        <PaperProvider theme={theme}>
+          <AppNavigator />
+        </PaperProvider>
       </SafeAreaProvider>
     </QueryClientProvider>
   );
