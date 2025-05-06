@@ -7,6 +7,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 import {Button} from 'react-native-paper';
 import OnboardingScreen from '../screens/OnboardingScreen';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -37,7 +38,18 @@ const Stack = createNativeStackNavigator();
 
 function MainTabs() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({color, size}) => {
+          if (route.name === 'Home') {
+            return <Icon name="home-outline" size={size} color={color} />;
+          } else if (route.name === 'Profile') {
+            return <Icon name="account-outline" size={size} color={color} />;
+          }
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+      })}>
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
