@@ -5,6 +5,7 @@ import AppNavigator from './android/app/src/navigation/routes';
 import './global.css';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {DefaultTheme, PaperProvider} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function App() {
   const theme = {
@@ -18,7 +19,11 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <SafeAreaProvider>
-        <PaperProvider theme={theme}>
+        <PaperProvider
+          theme={theme}
+          settings={{
+            icon: props => <Icon {...props} />,
+          }}>
           <AppNavigator />
         </PaperProvider>
       </SafeAreaProvider>
