@@ -16,33 +16,11 @@ export const requestOtp = async (email: {email: string}) => {
 };
 
 export const useRequestOtp = (
-  onSuccess: (data: any) => void,
-  onError: (error: any) => void,
+  onSuccess?: (data: any) => void,
+  onError?: (error: any) => void,
 ) => {
   return useMutation({
     mutationFn: (email: {email: string}) => requestOtp(email),
-    onSuccess,
-    onError,
-  });
-};
-
-export const userLogin = async data => {
-  try {
-    const response = await api('/api/auth/send-otp', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
-    });
-    const resp = await response;
-    return resp;
-  } catch (error) {
-    console.log('login Errror', error.message);
-  }
-};
-
-export const useUserLogin = (onSuccess, onError) => {
-  return useMutation({
-    mutationFn: userLogin,
     onSuccess,
     onError,
   });
@@ -63,8 +41,8 @@ export const verifyOtp = async (data: {email: string; otp: number}) => {
 };
 
 export const useVerifyOtp = (
-  onSuccess: (data: any) => void,
-  onError: (error: any) => void,
+  onSuccess?: (data: any) => void,
+  onError?: (error: any) => void,
 ) => {
   return useMutation({
     mutationFn: (data: {email: string; otp: number}) => verifyOtp(data),
