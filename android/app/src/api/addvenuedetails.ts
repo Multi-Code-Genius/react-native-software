@@ -10,6 +10,7 @@ export const addVenue = async (data: Partial<VenueFormData>) => {
       cache: 'no-store',
       body: JSON.stringify(data),
     });
+    console.log('response===---=>>>', response);
     return response;
   } catch (error) {
     console.error('message Error:', error);

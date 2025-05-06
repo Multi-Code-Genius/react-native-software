@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -17,10 +17,9 @@ const cities: string[] = ['Mumbai', 'Pune', 'Nagpur'];
 const BasicDetailsComponent: React.FC = () => {
   const updateField = addVenueStore(state => state.updateField);
 
-  const [selectedState, setSelectedState] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
-  const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
-  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  useEffect(() => {
+    updateField('city', 'surat');
+  }, []);
 
   const renderDropdown = (
     data: string[],
@@ -70,33 +69,50 @@ const BasicDetailsComponent: React.FC = () => {
 
       <View className="flex gap-3">
         <Text className="text-lg font-bold">Description</Text>
+
         <TextInput
           placeholder="Enter venue"
           mode="flat"
           cursorColor="black"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
-          style={[styles.textAreaInputStyle, {backgroundColor: 'white'}]}
+          multiline={true}
+          numberOfLines={4}
+          style={[
+            styles.textAreaInputStyle,
+            {backgroundColor: 'white', textAlignVertical: 'top'},
+          ]}
           onChangeText={text => updateField('description', text)}
         />
       </View>
 
-      <View className="flex-row gap-3 items-start ">
-        <View className="flex-1 gap-3">
-          <TouchableOpacity
-            className="border border-black border-dotted rounded-md p-3 flex-row justify-between items-center"
-            onPress={() => setIsStateDropdownOpen(true)}>
-            <Text className="text-black">
-              {selectedState || 'Select State'}
-            </Text>
-          </TouchableOpacity>
+      <View className="flex gap-3">
+        <Text className="text-lg font-bold">City</Text>
 
-          <TouchableOpacity
-            className="border border-black border-dotted rounded-md p-3 flex-row justify-between items-center"
-            onPress={() => setIsCityDropdownOpen(true)}>
-            <Text className="text-black">{selectedCity || 'Select City'}</Text>
-          </TouchableOpacity>
-        </View>
+        <TextInput
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          value={'surat'}
+          // onChangeText={text => updateField('city', 'surat')}
+          disabled
+        />
+      </View>
+
+      <View className="flex gap-3">
+        <Text className="text-lg font-bold">Area</Text>
+
+        <TextInput
+          placeholder="Enter Area"
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          onChangeText={text => updateField('area', text)}
+        />
       </View>
 
       <View className=" gap-4">
@@ -109,30 +125,9 @@ const BasicDetailsComponent: React.FC = () => {
           underlineColor="transparent"
           activeUnderlineColor="transparent"
           style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          onChangeText={text => updateField('address', text)}
         />
       </View>
-
-      <View className=" gap-4">
-        <Text className="text-lg font-bold">Postal Code</Text>
-
-        <TextInput
-          placeholder="Enter postal code"
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          style={[styles.inputStyle, {backgroundColor: 'white'}]}
-        />
-      </View>
-
-      {isStateDropdownOpen &&
-        renderDropdown(states, setSelectedState, () =>
-          setIsStateDropdownOpen(false),
-        )}
-      {isCityDropdownOpen &&
-        renderDropdown(cities, setSelectedCity, () =>
-          setIsCityDropdownOpen(false),
-        )}
     </View>
   );
 };
@@ -151,6 +146,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     borderStyle: 'dotted',
     borderRadius: 8,
+    maxHeight: 80,
     minHeight: 80,
   },
 });

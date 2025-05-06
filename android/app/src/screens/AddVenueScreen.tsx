@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
 import VenueDeatils from '../components/VenueDeatils';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import ImageUploder from '../components/ImageUploder';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAddVenue } from '../api/addvenuedetails';
-import { addVenueStore } from '../store/addVenueStore';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useAddVenue} from '../api/addvenuedetails';
+import {addVenueStore} from '../store/addVenueStore';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = addVenueStore(state => state.formData);
   const resetformData = addVenueStore(state => state.resetForm);
   console.log('formData', formData);
-  const { mutate } = useAddVenue(
+  const {mutate} = useAddVenue(
     data => {
       console.log('data', data);
       resetformData();
@@ -44,7 +44,9 @@ const AddVenueScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
+    <SafeAreaView
+      style={styles.safeArea}
+      edges={['top', 'bottom', 'left', 'right']}>
       <View className="flex-1 justify-between">
         <View className="flex-1">{steps[currentStep]}</View>
 
