@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useEffect} from 'react';
-import {Text} from 'react-native';
+import {Text, View} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 import {Button, IconButton} from 'react-native-paper';
@@ -15,28 +15,24 @@ export type RootStackParamList = {
 };
 
 const HomeScreen = () => (
-  <SafeAreaView className="flex-1 items-center justify-center bg-white">
-    <Text>Home Screen</Text>
-    <Button
-      icon="camera"
-      mode="contained"
-      onPress={() => console.log('Pressed')}>
-      Press me
-    </Button>
+  // You have to use SafeAreaView like below everytime you are making screen wrap your screen with it.
+  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+  <SafeAreaView style={{flex: 1, padding: 16}} edges={['top', 'bottom']}>
+    <View className="flex-1 justify-center">
+      <Text>Home Screen</Text>
+      <Button
+        icon="camera"
+        mode="contained"
+        onPress={() => console.log('Pressed')}>
+        Press me
+      </Button>
+    </View>
   </SafeAreaView>
 );
 
-const ProfileScreen = () => (
-  <SafeAreaView className="flex-1 items-center justify-center bg-white">
-    <Text>Profile Screen</Text>
-  </SafeAreaView>
-);
+const ProfileScreen = () => <Text>Profile Screen</Text>;
 
-const DetailsScreen = () => (
-  <SafeAreaView className="flex-1 items-center justify-center bg-white">
-    <Text>Details Screen</Text>
-  </SafeAreaView>
-);
+const DetailsScreen = () => <Text>Details Screen</Text>;
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
