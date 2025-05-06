@@ -26,7 +26,30 @@ export const useRequestOtp = (
   });
 };
 
-// export const resetOtp = async ()
+export const reSendOtp = async (email: {email: string}) => {
+  try {
+    const response = await api('/api/auth/resend-otp', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(email),
+    });
+    const resp = await response;
+    return resp;
+  } catch (error: any) {
+    console.log('login Error', error.message);
+  }
+};
+
+export const useReSendOtp = (
+  onSuccess?: (data: any) => void,
+  onError?: (error: any) => void,
+) => {
+  return useMutation({
+    mutationFn: (email: {email: string}) => reSendOtp(email),
+    onSuccess,
+    onError,
+  });
+};
 
 export const verifyOtp = async (data: {email: string; otp: string}) => {
   try {

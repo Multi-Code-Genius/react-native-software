@@ -96,7 +96,6 @@ const OnboardingScreen = () => {
                 focusColor={paperTheme.colors.primary}
                 autoFocus={false}
                 hideStick={true}
-                // type="numeric"
                 onTextChange={text => {
                   setOtp(text);
                   if (text.length === 6) {
