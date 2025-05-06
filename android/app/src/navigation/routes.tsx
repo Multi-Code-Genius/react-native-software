@@ -1,3 +1,5 @@
+import HomeScreen from '../screens/HomeScreen';
+import AddVenueScreen from '../screens/AddVenueScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -5,8 +7,8 @@ import { useEffect } from 'react';
 import { Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuthStore } from '../store/authStore';
-import HomeScreen from '../screens/HomeScreen';
-import AddVenueScreen from '../screens/AddVenueScreen';
+import { Button } from 'react-native-paper';
+import OnboardingScreen from '../screens/OnboardingScreen';
 
 export type RootStackParamList = {
   Home: undefined;
