@@ -17,8 +17,6 @@ export type RootStackParamList = {
 };
 
 
-
-
 const ProfileScreen = () => <Text>Profile Screen</Text>;
 
 const DetailsScreen = () => <Text>Details Screen</Text>;
@@ -70,7 +68,7 @@ export default function AppNavigator() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Details" component={DetailsScreen} />
-          <Stack.Screen name="Addvenue" component={AddVenueScreen} />
+          <Stack.Screen name="Addvenue" component={AddVenueScreen} options={{ headerStyle: { backgroundColor: 'transperent' } }} />
         </Stack.Navigator>
       ) : (
         <OnboardingScreen />

@@ -12,10 +12,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <View
-        className={`flex-1 px-6 justify-center ${
-          isDark ? 'bg-black' : 'bg-white'
-        }`}>
+      <View className={`flex-1 justify-center`}>
         <View className="w-full flex gap-4">
           <View>
             <Text className="text-4xl font-bold mb-2 text-black dark:text-white">
