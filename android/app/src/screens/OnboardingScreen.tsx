@@ -1,21 +1,21 @@
 import React, {useRef, useState} from 'react';
 import {View, Alert, StyleSheet} from 'react-native';
-import {TextInput, Button, Text, Title, useTheme} from 'react-native-paper';
+import {TextInput, Button, Text, useTheme} from 'react-native-paper';
 import LottieView from 'lottie-react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import {OtpInput} from 'react-native-otp-entry';
 import {useAuthStore} from '../store/authStore';
-import {useUserLogin, useVerifyOtp} from '../api/auth';
+import {useRequestOtp, useVerifyOtp} from '../api/auth';
 
 const OnboardingScreen = () => {
   const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState('');
+  const [, setOtp] = useState('');
   const [pageIndex, setPageIndex] = useState(0);
-  const onboardingRef = useRef(null);
+  const onboardingRef = useRef<Onboarding>(null);
   const {saveToken} = useAuthStore();
   const paperTheme = useTheme();
 
-  const {mutate, isPending} = useUserLogin();
+  const {mutate, isPending} = useRequestOtp();
   const {mutate: verifyOtpMutate} = useVerifyOtp();
 
   const sendOtp = () => {
@@ -36,7 +36,6 @@ const OnboardingScreen = () => {
       showNext={pageIndex !== 1}
       showSkip={false}
       showDone={pageIndex !== 1}
-      onPageChange={index => setPageIndex(index)}
       pages={[
         {
           backgroundColor: paperTheme.dark ? '#000' : '#fff',
@@ -47,9 +46,9 @@ const OnboardingScreen = () => {
               source={require('../assets/onBoard.json')}
             />
           ),
-          title: 'Hey there, glad you’re here!',
+          title: "Hey there, glad you're here!",
           subtitle:
-            'We’re excited to show you what’s possible. Let’s dive in and get started!',
+            "We're excited to show you what's possible. Let's dive in and get started!",
         },
         {
           backgroundColor: paperTheme.dark ? '#000' : '#fff',
@@ -97,14 +96,17 @@ const OnboardingScreen = () => {
                 focusColor={paperTheme.colors.primary}
                 autoFocus={false}
                 hideStick={true}
+                type="numeric"
                 onTextChange={text => {
                   setOtp(text);
                   if (text.length === 6) {
                     verifyOtpMutate(
-                      {email, otp: text},
+                      {email, otp: Number(text)},
                       {
                         onSuccess: async ({token}) => {
-                          if (!token) return;
+                          if (!token) {
+                            return;
+                          }
                           await saveToken(token);
                         },
                         onError: (error: any) => {

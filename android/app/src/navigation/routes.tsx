@@ -2,10 +2,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
-import {Button, IconButton} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -14,10 +14,17 @@ export type RootStackParamList = {
   Details: undefined;
 };
 
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    padding: 16,
+  },
+});
+
 const HomeScreen = () => (
-  // You have to use SafeAreaView like below everytime you are making screen wrap your screen with it.
-  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
-  <SafeAreaView style={{flex: 1, padding: 16}} edges={['top', 'bottom']}>
+  // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
+  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
+  <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
     <View className="flex-1 justify-center">
       <Text>Home Screen</Text>
       <Button
@@ -37,17 +44,22 @@ const DetailsScreen = () => <Text>Details Screen</Text>;
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+function getTabBarIcon(routeName: string) {
+  return ({color, size}: {color: string; size: number}) => {
+    if (routeName === 'Home') {
+      return <Icon name="home-outline" size={size} color={color} />;
+    } else if (routeName === 'Profile') {
+      return <Icon name="account-outline" size={size} color={color} />;
+    }
+    return null;
+  };
+}
+
 function MainTabs() {
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
-        tabBarIcon: ({color, size}) => {
-          if (route.name === 'Home') {
-            return <Icon name="home-outline" size={size} color={color} />;
-          } else if (route.name === 'Profile') {
-            return <Icon name="account-outline" size={size} color={color} />;
-          }
-        },
+        tabBarIcon: getTabBarIcon(route.name),
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
       })}>
