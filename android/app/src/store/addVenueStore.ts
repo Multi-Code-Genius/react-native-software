@@ -34,7 +34,7 @@ type VenueStore = {
 export const addVenueStore = create<VenueStore>(set => ({
   formData: {},
   updateField: (field, value) =>
-    set(state => {
+    set((state: any) => {
       if (field === 'city' || field === 'area') {
         return {
           formData: {
