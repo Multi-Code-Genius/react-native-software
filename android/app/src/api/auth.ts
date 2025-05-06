@@ -26,7 +26,9 @@ export const useRequestOtp = (
   });
 };
 
-export const verifyOtp = async (data: {email: string; otp: number}) => {
+// export const resetOtp = async ()
+
+export const verifyOtp = async (data: {email: string; otp: string}) => {
   try {
     const response = await api('/api/auth/verify-otp', {
       method: 'POST',
@@ -45,7 +47,7 @@ export const useVerifyOtp = (
   onError?: (error: any) => void,
 ) => {
   return useMutation({
-    mutationFn: (data: {email: string; otp: number}) => verifyOtp(data),
+    mutationFn: (data: {email: string; otp: string}) => verifyOtp(data),
     onSuccess,
     onError,
   });

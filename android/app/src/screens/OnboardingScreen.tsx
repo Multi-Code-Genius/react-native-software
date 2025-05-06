@@ -96,12 +96,12 @@ const OnboardingScreen = () => {
                 focusColor={paperTheme.colors.primary}
                 autoFocus={false}
                 hideStick={true}
-                type="numeric"
+                // type="numeric"
                 onTextChange={text => {
                   setOtp(text);
                   if (text.length === 6) {
                     verifyOtpMutate(
-                      {email, otp: Number(text)},
+                      {email, otp: text},
                       {
                         onSuccess: async ({token}) => {
                           if (!token) {

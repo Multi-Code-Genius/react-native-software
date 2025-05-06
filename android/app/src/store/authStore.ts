@@ -31,6 +31,7 @@ export const useAuthStore = create<AuthState>(set => {
 
     saveToken: async (token: string) => {
       try {
+        console.log('token', token);
         await AsyncStorage.setItem('accessToken', token);
         await AsyncStorage.setItem('isAuthenticated', 'true');
         set({isAuthenticated: true});
