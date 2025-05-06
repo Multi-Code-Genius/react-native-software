@@ -22,9 +22,9 @@ const removeToken = async (key: string) => {
 export const api = async (endpoint: string, config: any = {}) => {
   const {body, headers = {}, ...customConfig} = config;
 
-  // const accessToken = await getToken('accessToken');
-  const accessToken =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1MTlhMTA0My0xZGFmLTRjODEtOTI1MS0wN2U5MDNjOTgxODIiLCJuYW1lIjpudWxsLCJlbWFpbCI6ImpheXJhanNoYWtoYTczQGdtYWlsLmNvbSIsImlhdCI6MTc0NjUxMzA0OSwiZXhwIjoxNzQ3MTE3ODQ5fQ.K977pv3TjMBRD6j2qRHHowQnzLBhtzE-UbFnbQepf04';
+  const accessToken = await getToken('accessToken');
+  // const accessToken =
+  //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1MTlhMTA0My0xZGFmLTRjODEtOTI1MS0wN2U5MDNjOTgxODIiLCJuYW1lIjpudWxsLCJlbWFpbCI6ImpheXJhanNoYWtoYTczQGdtYWlsLmNvbSIsImlhdCI6MTc0NjUxMzA0OSwiZXhwIjoxNzQ3MTE3ODQ5fQ.K977pv3TjMBRD6j2qRHHowQnzLBhtzE-UbFnbQepf04';
 
   const isFormData =
     body && typeof body === 'object' && typeof body.append === 'function';
