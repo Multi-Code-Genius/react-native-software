@@ -7,7 +7,7 @@ export function useGetTabBarIcon(routeName: string) {
     } else if (routeName === 'Account') {
       return <Icon name="account-outline" size={size} color={color} />;
     } else if (routeName === 'Bookings') {
-      return <Icon name="contrast" size={size} color={color} />;
+      return <Icon name="notebook-plus" size={size} color={color} />;
     }
     return null;
   };

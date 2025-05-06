@@ -3,12 +3,12 @@ import {Button, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 
-const ProfileScreen = () => (
+const BookingScreen = () => (
   // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
   // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
   <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
     <View className="flex-1 justify-center">
-      <Text>Home Screen</Text>
+      <Text>Booking Screen</Text>
       <Button
         icon="camera"
         mode="contained"
@@ -18,7 +18,7 @@ const ProfileScreen = () => (
     </View>
   </SafeAreaView>
 );
-export default ProfileScreen;
+export default BookingScreen;
 
 const styles = StyleSheet.create({
   safeArea: {

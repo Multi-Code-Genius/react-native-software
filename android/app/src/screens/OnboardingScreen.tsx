@@ -5,6 +5,7 @@ import {useTheme} from 'react-native-paper';
 
 import {useAuthStore} from '../store/authStore';
 import {useRequestOtp, useVerifyOtp} from '../api/auth';
+
 import WelcomeSlide from '../components/onboarding/WelcomeSlide';
 import EmailLoginSlide from '../components/onboarding/EmailLoginSlide';
 import OtpSlide from '../components/onboarding/OtpSlide';

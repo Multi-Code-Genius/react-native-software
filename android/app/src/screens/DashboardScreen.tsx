@@ -3,7 +3,7 @@ import {Button, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 
-const HomeScreen = () => (
+const DashboardScreen = () => (
   // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
   // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
   <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
@@ -18,7 +18,7 @@ const HomeScreen = () => (
     </View>
   </SafeAreaView>
 );
-export default HomeScreen;
+export default DashboardScreen;
 
 const styles = StyleSheet.create({
   safeArea: {
