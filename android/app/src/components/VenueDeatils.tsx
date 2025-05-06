@@ -51,7 +51,7 @@ const VenueDeatils = () => {
           dropDownContainerStyle={styles.dropdownContainer}
           textStyle={styles.dropdownText}
           placeholderStyle={styles.dropdownPlaceholder}
-          onChangeValue={text => updateField('hourlyPrice', text)}
+          onChangeValue={text => updateField('category', text)}
         />
       </View>
 
@@ -65,7 +65,7 @@ const VenueDeatils = () => {
           placeholder="Enter Hourly Price"
           keyboardType="numeric"
           style={[styles.inputStyle, {backgroundColor: 'white'}]}
-          onChangeText={text => updateField('category', text)}
+          onChangeText={text => updateField('hourlyPrice', text)}
         />
       </View>
 
@@ -111,7 +111,7 @@ const VenueDeatils = () => {
           placeholder="Enter Turf Net"
           keyboardType="numeric"
           style={[styles.inputStyle, {backgroundColor: 'white'}]}
-          onChangeText={text => updateField('net', {net: text})}
+          onChangeText={text => updateField('net', text)}
         />
       </View>
     </View>
