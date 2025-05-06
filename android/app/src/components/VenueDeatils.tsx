@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { View, Pressable, FlatList, Text, TextInput, Modal } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import CustomMultiselect from "./CustomMultiselect";
-import { Divider } from "react-native-paper";
+import { Divider, TextInput } from "react-native-paper";
+import RNPickerSelect from 'react-native-picker-select';
 
 const VenueDeatils = () => {
     const [selectedCategory, setSelectedCategory] = useState("");
-    const [showCategoryModal, setShowCategoryModal] = useState(false);
     const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
 
     const turfOptions = [
@@ -18,53 +18,57 @@ const VenueDeatils = () => {
 
     return (
         <View className="w-full p-2 flex gap-4">
-            <View className="gap-3 mb-3">
+            <View className="gap-3">
                 <Text className="text-xl font-bold">Capacity</Text>
                 <TextInput
-                    mode="outlined"
+                    mode="flat"
+                    cursorColor="black"
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
                     placeholder="Enter Capacity"
                     keyboardType="numeric"
-                    className="border border-dotted rounded-md"
+                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
                 />
             </View>
-            <View className="gap-3 mb-6">
+            <View className="gap-3">
                 <Text className="text-xl font-bold">Category</Text>
-                <Pressable
-                    onPress={() => setShowCategoryModal(true)}
-                    className="flex-row justify-between items-center border border-dotted border-black rounded-md px-4 py-3"
-                >
-                    <Text>{selectedCategory || "Select Category"}</Text>
-                    {/* <AntDesign name="caretdown" size={15} color="black" /> */}
-                </Pressable>
-
-                <Modal
-                    visible={showCategoryModal}
-                    onDismiss={() => setShowCategoryModal(false)}>
-                    <FlatList
-                        data={categories}
-                        keyExtractor={(item) => item}
-                        ItemSeparatorComponent={() => <Divider />}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                onPress={() => {
-                                    setSelectedCategory(item);
-                                    setShowCategoryModal(false);
-                                }}
-                                className="p-3"
-                            >
-                                <Text>{item}</Text>
-                            </Pressable>
-                        )}
-                    />
-                </Modal>
+                <RNPickerSelect
+                    onValueChange={(value) => setSelectedCategory(value)}
+                    value={selectedCategory}
+                    placeholder={{ label: "Select Category", value: null }}
+                    items={categories.map((cat) => ({ label: cat, value: cat }))}
+                    style={{
+                        inputIOS: {
+                            paddingVertical: 12,
+                            paddingHorizontal: 10,
+                            borderWidth: 1,
+                            borderColor: 'gray',
+                            borderRadius: 8,
+                            backgroundColor: 'white',
+                            color: 'black',
+                        },
+                        inputAndroid: {
+                            paddingVertical: 8,
+                            paddingHorizontal: 10,
+                            borderWidth: 1,
+                            borderColor: 'gray',
+                            borderRadius: 8,
+                            backgroundColor: 'white',
+                            color: 'black',
+                        },
+                    }}
+                />
             </View>
             <View className="gap-3">
                 <Text className="text-xl font-bold">Hourly Price</Text>
                 <TextInput
-                    mode="outlined"
-                    placeholder="Enter Price"
+                    mode="flat"
+                    cursorColor="black"
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
+                    placeholder="Enter Hourly Price"
                     keyboardType="numeric"
-                    className="border border-dotted border-black rounded-md"
+                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
                 />
             </View>
             <View className="flex gap-4">
@@ -78,17 +82,25 @@ const VenueDeatils = () => {
             <View className="gap-3">
                 <Text className="text-xl font-bold">Surface</Text>
                 <TextInput
-                    mode="outlined"
+                    mode="flat"
+                    cursorColor="black"
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
                     placeholder="Enter Surface"
-                    className="border border-dotted border-black rounded-md"
+                    keyboardType="numeric"
+                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
                 />
             </View>
             <View className="gap-3">
                 <Text className="text-xl font-bold">Net</Text>
                 <TextInput
-                    mode="outlined"
-                    placeholder="Enter Turf Name"
-                    className="border border-dotted border-black rounded-md"
+                    mode="flat"
+                    cursorColor="black"
+                    underlineColor="transparent"
+                    activeUnderlineColor="transparent"
+                    placeholder="Enter Turf Net"
+                    keyboardType="numeric"
+                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
                 />
             </View>
         </View>
@@ -97,3 +109,18 @@ const VenueDeatils = () => {
 };
 
 export default VenueDeatils;
+const styles = StyleSheet.create({
+    inputStyle: {
+        borderWidth: 2,
+        borderColor: 'gray',
+        borderStyle: 'dotted',
+        borderRadius: 8,
+    },
+    textAreaInputStyle: {
+        borderWidth: 2,
+        borderColor: 'gray',
+        borderStyle: 'dotted',
+        borderRadius: 8,
+        minHeight: 80,
+    },
+});
