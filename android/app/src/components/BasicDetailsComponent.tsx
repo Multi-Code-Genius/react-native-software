@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,8 @@ import {
   GestureResponderEvent,
   StyleSheet,
 } from 'react-native';
-import {TextInput} from 'react-native-paper';
-import {addVenueStore} from '../store/addVenueStore';
+import { TextInput } from 'react-native-paper';
+import { addVenueStore } from '../store/addVenueStore';
 
 const states: string[] = ['Maharashtra', 'Karnataka', 'Delhi'];
 const cities: string[] = ['Mumbai', 'Pune', 'Nagpur'];
@@ -17,6 +17,7 @@ const cities: string[] = ['Mumbai', 'Pune', 'Nagpur'];
 const BasicDetailsComponent: React.FC = () => {
   const updateField = addVenueStore(state => state.updateField);
 
+  const formData = addVenueStore(state => state.formData);
   useEffect(() => {
     updateField('city', 'surat');
   }, []);
@@ -35,7 +36,7 @@ const BasicDetailsComponent: React.FC = () => {
           <FlatList
             data={data}
             keyExtractor={item => item}
-            renderItem={({item}) => (
+            renderItem={({ item }) => (
               <TouchableOpacity
                 className="p-3 border-b border-gray-300"
                 onPress={() => {
@@ -61,9 +62,10 @@ const BasicDetailsComponent: React.FC = () => {
           cursorColor="black"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
-          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          style={[styles.inputStyle, { backgroundColor: 'white' }]}
           placeholder="Enter name"
           onChangeText={text => updateField('name', text)}
+          value={formData.name || ''}
         />
       </View>
 
@@ -80,9 +82,10 @@ const BasicDetailsComponent: React.FC = () => {
           numberOfLines={4}
           style={[
             styles.textAreaInputStyle,
-            {backgroundColor: 'white', textAlignVertical: 'top'},
+            { backgroundColor: 'white', textAlignVertical: 'top' },
           ]}
           onChangeText={text => updateField('description', text)}
+          value={formData.description || ''}
         />
       </View>
 
@@ -94,7 +97,7 @@ const BasicDetailsComponent: React.FC = () => {
           cursorColor="black"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
-          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          style={[styles.inputStyle, { backgroundColor: 'white' }]}
           value={'surat'}
           // onChangeText={text => updateField('city', 'surat')}
           disabled
@@ -110,8 +113,9 @@ const BasicDetailsComponent: React.FC = () => {
           cursorColor="black"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
-          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          style={[styles.inputStyle, { backgroundColor: 'white' }]}
           onChangeText={text => updateField('area', text)}
+          value={formData.location?.area || ''}
         />
       </View>
 
@@ -124,8 +128,9 @@ const BasicDetailsComponent: React.FC = () => {
           cursorColor="black"
           underlineColor="transparent"
           activeUnderlineColor="transparent"
-          style={[styles.inputStyle, {backgroundColor: 'white'}]}
+          style={[styles.inputStyle, { backgroundColor: 'white' }]}
           onChangeText={text => updateField('address', text)}
+          value={formData.address || ''}
         />
       </View>
     </View>
