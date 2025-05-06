@@ -9,34 +9,15 @@ import { Button } from 'react-native-paper';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AddVenueScreen from '../screens/AddVenueScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   Details: undefined;
 };
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    padding: 16,
-  },
-});
 
-const HomeScreen = () => (
-  // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
-  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
-  <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-    <View className="flex-1 justify-center">
-      <Text>Home Screen</Text>
-      <Button
-        icon="camera"
-        mode="contained"
-        onPress={() => console.log('Pressed')}>
-        Press me
-      </Button>
-    </View>
-  </SafeAreaView>
-);
+
 
 const ProfileScreen = () => <Text>Profile Screen</Text>;
 
@@ -81,7 +62,7 @@ export default function AppNavigator() {
   }, [initializeAuth]);
   return (
     <NavigationContainer>
-      {isAuthenticated ? (
+      {!isAuthenticated ? (
         <Stack.Navigator>
           <Stack.Screen
             name="MainTabs"
