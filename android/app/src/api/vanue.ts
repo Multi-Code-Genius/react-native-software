@@ -17,8 +17,8 @@ const registerNewGame = async (data: any) => {
 };
 
 export const useAddGame = (
-  onSuccess: (data: any) => void,
-  onError: (error: any) => void,
+  onSuccess?: (data: unknown) => void,
+  onError?: (error: unknown) => void,
 ) => {
   return useMutation({
     mutationFn: (data: any) => registerNewGame(data),
