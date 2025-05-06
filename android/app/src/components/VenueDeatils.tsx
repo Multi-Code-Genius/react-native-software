@@ -49,6 +49,10 @@ const VenueDeatils = () => {
                     setValue={setValue}
                     setItems={setItems}
                     placeholder="Select an option"
+                    style={styles.dropdown}
+                    dropDownContainerStyle={styles.dropdownContainer}
+                    textStyle={styles.dropdownText}
+                    placeholderStyle={styles.dropdownPlaceholder}
                 />
             </View>
 
@@ -71,16 +75,13 @@ const VenueDeatils = () => {
                 <CustomMultiselect
                     options={turfOptions}
                     selected={selectedTurfTypes}
-                    //   onChange={setSelectedTurfTypes}
                     onChange={(selected: any) => {
                         setSelectedTurfTypes(selected);
-
                         const gameInfoUpdate = {
                             indoor: selected.includes('indoor') ? 'true' : 'false',
                             outdoor: selected.includes('outdoor') ? 'true' : 'false',
                             roof: selected.includes('roof') ? 'true' : 'false',
                         };
-
                         updateField('gameInfo', gameInfoUpdate);
                     }}
                 />
@@ -141,4 +142,27 @@ const styles = StyleSheet.create({
         borderStyle: 'dotted',
         backgroundColor: 'white',
     },
+    dropdown: {
+        borderWidth: 1.5,
+        borderColor: 'gray',
+        borderRadius: 8,
+        backgroundColor: 'white',
+        borderStyle: 'dotted',
+    },
+    dropdownContainer: {
+        borderWidth: 1.5,
+        borderColor: 'gray',
+        borderRadius: 8,
+        backgroundColor: '#f9f9f9',
+        borderStyle: 'dotted',
+    },
+    dropdownText: {
+        fontSize: 16,
+        color: '#333',
+    },
+    dropdownPlaceholder: {
+        color: '#999',
+    },
 });
+
+

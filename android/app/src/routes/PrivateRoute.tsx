@@ -1,8 +1,6 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useGetTabBarIcon } from '../hooks/useGetTabBarIcon';
-
 import AccountScreen from '../screens/AccountScreen';
-import DashboardScreen from '../screens/DashboardScreen';
 import BookingScreen from '../screens/BookingScreen';
 import HomeScreen from '../screens/HomeScreen';
 

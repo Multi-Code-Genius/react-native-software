@@ -88,7 +88,7 @@ const ImageUploader = () => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 16,
+        padding: 8,
     },
     heading: {
         fontSize: 18,

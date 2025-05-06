@@ -19,7 +19,8 @@ const CustomMultiselect = ({ options, selected, onChange }: any) => {
                         onPress={() => toggleSelect(opt.value)}
                         style={{
                             borderRadius: 8,
-                            borderWidth: 1,
+                            borderStyle: 'dotted',
+                            borderWidth: 1.5,
                             borderColor: isSelected ? "#4a90e2" : "#000",
                             backgroundColor: isSelected ? "#4a90e2" : "transparent",
                             paddingVertical: 8,

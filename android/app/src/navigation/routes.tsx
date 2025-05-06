@@ -24,7 +24,7 @@ export default function AppNavigator() {
   }, [initializeAuth]);
   return (
     <NavigationContainer>
-      {!isAuthenticated ? (
+      {isAuthenticated ? (
         <Stack.Navigator>
           <Stack.Screen
             name="MainTabs"
