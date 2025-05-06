@@ -1,46 +1,48 @@
-import React, { useState } from "react";
+import React, {useState} from 'react';
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   Modal,
   FlatList,
   GestureResponderEvent,
-} from "react-native";
+  StyleSheet,
+} from 'react-native';
+import {TextInput} from 'react-native-paper';
+import {addVenueStore} from '../store/addVenueStore';
 
-const states: string[] = ["Maharashtra", "Karnataka", "Delhi"];
-const cities: string[] = ["Mumbai", "Pune", "Nagpur"];
+const states: string[] = ['Maharashtra', 'Karnataka', 'Delhi'];
+const cities: string[] = ['Mumbai', 'Pune', 'Nagpur'];
 
 const BasicDetailsComponent: React.FC = () => {
-  const [selectedState, setSelectedState] = useState("");
-  const [selectedCity, setSelectedCity] = useState("");
+  const updateField = addVenueStore(state => state.updateField);
+
+  const [selectedState, setSelectedState] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
   const [isStateDropdownOpen, setIsStateDropdownOpen] = useState(false);
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
 
   const renderDropdown = (
     data: string[],
     onSelect: (item: string) => void,
-    onClose: (event?: GestureResponderEvent) => void
+    onClose: (event?: GestureResponderEvent) => void,
   ) => (
     <Modal transparent animationType="fade" onRequestClose={onClose}>
       <TouchableOpacity
         className="flex-1 bg-black/30 justify-center p-5"
         activeOpacity={1}
-        onPress={onClose}
-      >
+        onPress={onClose}>
         <View className="bg-white rounded-lg max-h-[300px] p-2">
           <FlatList
             data={data}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
+            keyExtractor={item => item}
+            renderItem={({item}) => (
               <TouchableOpacity
                 className="p-3 border-b border-gray-300"
                 onPress={() => {
                   onSelect(item);
                   onClose();
-                }}
-              >
+                }}>
                 <Text className="text-base">{item}</Text>
               </TouchableOpacity>
             )}
@@ -54,69 +56,101 @@ const BasicDetailsComponent: React.FC = () => {
     <View className="p-2 flex gap-3">
       <View className="flex gap-4">
         <Text className="text-lg font-bold">Name</Text>
+
         <TextInput
-          className="border border-gray-400 border-dotted rounded-md p-3"
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.inputStyle, {backgroundColor: 'white'}]}
           placeholder="Enter name"
+          onChangeText={text => updateField('name', text)}
         />
       </View>
 
       <View className="flex gap-3">
-        <Text className="text-lg font-bold">Venue</Text>
+        <Text className="text-lg font-bold">Description</Text>
         <TextInput
-          className="border border-gray-400 border-dotted rounded-md p-3 min-h-[80px] text-top"
           placeholder="Enter venue"
-          multiline
-          numberOfLines={4}
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.textAreaInputStyle, {backgroundColor: 'white'}]}
+          onChangeText={text => updateField('description', text)}
         />
       </View>
 
-      <View className="flex-row gap-3 items-start">
+      <View className="flex-row gap-3 items-start ">
         <View className="flex-1 gap-3">
           <TouchableOpacity
             className="border border-black border-dotted rounded-md p-3 flex-row justify-between items-center"
-            onPress={() => setIsStateDropdownOpen(true)}
-          >
-            <Text className="text-black">{selectedState || "Select State"}</Text>
+            onPress={() => setIsStateDropdownOpen(true)}>
+            <Text className="text-black">
+              {selectedState || 'Select State'}
+            </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             className="border border-black border-dotted rounded-md p-3 flex-row justify-between items-center"
-            onPress={() => setIsCityDropdownOpen(true)}
-          >
-            <Text className="text-black">{selectedCity || "Select City"}</Text>
+            onPress={() => setIsCityDropdownOpen(true)}>
+            <Text className="text-black">{selectedCity || 'Select City'}</Text>
           </TouchableOpacity>
         </View>
-
-        <View className="w-[100px] bg-green-100 p-3 rounded-md items-center">
-          <Text className="text-green-600 font-medium mt-1">Google Map</Text>
-        </View>
       </View>
 
-      {/* Address Input */}
-      <View className="space-y-2">
+      <View className=" gap-4">
         <Text className="text-lg font-bold">Address</Text>
+
         <TextInput
-          className="border border-gray-400 border-dotted rounded-md p-3"
           placeholder="Enter address"
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.inputStyle, {backgroundColor: 'white'}]}
         />
       </View>
 
-      {/* Postal Code Input */}
-      <View className="space-y-2">
+      <View className=" gap-4">
         <Text className="text-lg font-bold">Postal Code</Text>
+
         <TextInput
-          className="border border-gray-400 border-dotted rounded-md p-3"
           placeholder="Enter postal code"
+          mode="flat"
+          cursorColor="black"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          style={[styles.inputStyle, {backgroundColor: 'white'}]}
         />
       </View>
 
-      {/* Modals */}
       {isStateDropdownOpen &&
-        renderDropdown(states, setSelectedState, () => setIsStateDropdownOpen(false))}
+        renderDropdown(states, setSelectedState, () =>
+          setIsStateDropdownOpen(false),
+        )}
       {isCityDropdownOpen &&
-        renderDropdown(cities, setSelectedCity, () => setIsCityDropdownOpen(false))}
+        renderDropdown(cities, setSelectedCity, () =>
+          setIsCityDropdownOpen(false),
+        )}
     </View>
   );
 };
 
 export default BasicDetailsComponent;
+
+const styles = StyleSheet.create({
+  inputStyle: {
+    borderWidth: 2,
+    borderColor: 'gray',
+    borderStyle: 'dotted',
+    borderRadius: 8,
+  },
+  textAreaInputStyle: {
+    borderWidth: 2,
+    borderColor: 'gray',
+    borderStyle: 'dotted',
+    borderRadius: 8,
+    minHeight: 80,
+  },
+});
