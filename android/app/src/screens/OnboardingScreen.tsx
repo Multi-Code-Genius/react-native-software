@@ -1,29 +1,29 @@
-import React, {useRef, useState} from 'react';
-import {View, Alert, StyleSheet} from 'react-native';
-import {TextInput, Button, Text, useTheme} from 'react-native-paper';
+import React, { useRef, useState } from 'react';
+import { View, Alert, StyleSheet } from 'react-native';
+import { TextInput, Button, Text, useTheme } from 'react-native-paper';
 import LottieView from 'lottie-react-native';
 import Onboarding from 'react-native-onboarding-swiper';
-import {OtpInput} from 'react-native-otp-entry';
-import {useAuthStore} from '../store/authStore';
-import {useRequestOtp, useVerifyOtp} from '../api/auth';
+import { OtpInput } from 'react-native-otp-entry';
+import { useAuthStore } from '../store/authStore';
+import { useRequestOtp, useVerifyOtp } from '../api/auth';
 
 const OnboardingScreen = () => {
   const [email, setEmail] = useState('');
   const [, setOtp] = useState('');
   const [pageIndex, setPageIndex] = useState(0);
   const onboardingRef = useRef<Onboarding>(null);
-  const {saveToken} = useAuthStore();
+  const { saveToken } = useAuthStore();
   const paperTheme = useTheme();
 
-  const {mutate, isPending} = useRequestOtp();
-  const {mutate: verifyOtpMutate} = useVerifyOtp();
+  const { mutate, isPending } = useRequestOtp();
+  const { mutate: verifyOtpMutate } = useVerifyOtp();
 
   const sendOtp = () => {
     if (!email.includes('@')) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
-    mutate({email});
+    mutate({ email });
     onboardingRef.current?.goNext();
     setPageIndex(2);
   };
@@ -31,7 +31,7 @@ const OnboardingScreen = () => {
   return (
     <Onboarding
       ref={onboardingRef}
-      containerStyles={{marginTop: '10%', justifyContent: 'flex-start'}}
+      containerStyles={{ marginTop: '10%', justifyContent: 'flex-start' }}
       bottomBarHighlight={false}
       showNext={pageIndex !== 1}
       showSkip={false}
@@ -42,7 +42,7 @@ const OnboardingScreen = () => {
           image: (
             <LottieView
               autoPlay
-              style={{width: 400, height: 400}}
+              style={{ width: 400, height: 400 }}
               source={require('../assets/onBoard.json')}
             />
           ),
@@ -55,7 +55,7 @@ const OnboardingScreen = () => {
           image: (
             <View
               className="w-full"
-              style={{justifyContent: 'center', padding: 10, gap: 10}}>
+              style={{ justifyContent: 'center', padding: 10, gap: 10 }}>
               <View>
                 <Text variant="headlineLarge">Login</Text>
                 <Text variant="bodyMedium">
@@ -88,7 +88,7 @@ const OnboardingScreen = () => {
             <View style={styles.container}>
               <Text style={styles.title}>OTP</Text>
               <Text
-                style={[styles.otpText, {color: paperTheme.colors.outline}]}>
+                style={[styles.otpText, { color: paperTheme.colors.outline }]}>
                 Enter the OTP sent to your email
               </Text>
               <OtpInput
@@ -101,9 +101,9 @@ const OnboardingScreen = () => {
                   setOtp(text);
                   if (text.length === 6) {
                     verifyOtpMutate(
-                      {email, otp: Number(text)},
+                      { email, otp: Number(text) },
                       {
-                        onSuccess: async ({token}) => {
+                        onSuccess: async ({ token }) => {
                           if (!token) {
                             return;
                           }
