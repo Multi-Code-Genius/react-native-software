@@ -1,9 +1,10 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useGetTabBarIcon} from '../hooks/useGetTabBarIcon';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { useGetTabBarIcon } from '../hooks/useGetTabBarIcon';
 
 import AccountScreen from '../screens/AccountScreen';
 import DashboardScreen from '../screens/DashboardScreen';
 import BookingScreen from '../screens/BookingScreen';
+import HomeScreen from '../screens/HomeScreen';
 
 export function PrivateRoute() {
   const getDashboardIcon = useGetTabBarIcon('Dashboard');
@@ -16,7 +17,7 @@ export function PrivateRoute() {
     <Tab.Navigator>
       <Tab.Screen
         name="Dashboard"
-        component={DashboardScreen}
+        component={HomeScreen}
         options={{
           tabBarIcon: getDashboardIcon,
         }}
