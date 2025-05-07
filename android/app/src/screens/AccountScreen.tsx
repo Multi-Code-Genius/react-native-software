@@ -1,41 +1,76 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
-import {Card, Divider, Icon, IconButton, Text} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-
-import {useAccountInfo} from '../api/account';
+import React, { useState } from 'react';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
+import {
+  Card,
+  Divider,
+  Icon,
+  IconButton,
+  Text,
+  Dialog,
+  Portal,
+  Button,
+} from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { useAccountInfo } from '../api/account';
+import { useAuthStore } from '../store/authStore';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const {data} = useAccountInfo();
-  console.log('data', data);
+  const { data } = useAccountInfo();
+  const [visible, setVisible] = useState(false);
+
+  const showDialog = () => setVisible(true);
+  const hideDialog = () => setVisible(false);
+
+  const handleLogout = async () => {
+    try {
+      await useAuthStore.getState().logout();
+      hideDialog();
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
+  };
   const menuItems = [
-    {id: '1', icon: 'map-outline', title: 'Venue Manage'},
-    {id: '2', icon: 'people', title: 'Customers'},
-    {id: '3', icon: 'cog', title: 'Settings'},
-    {id: '4', icon: 'help-circle-outline', title: 'Help'},
-    {id: '5', icon: 'log-out', title: 'Logout'},
+    { id: '1', icon: 'map-outline', title: 'Venue Manage' },
+    { id: '2', icon: 'people', title: 'Customers' },
+    { id: '3', icon: 'cog', title: 'Settings' },
+    { id: '4', icon: 'help-circle-outline', title: 'Help' },
+    { id: '5', icon: 'log-out', title: 'Logout' },
   ];
 
-  const renderMenuItem = ({item}: any) => (
-    <View style={styles.menuItem}>
-      <Icon source={item.icon} size={30} color="black" />
-      <Text style={styles.menuText}>{item.title}</Text>
-    </View>
-  );
+  const renderMenuItem = ({ item }: any) => {
+    const onPress = () => {
+      if (item.title === 'Logout') {
+        showDialog();
+      } else {
+        console.log(`${item.title} clicked`);
+      }
+    };
+
+    return (
+      <TouchableOpacity onPress={onPress} style={styles.menuItem}>
+        <Icon source={item.icon} size={30} color="black" />
+        <Text style={styles.menuText}>{item.title}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <Card style={styles.card}>
         <Card.Content>
-          <View className="flex-row justify-between items-center">
+          <View style={styles.headerRow}>
             <Text style={styles.title}>Account</Text>
             <IconButton
               icon="pencil"
               size={20}
               iconColor="green"
-              onPress={() => navigation.navigate('Profile')}
+              onPress={() => (navigation as any).navigate('Profile')}
             />
           </View>
           <View style={styles.profileContainer}>
@@ -47,7 +82,9 @@ const AccountScreen = () => {
           </View>
         </Card.Content>
       </Card>
+
       <Divider style={styles.divider} />
+
       <FlatList
         data={menuItems}
         renderItem={renderMenuItem}
@@ -55,15 +92,24 @@ const AccountScreen = () => {
         contentContainerStyle={styles.menuContainer}
         scrollEnabled={false}
       />
+
+      <Portal>
+        <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
+          <Dialog.Title>Confirm Logout</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to logout?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={hideDialog}>Cancel</Button>
+            <Button onPress={handleLogout}>Logout</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
   container: {
     flex: 1,
     padding: 16,
@@ -87,18 +133,22 @@ const styles = StyleSheet.create({
   },
   menuContainer: {
     flexGrow: 1,
-    gap: 35,
-    padding: 20,
-    backgroundColor: '#e2e1e1a6',
+    gap: 20,
+    padding: 10,
     borderRadius: 10,
   },
   menuItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
+    backgroundColor: '#a7a6a628',
+    borderColor: '#dddcdc',
+    padding: 15,
+    gap: 15,
+    width: '100%',
+    borderRadius: 10,
   },
   menuText: {
-    fontSize: 20,
+    fontSize: 15,
     fontWeight: '600',
   },
   profileContainer: {
@@ -112,6 +162,14 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     backgroundColor: 'white',
   },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dialog: {
+    backgroundColor: 'white'
+  }
 });
 
 export default AccountScreen;
