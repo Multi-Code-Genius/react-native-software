@@ -1,6 +1,7 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 import {useAuthStore} from '../store/authStore';
+import queryClient from '../config/queryClient';
 
 const accountInfo = async () => {
   try {
@@ -39,6 +40,7 @@ const updateAccountInfo = async (data: any) => {
       },
       body: JSON.stringify(data),
     });
+    console.log('response', response);
     return await response;
   } catch (error) {
     console.error('Update Account Error:', error);
@@ -50,6 +52,7 @@ export const useUpdateAccountInfo = () => {
   return useMutation({
     mutationFn: updateAccountInfo,
     onSuccess: data => {
+      queryClient.invalidateQueries({queryKey: ['account']});
       console.log('Account updated:', data);
     },
     onError: error => {

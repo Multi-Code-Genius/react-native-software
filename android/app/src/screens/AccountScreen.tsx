@@ -1,10 +1,5 @@
-import React, { useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useState} from 'react';
+import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {
   Card,
   Divider,
@@ -14,14 +9,15 @@ import {
   Dialog,
   Portal,
   Button,
+  ActivityIndicator,
 } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
-import { useAccountInfo } from '../api/account';
-import { useAuthStore } from '../store/authStore';
+import {useNavigation} from '@react-navigation/native';
+import {useAccountInfo} from '../api/account';
+import {useAuthStore} from '../store/authStore';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const { data } = useAccountInfo();
+  const {data, isPending} = useAccountInfo();
   const [visible, setVisible] = useState(false);
 
   const showDialog = () => setVisible(true);
@@ -36,14 +32,14 @@ const AccountScreen = () => {
     }
   };
   const menuItems = [
-    { id: '1', icon: 'map-outline', title: 'Venue Manage' },
-    { id: '2', icon: 'people', title: 'Customers' },
-    { id: '3', icon: 'cog', title: 'Settings' },
-    { id: '4', icon: 'help-circle-outline', title: 'Help' },
-    { id: '5', icon: 'log-out', title: 'Logout' },
+    {id: '1', icon: 'map-outline', title: 'Venue Manage'},
+    {id: '2', icon: 'people', title: 'Customers'},
+    {id: '3', icon: 'cog', title: 'Settings'},
+    {id: '4', icon: 'help-circle-outline', title: 'Help'},
+    {id: '5', icon: 'log-out', title: 'Logout'},
   ];
 
-  const renderMenuItem = ({ item }: any) => {
+  const renderMenuItem = ({item}: any) => {
     const onPress = () => {
       if (item.title === 'Logout') {
         showDialog();
@@ -70,15 +66,25 @@ const AccountScreen = () => {
               icon="pencil"
               size={20}
               iconColor="green"
-              onPress={() => (navigation as any).navigate('Profile')}
+              onPress={() => navigation.navigate('Profile', {data})}
             />
           </View>
           <View style={styles.profileContainer}>
-            <View style={styles.profileRound}></View>
-            <View>
-              <Text style={styles.userInfo}>Ishika</Text>
-              <Text style={styles.userInfo}>8511779527</Text>
-            </View>
+            {isPending ? (
+              <ActivityIndicator color="#0c0c0c" />
+            ) : (
+              <>
+                <View style={styles.profileRound}></View>
+                <View>
+                  <Text style={styles.userInfo}>
+                    {data?.user?.name || 'Name'}
+                  </Text>
+                  <Text style={styles.userInfo}>
+                    {data?.user?.mobileNumber || 'Mobile Number'}
+                  </Text>
+                </View>
+              </>
+            )}
           </View>
         </Card.Content>
       </Card>
@@ -168,8 +174,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dialog: {
-    backgroundColor: 'white'
-  }
+    backgroundColor: 'white',
+  },
 });
 
 export default AccountScreen;
