@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import CustomMultiselect from './CustomMultiselect';
-import { TextInput } from 'react-native-paper';
-import { addVenueStore } from '../store/addVenueStore';
+import React, { useState } from 'react';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    ScrollView,
+    Image
+} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { addVenueStore } from '../store/addVenueStore';
+import CustomMultiselect from './CustomMultiselect';
 
 const VenueDeatils = () => {
     const updateField = addVenueStore(state => state.updateField);
     const formData = addVenueStore(state => state.formData);
-
     const [open, setOpen] = useState(false);
     const [value, setValue] = useState(formData?.category || '');
     const [items, setItems] = useState([
@@ -16,34 +23,29 @@ const VenueDeatils = () => {
         { label: 'Cricket', value: 'Cricket' },
         { label: 'Basketball', value: 'Basketball' },
     ]);
-
     const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
-
     const turfOptions = [
         { label: 'Indoor', value: 'indoor' },
         { label: 'Outdoor', value: 'outdoor' },
         { label: 'Roof', value: 'roof' },
     ];
 
+
+
     return (
-        <View className="w-full p-2 flex gap-3">
-            <View className="gap-3">
-                <Text className="text-lg font-bold">Capacity</Text>
-                <TextInput
-                    mode="flat"
-                    cursorColor="black"
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    placeholder="Enter Capacity"
-                    keyboardType="numeric"
-                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
-                    onChangeText={text => updateField('capacity', text)}
-                    value={formData.capacity || ''}
-                />
+        <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+
+            <View style={styles.card}>
+                <Text style={styles.label}>Capacity</Text>
+                <View style={styles.inputWrapper}>
+                    <Icon name="account-group" size={20} color="#666" style={styles.icon} />
+                    <TextInput style={styles.input} placeholder="Enter Capacity" onChangeText={text => updateField('capacity', text)}
+                        value={formData.capacity || ''} />
+                </View>
             </View>
 
-            <View className="gap-3">
-                <Text className="text-lg font-bold">Category</Text>
+            <View style={styles.card}>
+                <Text style={styles.label}>Category</Text>
                 <DropDownPicker
                     open={open}
                     value={value}
@@ -57,26 +59,21 @@ const VenueDeatils = () => {
                     textStyle={styles.dropdownText}
                     placeholderStyle={styles.dropdownPlaceholder}
                     onChangeValue={text => updateField('category', text)}
+                    zIndex={10000}
                 />
             </View>
 
-            <View className="gap-3">
-                <Text className="text-lg font-bold">Hourly Price</Text>
-                <TextInput
-                    mode="flat"
-                    cursorColor="black"
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    placeholder="Enter Hourly Price"
-                    keyboardType="numeric"
-                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
-                    onChangeText={text => updateField('hourlyPrice', text)}
-                    value={formData.hourlyPrice || ''}
-                />
+            <View style={styles.card}>
+                <Text style={styles.label}>Hourly Price</Text>
+                <View style={styles.inputWrapper}>
+                    <Icon name="currency-inr" size={20} color="#666" style={styles.icon} />
+                    <TextInput style={styles.input} placeholder="Enter Hourly Price" keyboardType="numeric" onChangeText={text => updateField('hourlyPrice', text)}
+                        value={formData.hourlyPrice || ''} />
+                </View>
             </View>
 
-            <View className="flex gap-3">
-                <Text className="text-lg font-bold">Turf Type</Text>
+            <View style={styles.card}>
+                <Text style={styles.label}>Turf Type</Text>
                 <CustomMultiselect
                     options={turfOptions}
                     selected={selectedTurfTypes}
@@ -91,85 +88,133 @@ const VenueDeatils = () => {
                     }}
                 />
             </View>
-
-            <View className="gap-3">
-                <Text className="text-lg font-bold">Surface</Text>
-                <TextInput
-                    mode="flat"
-                    cursorColor="black"
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    placeholder="Enter Surface"
-                    keyboardType="default"
-                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
-                    onChangeText={text =>
+            <View style={styles.card}>
+                <Text style={styles.label}>Surface</Text>
+                <View style={styles.inputWrapper}>
+                    <Icon name="texture-box" size={20} color="#666" style={styles.icon} />
+                    <TextInput style={styles.input} placeholder="Enter Surface" onChangeText={text =>
                         updateField('gameInfo', { ...formData.gameInfo, surface: text })
                     }
-                    value={formData.gameInfo?.surface || ''}
-                />
+                        value={formData.gameInfo?.surface || ''} />
+                </View>
             </View>
 
-            <View className="gap-3">
-                <Text className="text-lg font-bold">Net</Text>
-                <TextInput
-                    mode="flat"
-                    cursorColor="black"
-                    underlineColor="transparent"
-                    activeUnderlineColor="transparent"
-                    placeholder="Enter Turf Net"
-                    keyboardType="numeric"
-                    style={[styles.inputStyle, { backgroundColor: 'white' }]}
-                    onChangeText={text => updateField('net', text)}
-                    value={formData.net || ''}
-                />
+            <View style={styles.card}>
+                <Text style={styles.label}>Net</Text>
+                <View style={styles.inputWrapper}>
+                    <Icon name="tournament" size={20} color="#666" style={styles.icon} />
+                    <TextInput style={styles.input} placeholder="Enter Turf Net" onChangeText={text => updateField('net', text)}
+                        value={formData.net || ''} />
+                </View>
+
             </View>
-        </View>
+        </ScrollView>
     );
-};
-
+}
 export default VenueDeatils;
-
 const styles = StyleSheet.create({
-    inputStyle: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
+    container: {
+        backgroundColor: '#f7f8fc',
+        flex: 1
     },
-    textAreaInputStyle: {
-        borderWidth: 1,
-        borderColor: 'gray',
-        borderStyle: 'solid',
-        borderRadius: 4,
-        minHeight: 80,
+    content: {
+        padding: 10
     },
-    pickerWrapper: {
+    card: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 16,
+        marginBottom: 16,
+        elevation: 0,
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: '500',
+        marginBottom: 8,
+        color: '#444'
+    },
+    inputWrapper: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderColor: '#ddd',
         borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        borderStyle: 'solid',
-        backgroundColor: 'white',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#fafafa'
+    },
+    icon: {
+        marginRight: 8
+    },
+    input: {
+        flex: 1,
+        height: 40
+    },
+    turfContainer: {
+        flexDirection: 'row',
+        marginTop: 8
+    },
+    turfChip: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        marginRight: 10,
+        backgroundColor: '#f0f0f0'
+    },
+    turfChipSelected: {
+        backgroundColor: '#4CAF50',
+        borderColor: '#4CAF50'
+    },
+    buttonRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 20
+    },
+    button: {
+        flexDirection: 'row',
+        backgroundColor: '#007bff',
+        borderRadius: 8,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        alignItems: 'center'
+    },
+    buttonText: {
+        color: '#fff',
+        marginHorizontal: 5,
+        fontWeight: '600'
+    },
+    illustration: {
+        height: 120,
+        width: '100%',
+        resizeMode: 'contain',
+        marginBottom: 20
     },
     dropdown: {
-        height: 60,
-        paddingHorizontal: 12,
         borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        backgroundColor: 'white',
-        borderStyle: 'solid',
+        borderColor: '#ddd',
+        borderRadius: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#fafafa',
+        minHeight: 45,
+        zIndex: 1000,
     },
+
     dropdownContainer: {
         borderWidth: 1,
-        borderColor: 'gray',
-        borderRadius: 4,
-        backgroundColor: '#f9f9f9',
-        borderStyle: 'dotted',
+        borderColor: '#ddd',
+        borderRadius: 10,
+        backgroundColor: '#fff',
+        zIndex: 1000,
     },
+
     dropdownText: {
         fontSize: 16,
         color: '#333',
     },
+
     dropdownPlaceholder: {
         color: '#999',
     },
 });
+
