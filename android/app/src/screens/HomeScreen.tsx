@@ -1,11 +1,17 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {Text, Button, Divider, Surface, useTheme} from 'react-native-paper';
+import {Button, Divider, Text, useTheme} from 'react-native-paper';
+import {useAccountLogic} from '../hooks/useAccountLogic';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {colors} = useTheme();
+
+  const {account, isLoading, onRefresh, refetch, refreshing} =
+    useAccountLogic();
+
+  console.log('account', account);
 
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
@@ -20,6 +26,21 @@ const HomeScreen = () => {
 
       <Divider style={styles.divider} />
 
+      <Text variant="bodyMedium" style={{color: colors.onBackground}}>
+        Please complete your profile to add venues, manage all your bookings,
+        and access all features.
+      </Text>
+
+      <Button
+        mode="contained"
+        onPress={() => navigation.navigate('Account')}
+        style={styles.button}
+        labelStyle={{fontWeight: 'bold'}}>
+        Complete Profile
+      </Button>
+
+      <Text style={styles.separator}>──── or ────</Text>
+
       <Text
         variant="titleMedium"
         style={{color: colors.onBackground, marginBottom: 8}}>
@@ -33,13 +54,6 @@ const HomeScreen = () => {
         labelStyle={{fontWeight: 'bold'}}>
         Add venue
       </Button>
-
-      <Text style={styles.separator}>──── or ────</Text>
-
-      <Text variant="bodyMedium" style={{color: colors.onBackground}}>
-        If you're an employee, request the turf owner to add you to start using
-        the app.
-      </Text>
     </View>
   );
 };

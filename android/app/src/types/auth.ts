@@ -71,29 +71,6 @@ export type AuthState = {
   setFctToken: (token: string) => void;
 };
 
-export interface LikeType {
-  id: string;
-  userId: string;
-  videoId: string;
-  createdAt: string;
-  user: {
-    id: string;
-    name: string;
-    profile_pic: string;
-  };
-}
-
-export interface VideoType {
-  id: string;
-  title: string;
-  description: string;
-  videoUrl: string;
-  thumbnail: string | null;
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface UserType {
   id: string;
   email: string;
@@ -107,16 +84,11 @@ export interface UserType {
   resetTokenExpiry: string | null;
   createdAt: string;
   updatedAt: string;
-  comments: any[];
-  likes: LikeType[];
-  videos: VideoType[];
 }
 
-export interface UserState {
-  userData: UserType | null;
-  setUserData: (data: UserType) => void;
-  loadUserData: () => Promise<void>;
-  clearUserData: () => void;
-  selectedDate: string;
-  setSelectedDate: (date: string) => void;
+export interface AccountState {
+  accountData: UserType | null;
+  setAccountData: (data: UserType) => void;
+  loadAccountData: () => Promise<void>;
+  clearAccountData: () => void;
 }

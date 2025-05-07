@@ -35,8 +35,9 @@ const VenueDetails = () => {
           />
           <TextInput
             style={styles.input}
+            keyboardType="numeric"
             placeholder="Enter Capacity"
-            onChangeText={text => updateField('capacity', text)}
+            onChangeText={text => updateField('capacity', text.toString())}
             value={formData.capacity || ''}
           />
         </View>
@@ -127,6 +128,7 @@ const VenueDetails = () => {
             placeholder="Enter Turf Net"
             onChangeText={text => updateField('net', text)}
             value={formData.net || ''}
+            keyboardType="numeric"
           />
         </View>
       </View>

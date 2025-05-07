@@ -1,29 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
-import { useVenueStore } from '../store/useVenueStore';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAddVenue } from '../api/vanue';
+import {useVenueStore} from '../store/useVenueStore';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useAddVenue} from '../api/vanue';
+import {ActivityIndicator} from 'react-native-paper';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
 
-  const { mutate } = useAddVenue();
+  const {mutate, isPending} = useAddVenue();
 
   const validateStep = () => {
     if (currentStep === 0) {
-      const { name, description, address, location } = formData;
+      const {name, description, address, location} = formData;
       if (!name || !description || !address || !location?.area) {
-        Alert.alert('Validation Error', 'Please fill all the required fields in Basic Details.');
+        Alert.alert(
+          'Validation Error',
+          'Please fill all the required fields in Basic Details.',
+        );
         return false;
       }
     }
 
     if (currentStep === 1) {
-      const { capacity, category, hourlyPrice, net, gameInfo } = formData;
+      const {capacity, category, hourlyPrice, net, gameInfo} = formData;
 
       const isTurfTypeSelected =
         gameInfo?.indoor === 'true' ||
@@ -38,7 +42,10 @@ const AddVenueScreen = () => {
         !gameInfo?.surface ||
         !isTurfTypeSelected
       ) {
-        Alert.alert('Validation Error', 'Please fill all the required fields in Venue Details.');
+        Alert.alert(
+          'Validation Error',
+          'Please fill all the required fields in Venue Details.',
+        );
         return false;
       }
     }
@@ -53,7 +60,9 @@ const AddVenueScreen = () => {
   ];
 
   const goNext = () => {
-    if (!validateStep()) return;
+    if (!validateStep()) {
+      return;
+    }
 
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -76,21 +85,22 @@ const AddVenueScreen = () => {
 
         <View style={styles.container}>
           <TouchableOpacity
-            style={[
-              styles.input,
-              currentStep === 0 && styles.disabledButton,
-            ]}
+            style={[styles.input, currentStep === 0 && styles.disabledButton]}
             onPress={goPrevious}
-            disabled={currentStep === 0}
-          >
+            disabled={currentStep === 0}>
             <Text style={styles.text}>Previous</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.input}
-            onPress={goNext}>
-            <Text style={styles.text}>
-              {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
-            </Text>
+            style={[styles.input]}
+            onPress={goNext}
+            disabled={isPending}>
+            {isPending ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.text}>
+                {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+              </Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -122,7 +132,7 @@ const styles = StyleSheet.create({
   text: {
     color: 'white',
     textAlign: 'center',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   disabledButton: {
     backgroundColor: '#cccccc',
