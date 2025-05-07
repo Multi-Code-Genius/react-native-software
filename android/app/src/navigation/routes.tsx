@@ -5,6 +5,7 @@ import {PrivateRoute} from '../routes/PrivateRoute';
 import AddVenueScreen from '../screens/AddVenueScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import {useAuthStore} from '../store/authStore';
+import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -32,6 +33,7 @@ export default function AppNavigator() {
             options={{headerShown: false}}
           />
           <Stack.Screen name="Addvenue" component={AddVenueScreen} />
+          <Stack.Screen name="Profile" component={ProfileInfoScreen} />
         </Stack.Navigator>
       ) : (
         <OnboardingScreen />

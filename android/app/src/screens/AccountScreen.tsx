@@ -1,45 +1,61 @@
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Card, Divider, Icon, Text } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {View, StyleSheet, FlatList} from 'react-native';
+import {Card, Divider, Icon, IconButton, Text} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
+import {useAccountInfo} from '../api/account';
 
 const AccountScreen = () => {
+  const navigation = useNavigation();
+  const {data} = useAccountInfo();
+  console.log('data', data);
   const menuItems = [
-    { id: '1', icon: 'map-outline', title: 'Venue Manage' },
-    { id: '2', icon: 'people', title: 'Customers' },
-    { id: '3', icon: 'cog', title: 'Settings' },
-    { id: '4', icon: 'help-circle-outline', title: 'Help' },
-    { id: '5', icon: 'log-out', title: 'Logout' },
+    {id: '1', icon: 'map-outline', title: 'Venue Manage'},
+    {id: '2', icon: 'people', title: 'Customers'},
+    {id: '3', icon: 'cog', title: 'Settings'},
+    {id: '4', icon: 'help-circle-outline', title: 'Help'},
+    {id: '5', icon: 'log-out', title: 'Logout'},
   ];
 
-  const renderMenuItem = ({ item }: any) => (
+  const renderMenuItem = ({item}: any) => (
     <View style={styles.menuItem}>
-      <Icon source={item.icon} size={30} color='black' />
+      <Icon source={item.icon} size={30} color="black" />
       <Text style={styles.menuText}>{item.title}</Text>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-      <View style={styles.container}>
-        <Card style={styles.card}>
-          <Card.Content>
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <View className="flex-row justify-between items-center">
             <Text style={styles.title}>Account</Text>
-            <Text style={styles.userInfo}>Ishika</Text>
-            <Text style={styles.userInfo}>8511779527</Text>
-          </Card.Content>
-        </Card>
-        <Divider style={styles.divider} />
-
-        <FlatList
-          data={menuItems}
-          renderItem={renderMenuItem}
-          keyExtractor={(item) => item.id}
-          contentContainerStyle={styles.menuContainer}
-          scrollEnabled={false}
-        />
-      </View>
-    </SafeAreaView>
+            <IconButton
+              icon="pencil"
+              size={20}
+              iconColor="green"
+              onPress={() => navigation.navigate('Profile')}
+            />
+          </View>
+          <View style={styles.profileContainer}>
+            <View style={styles.profileRound}></View>
+            <View>
+              <Text style={styles.userInfo}>Ishika</Text>
+              <Text style={styles.userInfo}>8511779527</Text>
+            </View>
+          </View>
+        </Card.Content>
+      </Card>
+      <Divider style={styles.divider} />
+      <FlatList
+        data={menuItems}
+        renderItem={renderMenuItem}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.menuContainer}
+        scrollEnabled={false}
+      />
+    </View>
   );
 };
 
@@ -84,6 +100,17 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 20,
     fontWeight: '600',
+  },
+  profileContainer: {
+    flexDirection: 'row',
+    gap: 30,
+    alignItems: 'center',
+  },
+  profileRound: {
+    width: 70,
+    height: 70,
+    borderRadius: 60,
+    backgroundColor: 'white',
   },
 });
 
