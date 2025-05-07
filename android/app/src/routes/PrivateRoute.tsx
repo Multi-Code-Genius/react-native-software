@@ -1,5 +1,4 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-
 import AccountScreen from '../screens/AccountScreen';
 import BookingScreen from '../screens/BookingScreen';
 import HomeScreen from '../screens/HomeScreen';
@@ -32,6 +31,7 @@ export function PrivateRoute() {
         },
 
         tabBarShowLabel: true,
+
         tabBarLabelPosition: 'beside-icon',
         tabBarLabel: ({focused, color}) =>
           focused ? (
