@@ -6,7 +6,6 @@ import './global.css';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {StatusBar} from 'react-native';
 
 export default function App() {
   const theme = {

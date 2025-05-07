@@ -4,6 +4,7 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
 import CustomMultiselect from './CustomMultiselect';
+import {SegmentedButtons} from 'react-native-paper';
 
 const VenueDetails = () => {
   const updateField = useVenueStore(state => state.updateField);
@@ -15,15 +16,14 @@ const VenueDetails = () => {
     {label: 'Cricket', value: 'Cricket'},
     {label: 'Basketball', value: 'Basketball'},
   ]);
-  const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
-  const turfOptions = [
-    {label: 'Indoor', value: 'indoor'},
-    {label: 'Outdoor', value: 'outdoor'},
-    {label: 'Roof', value: 'roof'},
-  ];
+  // const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
+  const [selectedTurfType, setSelectedTurfType] = useState<string>('');
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}>
       <View style={styles.card}>
         <Text style={styles.label}>Capacity</Text>
         <View style={styles.inputWrapper}>
@@ -58,6 +58,7 @@ const VenueDetails = () => {
           placeholderStyle={styles.dropdownPlaceholder}
           onChangeValue={text => updateField('category', text)}
           zIndex={10000}
+          listMode="SCROLLVIEW"
         />
       </View>
 
@@ -82,20 +83,26 @@ const VenueDetails = () => {
 
       <View style={styles.card}>
         <Text style={styles.label}>Turf Type</Text>
-        <CustomMultiselect
-          options={turfOptions}
-          selected={selectedTurfTypes}
-          onChange={(selected: any) => {
-            setSelectedTurfTypes(selected);
+        <SegmentedButtons
+          value={selectedTurfType}
+          onValueChange={(selected: string) => {
+            setSelectedTurfType(selected);
+
             const gameInfoUpdate = {
-              indoor: selected.includes('indoor') ? 'true' : 'false',
-              outdoor: selected.includes('outdoor') ? 'true' : 'false',
-              roof: selected.includes('roof') ? 'true' : 'false',
+              indoor: selected === 'indoor' ? 'true' : 'false',
+              outdoor: selected === 'outdoor' ? 'true' : 'false',
+              roof: selected === 'roof' ? 'true' : 'false',
             };
             updateField('gameInfo', {...formData.gameInfo, ...gameInfoUpdate});
           }}
+          buttons={[
+            {value: 'indoor', label: 'Indoor'},
+            {value: 'outdoor', label: 'Outdoor'},
+            {value: 'roof', label: 'Roof'},
+          ]}
         />
       </View>
+
       <View style={styles.card}>
         <Text style={styles.label}>Surface</Text>
         <View style={styles.inputWrapper}>
