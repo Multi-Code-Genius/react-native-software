@@ -44,11 +44,11 @@ const AddVenueScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
+    <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
       <View className="flex-1 justify-between">
         <View className="flex-1">{steps[currentStep]}</View>
 
-        <View className="flex-row justify-between mb-5">
+        <View className="flex-row justify-between px-4">
           {currentStep > 0 && (
             <TouchableOpacity
               className="bg-blue-500 py-3 px-6 rounded"
