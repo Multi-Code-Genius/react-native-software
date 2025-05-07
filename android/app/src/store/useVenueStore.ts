@@ -31,7 +31,7 @@ type VenueStore = {
   updateField: (field: string, value: any) => void;
   resetForm: () => void;
 };
-export const addVenueStore = create<VenueStore>(set => ({
+export const useVenueStore = create<VenueStore>(set => ({
   formData: {},
   updateField: (field, value) =>
     set((state: any) => {

@@ -1,4 +1,6 @@
-import {TouchableOpacity, Text as RNText, View} from 'react-native';
+import {TouchableOpacity, Text as View} from 'react-native';
+import {StyleSheet} from 'react-native';
+import {Text} from 'react-native-paper';
 
 const CustomMultiselect = ({options, selected, onChange}: any) => {
   const toggleSelect = (value: any) => {
@@ -17,20 +19,16 @@ const CustomMultiselect = ({options, selected, onChange}: any) => {
           <TouchableOpacity
             key={opt.value}
             onPress={() => toggleSelect(opt.value)}
-            style={{
-              borderRadius: 8,
-              borderStyle: 'solid',
-              borderWidth: 1,
-              borderColor: isSelected ? '#4a90e2' : '#000',
-              backgroundColor: isSelected ? '#4a90e2' : 'transparent',
-              paddingVertical: 8,
-              paddingHorizontal: 12,
-              marginRight: 10,
-              marginBottom: 10,
-            }}>
-            <RNText style={{color: isSelected ? '#fff' : '#000'}}>
+            style={[
+              styles.optionButton,
+              {
+                borderColor: isSelected ? '#4a90e2' : '#000',
+                backgroundColor: isSelected ? '#4a90e2' : 'transparent',
+              },
+            ]}>
+            <Text style={{color: isSelected ? '#fff' : '#000'}}>
               {opt.label}
-            </RNText>
+            </Text>
           </TouchableOpacity>
         );
       })}
@@ -39,3 +37,15 @@ const CustomMultiselect = ({options, selected, onChange}: any) => {
 };
 
 export default CustomMultiselect;
+
+const styles = StyleSheet.create({
+  optionButton: {
+    borderRadius: 8,
+    borderStyle: 'solid',
+    borderWidth: 1,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    marginRight: 10,
+    marginBottom: 10,
+  },
+});

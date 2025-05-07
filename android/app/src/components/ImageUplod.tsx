@@ -11,13 +11,13 @@ import {
   Platform,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
-import {addVenueStore} from '../store/addVenueStore';
+import {useVenueStore} from '../store/useVenueStore';
 
 const MAX_IMAGES = 10;
 
-const ImageUploader = () => {
+const ImageUpload = () => {
   const [images, setImages] = useState<string[]>([]);
-  const updateField = addVenueStore(state => state.updateField);
+  const updateField = useVenueStore(state => state.updateField);
 
   const requestPermission = async () => {
     if (Platform.OS === 'android') {
@@ -155,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ImageUploader;
+export default ImageUpload;

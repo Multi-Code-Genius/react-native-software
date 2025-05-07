@@ -1,22 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addVenueStore} from '../store/addVenueStore';
+
+import {useVenueStore} from '../store/useVenueStore';
 
 const BasicDetailsComponent = () => {
-  const updateField = addVenueStore(state => state.updateField);
-  const formData = addVenueStore(state => state.formData);
+  const updateField = useVenueStore(state => state.updateField);
+  const formData = useVenueStore(state => state.formData);
 
   useEffect(() => {
     updateField('city', 'surat');
-  }, []);
+  }, [updateField]);
 
   return (
     <ScrollView
@@ -52,7 +46,7 @@ const BasicDetailsComponent = () => {
             name="note-text"
             size={20}
             color="#666"
-            style={styles.newicon}
+            style={styles.newIcon}
           />
           <TextInput
             style={[styles.input]}
@@ -147,7 +141,7 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 8,
   },
-  newicon: {
+  newIcon: {
     paddingTop: 8,
     marginRight: 8,
   },

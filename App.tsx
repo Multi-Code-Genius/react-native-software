@@ -46,7 +46,7 @@ export default function App() {
           settings={{
             icon: props => <Ionicons {...props} />,
           }}>
-          <SafeAreaView style={{flex: 1}} edges={['top']}>
+          <SafeAreaView style={{flex: 1}} edges={['top', 'bottom']}>
             <AppNavigator />
           </SafeAreaView>
         </PaperProvider>

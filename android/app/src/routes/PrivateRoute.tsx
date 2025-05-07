@@ -19,6 +19,9 @@ export function PrivateRoute() {
           backgroundColor: theme.colors.onPrimary,
           height: 70,
           elevation: 50,
+          paddingVertical: 'auto',
+          paddingTop: 10,
+          paddingBottom: 10,
         },
 
         tabBarItemStyle: {

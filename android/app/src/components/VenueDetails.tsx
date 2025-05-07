@@ -1,21 +1,13 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Image,
-} from 'react-native';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {addVenueStore} from '../store/addVenueStore';
+import {useVenueStore} from '../store/useVenueStore';
 import CustomMultiselect from './CustomMultiselect';
 
-const VenueDeatils = () => {
-  const updateField = addVenueStore(state => state.updateField);
-  const formData = addVenueStore(state => state.formData);
+const VenueDetails = () => {
+  const updateField = useVenueStore(state => state.updateField);
+  const formData = useVenueStore(state => state.formData);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(formData?.category || '');
   const [items, setItems] = useState([
@@ -23,14 +15,7 @@ const VenueDeatils = () => {
     {label: 'Cricket', value: 'Cricket'},
     {label: 'Basketball', value: 'Basketball'},
   ]);
-
-  const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>(() => {
-    const types = [];
-    if (formData.gameInfo?.indoor === 'true') types.push('indoor');
-    if (formData.gameInfo?.outdoor === 'true') types.push('outdoor');
-    if (formData.gameInfo?.roof === 'true') types.push('roof');
-    return types;
-  });
+  const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
   const turfOptions = [
     {label: 'Indoor', value: 'indoor'},
     {label: 'Outdoor', value: 'outdoor'},
@@ -38,10 +23,7 @@ const VenueDeatils = () => {
   ];
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.card}>
         <Text style={styles.label}>Capacity</Text>
         <View style={styles.inputWrapper}>
@@ -76,7 +58,6 @@ const VenueDeatils = () => {
           placeholderStyle={styles.dropdownPlaceholder}
           onChangeValue={text => updateField('category', text)}
           zIndex={10000}
-          listMode="SCROLLVIEW"
         />
       </View>
 
@@ -111,10 +92,7 @@ const VenueDeatils = () => {
               outdoor: selected.includes('outdoor') ? 'true' : 'false',
               roof: selected.includes('roof') ? 'true' : 'false',
             };
-            updateField('gameInfo', {
-              ...formData.gameInfo,
-              ...gameInfoUpdate,
-            });
+            updateField('gameInfo', {...formData.gameInfo, ...gameInfoUpdate});
           }}
         />
       </View>
@@ -148,7 +126,7 @@ const VenueDeatils = () => {
     </ScrollView>
   );
 };
-export default VenueDeatils;
+export default VenueDetails;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f7f8fc',

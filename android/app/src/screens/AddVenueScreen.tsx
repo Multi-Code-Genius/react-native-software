@@ -1,31 +1,22 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import VenueDeatils from '../components/VenueDeatils';
+import React, {useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useAddVenue} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
-import ImageUploder from '../components/ImageUploder';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAddVenue } from '../api/addvenuedetails';
-import { addVenueStore } from '../store/addVenueStore';
+import ImageUpload from '../components/ImageUplod';
+import VenueDetails from '../components/VenueDetails';
+import {useVenueStore} from '../store/useVenueStore';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const formData = addVenueStore(state => state.formData);
-  const resetformData = addVenueStore(state => state.resetForm);
-  console.log('formData', formData);
-  const { mutate } = useAddVenue(
-    data => {
-      console.log('data', data);
-      resetformData();
-    },
-    error => {
-      console.error('Error creating venue:', error);
-    },
-  );
+  const formData = useVenueStore(state => state.formData);
+
+  const {mutate} = useAddVenue();
 
   const steps = [
     <BasicDetailsComponent key="step1" />,
-    <VenueDeatils key="step2" />,
-    <ImageUploder key="step3" />,
+    <VenueDetails key="step2" />,
+    <ImageUpload key="step3" />,
   ];
 
   const goNext = () => {
@@ -50,15 +41,11 @@ const AddVenueScreen = () => {
 
         <View style={styles.container}>
           {currentStep > 0 && (
-            <TouchableOpacity
-              style={styles.input}
-              onPress={goPrevious}>
+            <TouchableOpacity style={styles.input} onPress={goPrevious}>
               <Text style={styles.text}>Previous</Text>
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            style={styles.input}
-            onPress={goNext}>
+          <TouchableOpacity style={styles.input} onPress={goNext}>
             <Text style={styles.text}>
               {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Text>
@@ -74,13 +61,14 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     padding: 10,
+    backgroundColor: 'white',
   },
   container: {
     flexDirection: 'row',
     gap: 10,
     paddingHorizontal: 16,
     backgroundColor: 'white',
-    width: '100%'
+    width: '100%',
   },
   input: {
     backgroundColor: 'black',
@@ -88,11 +76,11 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 4,
     marginVertical: 16,
-    width: '50%'
+    width: '50%',
   },
   text: {
     color: 'white',
     textAlign: 'center',
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+  },
 });

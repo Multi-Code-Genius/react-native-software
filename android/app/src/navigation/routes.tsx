@@ -2,10 +2,9 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useEffect} from 'react';
 import {PrivateRoute} from '../routes/PrivateRoute';
+import AddVenueScreen from '../screens/AddVenueScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import {useAuthStore} from '../store/authStore';
-import AddVenueScreen from '../screens/AddVenueScreen';
-import {StatusBar, View} from 'react-native';
 
 export type RootStackParamList = {
   Home: undefined;
