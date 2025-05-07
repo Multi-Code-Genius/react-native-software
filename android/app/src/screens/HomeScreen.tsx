@@ -3,6 +3,7 @@ import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Divider, Text, useTheme} from 'react-native-paper';
 import {useAccountLogic} from '../hooks/useAccountLogic';
+import {useGetVenue} from '../api/vanue';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -10,8 +11,9 @@ const HomeScreen = () => {
 
   const {account, isLoading, onRefresh, refetch, refreshing} =
     useAccountLogic();
+  const {data} = useGetVenue();
 
-  console.log('account', account);
+  console.log('account', data);
 
   return (
     <View style={[styles.container, {backgroundColor: colors.background}]}>
