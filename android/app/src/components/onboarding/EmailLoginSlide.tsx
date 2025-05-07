@@ -16,7 +16,7 @@ export default function EmailLoginSlide({
   paperTheme: any;
 }) {
   return {
-    backgroundColor: paperTheme.dark ? '#000' : '#fff',
+    backgroundColor: 'white',
     image: (
       <View
         className="w-full"

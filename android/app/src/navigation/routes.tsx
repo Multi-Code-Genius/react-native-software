@@ -5,6 +5,7 @@ import {PrivateRoute} from '../routes/PrivateRoute';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import {useAuthStore} from '../store/authStore';
 import AddVenueScreen from '../screens/AddVenueScreen';
+import {StatusBar, View} from 'react-native';
 
 export type RootStackParamList = {
   Home: undefined;

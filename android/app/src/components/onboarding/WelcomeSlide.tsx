@@ -1,9 +1,9 @@
 import React from 'react';
 import LottieView from 'lottie-react-native';
 
-export default function WelcomeSlide(paperTheme: any) {
+export default function WelcomeSlide() {
   return {
-    backgroundColor: paperTheme.dark ? '#000' : '#fff',
+    backgroundColor: 'white',
     image: (
       <LottieView
         autoPlay

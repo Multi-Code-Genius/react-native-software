@@ -17,7 +17,7 @@ export default function OtpSlide({
   paperTheme: any;
 }) {
   return {
-    backgroundColor: paperTheme.dark ? '#000' : '#fff',
+    backgroundColor: 'white',
     image: (
       <View style={styles.container}>
         <Text style={styles.title}>OTP</Text>
