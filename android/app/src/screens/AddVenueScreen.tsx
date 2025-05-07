@@ -45,21 +45,21 @@ const AddVenueScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['left', 'right']}>
-      <View className="flex-1 justify-between">
+      <View className="flex-1 justify-between ">
         <View className="flex-1">{steps[currentStep]}</View>
 
-        <View className="flex-row justify-between px-4 bg-transparent">
+        <View style={styles.container}>
           {currentStep > 0 && (
             <TouchableOpacity
-              className="bg-blue-500 py-3 px-6 rounded"
+              style={styles.input}
               onPress={goPrevious}>
-              <Text className="text-white font-bold">Previous</Text>
+              <Text style={styles.text}>Previous</Text>
             </TouchableOpacity>
           )}
           <TouchableOpacity
-            className="bg-blue-500 py-3 px-6 rounded ml-auto"
+            style={styles.input}
             onPress={goNext}>
-            <Text className="text-white font-bold">
+            <Text style={styles.text}>
               {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
             </Text>
           </TouchableOpacity>
@@ -74,6 +74,25 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     padding: 10,
-    backgroundColor: 'white'
   },
+  container: {
+    flexDirection: 'row',
+    gap: 10,
+    paddingHorizontal: 16,
+    backgroundColor: 'white',
+    width: '100%'
+  },
+  input: {
+    backgroundColor: 'black',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 4,
+    marginVertical: 16,
+    width: '50%'
+  },
+  text: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  }
 });
