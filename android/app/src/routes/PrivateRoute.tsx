@@ -33,6 +33,7 @@ export function PrivateRoute() {
         tabBarLabel: ({focused, color}) =>
           focused ? (
             <Text
+              variant="labelLarge"
               style={{
                 color,
                 marginLeft: 5,
