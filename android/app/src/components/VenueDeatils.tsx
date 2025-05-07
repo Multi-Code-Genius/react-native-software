@@ -26,9 +26,9 @@ const VenueDeatils = () => {
   ];
 
   return (
-    <View className="w-full p-2 flex gap-4">
+    <View className="w-full p-2 flex gap-3">
       <View className="gap-3">
-        <Text className="text-xl font-bold">Capacity</Text>
+        <Text className="text-lg font-bold">Capacity</Text>
         <TextInput
           mode="flat"
           cursorColor="black"
@@ -43,7 +43,7 @@ const VenueDeatils = () => {
       </View>
 
       <View className="gap-3">
-        <Text className="text-xl font-bold">Category</Text>
+        <Text className="text-lg font-bold">Category</Text>
         <DropDownPicker
           open={open}
           value={value}
@@ -61,7 +61,7 @@ const VenueDeatils = () => {
       </View>
 
       <View className="gap-3">
-        <Text className="text-xl font-bold">Hourly Price</Text>
+        <Text className="text-lg font-bold">Hourly Price</Text>
         <TextInput
           mode="flat"
           cursorColor="black"
@@ -75,8 +75,8 @@ const VenueDeatils = () => {
         />
       </View>
 
-      <View className="flex gap-4">
-        <Text className="text-xl font-bold">Turf Type</Text>
+      <View className="flex gap-3">
+        <Text className="text-lg font-bold">Turf Type</Text>
         <CustomMultiselect
           options={turfOptions}
           selected={selectedTurfTypes}
@@ -93,7 +93,7 @@ const VenueDeatils = () => {
       </View>
 
       <View className="gap-3">
-        <Text className="text-xl font-bold">Surface</Text>
+        <Text className="text-lg font-bold">Surface</Text>
         <TextInput
           mode="flat"
           cursorColor="black"
@@ -110,7 +110,7 @@ const VenueDeatils = () => {
       </View>
 
       <View className="gap-3">
-        <Text className="text-xl font-bold">Net</Text>
+        <Text className="text-lg font-bold">Net</Text>
         <TextInput
           mode="flat"
           cursorColor="black"
