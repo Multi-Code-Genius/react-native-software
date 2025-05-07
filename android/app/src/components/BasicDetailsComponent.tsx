@@ -141,15 +141,15 @@ export default BasicDetailsComponent;
 
 const styles = StyleSheet.create({
   inputStyle: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'gray',
-    borderStyle: 'dotted',
+    borderStyle: 'solid',
     borderRadius: 8,
   },
   textAreaInputStyle: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: 'gray',
-    borderStyle: 'dotted',
+    borderStyle: 'solid',
     borderRadius: 8,
     maxHeight: 80,
     minHeight: 80,
