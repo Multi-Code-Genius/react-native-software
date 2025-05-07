@@ -1,28 +1,63 @@
-import {StyleSheet, View} from 'react-native';
-import {Button, Text} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useAuthStore} from '../store/authStore';
+import React from 'react';
+import { View, StyleSheet } from 'react-native';
+import { Card, Divider, Icon, List, Text } from 'react-native-paper';
 
-const AccountScreen = () => (
-  // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
-  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
-  <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-    <View className="flex-1 justify-center">
-      <Text>Home Screen</Text>
-      <Button
-        icon="camera"
-        mode="contained"
-        onPress={() => useAuthStore.getState().logout()}>
-        Press me
-      </Button>
+const AccountScreen = () => {
+  return (
+    <View style={styles.container}>
+      <Card style={styles.card}>
+        <Card.Content>
+          <Text style={styles.title}>Account</Text>
+          <Text style={styles.userInfo}>Ishika</Text>
+          <Text style={styles.userInfo}>8511779527</Text>
+        </Card.Content>
+      </Card>
+      <Divider style={styles.divider} />
+
+      <Card style={styles.card}>
+        <Card.Content>
+          <View className='flex flex-row gap-4'>
+            <Icon source='map-outline' size={20} color='black' />
+            <Text>Venue Manage</Text>
+          </View>
+          {/* <View className='flex flex-row gap-4'>
+            <Icon source='account' size={20} color='black' />
+            <Text>Venue Manage</Text>
+          </View> */}
+        </Card.Content>
+      </Card>
     </View>
-  </SafeAreaView>
-);
-export default AccountScreen;
+  );
+};
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  card: {
+    marginBottom: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  userInfo: {
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  divider: {
+    marginVertical: 8,
+    height: 1,
+    backgroundColor: '#e0e0e0',
   },
 });
+
+export default AccountScreen;
