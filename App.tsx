@@ -6,6 +6,8 @@ import './global.css';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {StatusBar} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export default function App() {
   const theme = {
@@ -39,17 +41,24 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SafeAreaProvider>
-        <PaperProvider
-          theme={theme}
-          settings={{
-            icon: props => <Ionicons {...props} />,
-          }}>
-          <SafeAreaView style={{flex: 1}} edges={['top', 'bottom']}>
-            <AppNavigator />
-          </SafeAreaView>
-        </PaperProvider>
-      </SafeAreaProvider>
+      <GestureHandlerRootView
+        style={{flex: 1, backgroundColor: theme.colors.background}}>
+        <SafeAreaProvider>
+          <PaperProvider
+            theme={theme}
+            settings={{
+              icon: props => <Ionicons {...props} />,
+            }}>
+            <SafeAreaView style={{flex: 1}} edges={['top', 'bottom']}>
+              <StatusBar
+                barStyle="light-content"
+                backgroundColor={theme.colors.primary}
+              />
+              <AppNavigator />
+            </SafeAreaView>
+          </PaperProvider>
+        </SafeAreaProvider>
+      </GestureHandlerRootView>
     </QueryClientProvider>
   );
 }
