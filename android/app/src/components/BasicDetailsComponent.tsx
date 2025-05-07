@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { addVenueStore } from '../store/addVenueStore';
+import {addVenueStore} from '../store/addVenueStore';
 
 const BasicDetailsComponent = () => {
   const updateField = addVenueStore(state => state.updateField);
@@ -19,7 +19,10 @@ const BasicDetailsComponent = () => {
   }, []);
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}>
       <View style={styles.card}>
         <Text style={styles.label}>Name</Text>
         <View style={styles.inputWrapper}>
@@ -35,8 +38,22 @@ const BasicDetailsComponent = () => {
 
       <View style={styles.card}>
         <Text style={styles.label}>Description</Text>
-        <View style={[styles.inputWrapper, { height: 100, alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 5 }]}>
-          <Icon name="note-text" size={20} color="#666" style={styles.newicon} />
+        <View
+          style={[
+            styles.inputWrapper,
+            {
+              height: 100,
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
+              paddingTop: 5,
+            },
+          ]}>
+          <Icon
+            name="note-text"
+            size={20}
+            color="#666"
+            style={styles.newicon}
+          />
           <TextInput
             style={[styles.input]}
             placeholder="Enter venue description"
@@ -52,18 +69,19 @@ const BasicDetailsComponent = () => {
         <Text style={styles.label}>City</Text>
         <View style={styles.inputWrapper}>
           <Icon name="city" size={20} color="#666" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            value="Surat"
-            editable={false}
-          />
+          <TextInput style={styles.input} value="Surat" editable={false} />
         </View>
       </View>
 
       <View style={styles.card}>
         <Text style={styles.label}>Area</Text>
         <View style={styles.inputWrapper}>
-          <Icon name="map-marker-radius" size={20} color="#666" style={styles.icon} />
+          <Icon
+            name="map-marker-radius"
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
           <TextInput
             style={styles.input}
             placeholder="Enter Area"
@@ -76,7 +94,12 @@ const BasicDetailsComponent = () => {
       <View style={styles.card}>
         <Text style={styles.label}>Address</Text>
         <View style={styles.inputWrapper}>
-          <Icon name="home-map-marker" size={20} color="#666" style={styles.icon} />
+          <Icon
+            name="home-map-marker"
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
           <TextInput
             style={styles.input}
             placeholder="Enter Address"
@@ -94,23 +117,23 @@ export default BasicDetailsComponent;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#f7f8fc',
-    flex: 1
+    flex: 1,
   },
   content: {
-    padding: 10
+    padding: 10,
   },
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    elevation: 0
+    elevation: 0,
   },
   label: {
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 8,
-    color: '#444'
+    color: '#444',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -119,19 +142,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fafafa'
+    backgroundColor: '#fafafa',
   },
   icon: {
-    marginRight: 8
+    marginRight: 8,
   },
   newicon: {
     paddingTop: 8,
-    marginRight: 8
+    marginRight: 8,
   },
   input: {
     flex: 1,
     height: 40,
     fontSize: 14,
-    color: '#000'
-  }
+    color: '#000',
+  },
 });
