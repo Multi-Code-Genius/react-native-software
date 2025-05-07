@@ -1,9 +1,24 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Avatar, Card, Divider, Icon, List, Text, Title } from 'react-native-paper';
+import { View, StyleSheet, FlatList } from 'react-native';
+import { Card, Divider, Icon, Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const AccountScreen = () => {
+  const menuItems = [
+    { id: '1', icon: 'map-outline', title: 'Venue Manage' },
+    { id: '2', icon: 'people', title: 'Customers' },
+    { id: '3', icon: 'cog', title: 'Settings' },
+    { id: '4', icon: 'help-circle-outline', title: 'Help' },
+    { id: '5', icon: 'log-out', title: 'Logout' },
+  ];
+
+  const renderMenuItem = ({ item }: any) => (
+    <View style={styles.menuItem}>
+      <Icon source={item.icon} size={30} color='black' />
+      <Text style={styles.menuText}>{item.title}</Text>
+    </View>
+  );
+
   return (
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <View style={styles.container}>
@@ -16,28 +31,13 @@ const AccountScreen = () => {
         </Card>
         <Divider style={styles.divider} />
 
-        <View style={styles.menuContainer}>
-          <View style={styles.menuItem}>
-            <Icon source='map-outline' size={30} color='black' />
-            <Text style={styles.menuText}>Venue Manage</Text>
-          </View>
-          <View style={styles.menuItem}>
-            <Icon source='people' size={30} color='black' />
-            <Text style={styles.menuText}>Customers</Text>
-          </View>
-          <View style={styles.menuItem}>
-            <Icon source='cog' size={30} color='black' />
-            <Text style={styles.menuText}>Settings</Text>
-          </View>
-          <View style={styles.menuItem}>
-            <Icon source='help-circle-outline' size={30} color='black' />
-            <Text style={styles.menuText}>Help</Text>
-          </View>
-          <View style={styles.menuItem}>
-            <Icon source='log-out' size={30} color='black' />
-            <Text style={styles.menuText}>Logout</Text>
-          </View>
-        </View>
+        <FlatList
+          data={menuItems}
+          renderItem={renderMenuItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.menuContainer}
+          scrollEnabled={false}
+        />
       </View>
     </SafeAreaView>
   );
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#e0e0e0',
   },
   menuContainer: {
-    flex: 1,
+    flexGrow: 1,
     gap: 35,
     padding: 20,
     backgroundColor: '#e2e1e1a6',
@@ -83,27 +83,7 @@ const styles = StyleSheet.create({
   },
   menuText: {
     fontSize: 20,
-    fontWeight: 'semibold',
-  },
-  profileContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-  },
-  profileImage: {
-    marginRight: 16,
-  },
-  userInfoContainer: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  phone: {
-    fontSize: 16,
-    color: '#666',
+    fontWeight: '600',
   },
 });
 
