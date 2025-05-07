@@ -2,156 +2,136 @@ import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  GestureResponderEvent,
+  TextInput,
   StyleSheet,
+  ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import { TextInput } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { addVenueStore } from '../store/addVenueStore';
 
-const states: string[] = ['Maharashtra', 'Karnataka', 'Delhi'];
-const cities: string[] = ['Mumbai', 'Pune', 'Nagpur'];
-
-const BasicDetailsComponent: React.FC = () => {
+const BasicDetailsComponent = () => {
   const updateField = addVenueStore(state => state.updateField);
-
   const formData = addVenueStore(state => state.formData);
+
   useEffect(() => {
     updateField('city', 'surat');
   }, []);
 
-  const renderDropdown = (
-    data: string[],
-    onSelect: (item: string) => void,
-    onClose: (event?: GestureResponderEvent) => void,
-  ) => (
-    <Modal transparent animationType="fade" onRequestClose={onClose}>
-      <TouchableOpacity
-        className="flex-1 bg-black/30 justify-center p-5"
-        activeOpacity={1}
-        onPress={onClose}>
-        <View className="bg-white rounded-lg max-h-[300px] p-2">
-          <FlatList
-            data={data}
-            keyExtractor={item => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                className="p-3 border-b border-gray-300"
-                onPress={() => {
-                  onSelect(item);
-                  onClose();
-                }}>
-                <Text className="text-base">{item}</Text>
-              </TouchableOpacity>
-            )}
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.card}>
+        <Text style={styles.label}>Name</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="account" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter name"
+            onChangeText={text => updateField('name', text)}
+            value={formData.name || ''}
           />
         </View>
-      </TouchableOpacity>
-    </Modal>
-  );
-
-  return (
-    <View className="p-2 flex gap-3">
-      <View className="flex gap-4">
-        <Text className="text-lg font-bold">Name</Text>
-
-        <TextInput
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          style={[styles.inputStyle, { backgroundColor: 'white' }]}
-          placeholder="Enter name"
-          onChangeText={text => updateField('name', text)}
-          value={formData.name || ''}
-        />
       </View>
 
-      <View className="flex gap-3">
-        <Text className="text-lg font-bold">Description</Text>
-
-        <TextInput
-          placeholder="Enter venue"
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          multiline={true}
-          numberOfLines={4}
-          style={[
-            styles.textAreaInputStyle,
-            { backgroundColor: 'white', textAlignVertical: 'top' },
-          ]}
-          onChangeText={text => updateField('description', text)}
-          value={formData.description || ''}
-        />
+      <View style={styles.card}>
+        <Text style={styles.label}>Description</Text>
+        <View style={[styles.inputWrapper, { height: 100, alignItems: 'flex-start', justifyContent: 'flex-start', paddingTop: 5 }]}>
+          <Icon name="note-text" size={20} color="#666" style={styles.newicon} />
+          <TextInput
+            style={[styles.input]}
+            placeholder="Enter venue description"
+            multiline
+            numberOfLines={4}
+            onChangeText={text => updateField('description', text)}
+            value={formData.description || ''}
+          />
+        </View>
       </View>
 
-      <View className="flex gap-3">
-        <Text className="text-lg font-bold">City</Text>
-
-        <TextInput
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          style={[styles.inputStyle, { backgroundColor: 'white' }]}
-          value={'surat'}
-          // onChangeText={text => updateField('city', 'surat')}
-          disabled
-        />
+      <View style={styles.card}>
+        <Text style={styles.label}>City</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="city" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            value="Surat"
+            editable={false}
+          />
+        </View>
       </View>
 
-      <View className="flex gap-3">
-        <Text className="text-lg font-bold">Area</Text>
-
-        <TextInput
-          placeholder="Enter Area"
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          style={[styles.inputStyle, { backgroundColor: 'white' }]}
-          onChangeText={text => updateField('area', text)}
-          value={formData.location?.area || ''}
-        />
+      <View style={styles.card}>
+        <Text style={styles.label}>Area</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="map-marker-radius" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Area"
+            onChangeText={text => updateField('area', text)}
+            value={formData.location?.area || ''}
+          />
+        </View>
       </View>
 
-      <View className=" gap-4">
-        <Text className="text-lg font-bold">Address</Text>
-
-        <TextInput
-          placeholder="Enter address"
-          mode="flat"
-          cursorColor="black"
-          underlineColor="transparent"
-          activeUnderlineColor="transparent"
-          style={[styles.inputStyle, { backgroundColor: 'white' }]}
-          onChangeText={text => updateField('address', text)}
-          value={formData.address || ''}
-        />
+      <View style={styles.card}>
+        <Text style={styles.label}>Address</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="home-map-marker" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Address"
+            onChangeText={text => updateField('address', text)}
+            value={formData.address || ''}
+          />
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default BasicDetailsComponent;
 
 const styles = StyleSheet.create({
-  inputStyle: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderStyle: 'solid',
-    borderRadius: 8,
+  container: {
+    backgroundColor: '#f7f8fc',
+    flex: 1
   },
-  textAreaInputStyle: {
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderStyle: 'solid',
-    borderRadius: 8,
-    maxHeight: 80,
-    minHeight: 80,
+  content: {
+    padding: 10
   },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    elevation: 0
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 8,
+    color: '#444'
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#ddd',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fafafa'
+  },
+  icon: {
+    marginRight: 8
+  },
+  newicon: {
+    paddingTop: 8,
+    marginRight: 8
+  },
+  input: {
+    flex: 1,
+    height: 40,
+    fontSize: 14,
+    color: '#000'
+  }
 });
