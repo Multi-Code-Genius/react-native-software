@@ -16,6 +16,7 @@ import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, Portal, Text, useTheme} from 'react-native-paper';
 import {useBookingInfo} from '../api/booking';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
+import ModalForm, {BookingModal} from '../components/ModalForm';
 
 const BookingScreen = () => {
   const theme = useTheme();
@@ -26,6 +27,7 @@ const BookingScreen = () => {
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
   const [date, seDate] = useState(moment().format('DD-MM-YYYY'));
+  const [visible, setVisible] = useState(false);
 
   const {data, refetch, isRefetching} = useBookingInfo({
     gameId: venueId,
@@ -48,6 +50,10 @@ const BookingScreen = () => {
       debouncedRefetch.cancel();
     };
   }, [date, debouncedRefetch]);
+
+  const handleSubmit = (data: any) => {
+    console.log('Form Submitted:', data);
+  };
 
   const mappedEvents = data
     ? (data || [])?.booking.map((item: any) => ({
@@ -103,10 +109,13 @@ const BookingScreen = () => {
         style={{backgroundColor: theme.colors.primary}}
         statusBarHeight={0}>
         <Appbar.Content color={theme.colors.onPrimary} title="Bookings" />
-        <Appbar.Action icon="calendar" color={theme.colors.onPrimary} />
+        <Appbar.Action
+          icon="calendar"
+          color={theme.colors.onPrimary}
+          onPress={() => setVisible(true)}
+        />
         <Appbar.Action icon="home" color={theme.colors.onPrimary} />
       </Appbar.Header>
-
       <CalendarContainer
         allowPinchToZoom
         onChange={x => {
@@ -163,7 +172,12 @@ const BookingScreen = () => {
             )}
           </BottomSheetView>
         </BottomSheet>
-      </Portal>
+      </Portal>{' '}
+      <ModalForm
+        visible={visible}
+        onDismiss={() => setVisible(false)}
+        onSubmit={handleSubmit}
+      />
     </View>
   );
 };
