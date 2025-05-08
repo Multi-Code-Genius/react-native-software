@@ -37,6 +37,7 @@ export default function AppNavigator() {
           />
           <Stack.Screen name="Addvenue" component={AddVenueScreen} />
           <Stack.Screen name="Profile" component={ProfileInfoScreen} />
+          <Stack.Screen name="bookingData" component={BookingCalenderScreen} />
           <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
           <Stack.Screen
             name="booking"

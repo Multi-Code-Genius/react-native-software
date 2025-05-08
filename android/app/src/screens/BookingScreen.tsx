@@ -13,9 +13,7 @@ const BookingScreen = () => {
     <Card
       style={[styles.card, styles.shadow]}
       mode="elevated"
-      onPress={() =>
-        (navigation as any).navigate('booking', {venueId: item.id})
-      }>
+      onPress={() => navigation.navigate('bookingData', {venueId: item?.id})}>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>
           {item.name}
@@ -49,7 +47,7 @@ const BookingScreen = () => {
             </Text>
           </View>
           <FlatList
-            data={data.games}
+            data={data?.games}
             renderItem={renderItem}
             keyExtractor={(item: any) =>
               item.id?.toString() ?? Math.random().toString()

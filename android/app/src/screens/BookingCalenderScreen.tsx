@@ -14,11 +14,11 @@ import moment from 'moment';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import {Appbar, Portal, Text, useTheme} from 'react-native-paper';
-import {useBookingInfo} from '../api/booking';
+import {useBookingInfo, useCreateBooking} from '../api/booking';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import ModalForm, {BookingModal} from '../components/ModalForm';
+import ModalForm from '../components/ModalForm';
 
-const BookingScreen = () => {
+const BookingCalenderScreen = () => {
   const theme = useTheme();
 
   const route = useRoute();
@@ -26,13 +26,19 @@ const BookingScreen = () => {
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
 
-  const [date, seDate] = useState(moment().format('DD-MM-YYYY'));
+  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
+
   const [visible, setVisible] = useState(false);
 
   const {data, refetch, isRefetching} = useBookingInfo({
     gameId: venueId,
     date,
   });
+
+  console.log('data', data);
+
+  const {mutate} = useCreateBooking();
+
   const debouncedRefetch = useMemo(
     () =>
       debounce(() => {
@@ -51,8 +57,21 @@ const BookingScreen = () => {
     };
   }, [date, debouncedRefetch]);
 
-  const handleSubmit = (data: any) => {
-    console.log('Form Submitted:', data);
+  const handleCreateBooking = (formData: any) => {
+    formData.gameId = venueId;
+    mutate(formData, {
+      onSuccess: res => {
+        if (res?.booking) {
+          const {date: resDate} = res?.booking;
+
+          const formattedDate = moment(resDate).format('DD-MM-YYYY');
+          setDate(formattedDate);
+        }
+      },
+      onError: err => {
+        console.error('Booking creation failed', err);
+      },
+    });
   };
 
   const mappedEvents = data
@@ -117,14 +136,15 @@ const BookingScreen = () => {
         <Appbar.Action icon="home" color={theme.colors.onPrimary} />
       </Appbar.Header>
       <CalendarContainer
+        initialDate={moment(date).format('YYYY-MM-DD')}
         allowPinchToZoom
         onChange={x => {
-          seDate(moment(x).format('DD-MM-YYYY'));
+          setDate(moment(x).format('DD-MM-YYYY'));
         }}
         hourWidth={100}
+        scrollToNow={false}
         numberOfDays={1}
         scrollByDay={true}
-        scrollToNow={true}
         events={mappedEvents}
         onPressEvent={handleOpenSheet}>
         <CalendarHeader />
@@ -176,13 +196,13 @@ const BookingScreen = () => {
       <ModalForm
         visible={visible}
         onDismiss={() => setVisible(false)}
-        onSubmit={handleSubmit}
+        onSubmit={handleCreateBooking}
       />
     </View>
   );
 };
 
-export default BookingScreen;
+export default BookingCalenderScreen;
 
 const styles = StyleSheet.create({
   loadingContainer: {
