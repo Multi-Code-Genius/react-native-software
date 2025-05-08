@@ -4,13 +4,12 @@ import {
   ActivityIndicator,
   FlatList,
   StyleSheet,
-  View,
-  ScrollView,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {Button, Card, Divider, Text, useTheme} from 'react-native-paper';
+import {useGetVenue} from '../api/vanue';
 import {useAccountLogic} from '../hooks/useAccountLogic';
-import {useGetVenue, useGetVenueById} from '../api/vanue';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
@@ -19,8 +18,6 @@ const HomeScreen = () => {
   const {account, isLoading, onRefresh, refetch, refreshing} =
     useAccountLogic();
   const {data, isPending} = useGetVenue();
-
-  console.log('data', data);
 
   const renderItem = ({item}: any) => (
     <TouchableOpacity

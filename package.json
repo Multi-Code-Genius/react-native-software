@@ -22,6 +22,7 @@
     "moment-timezone": "^0.5.48",
     "nativewind": "^4.1.23",
     "react": "19.0.0",
+    "react-hook-form": "^7.56.3",
     "react-native": "0.79.2",
     "react-native-dotenv": "^3.4.11",
     "react-native-dropdown-picker": "^5.4.6",
@@ -35,6 +36,8 @@
     "react-native-safe-area-context": "^5.4.0",
     "react-native-screens": "^4.10.0",
     "react-native-vector-icons": "^10.2.0",
+    "tailwind-merge": "^3.2.0",
+    "tailwind-variants": "^1.0.0",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
@@ -49,6 +52,7 @@
     "@react-native/metro-config": "0.79.2",
     "@react-native/typescript-config": "^0.79.2",
     "@types/jest": "^29.5.13",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^19.1.2",
     "@types/react-native-onboarding-swiper": "^1.1.9",
     "@types/react-native-vector-icons": "^6.4.18",

@@ -1,23 +1,21 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import { Card, Text, useTheme } from 'react-native-paper';
-import { useGetVenue } from '../api/vanue';
-import { useNavigation } from '@react-navigation/native';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {Card, Text} from 'react-native-paper';
+import {useGetVenue} from '../api/vanue';
 import BookingCalenderScreen from './BookingCalenderScreen';
 
 const BookingScreen = () => {
-  const theme = useTheme();
   const navigation = useNavigation();
-  const { data, isPending } = useGetVenue();
+  const {data} = useGetVenue();
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <Card
       style={[styles.card, styles.shadow]}
       mode="elevated"
       onPress={() =>
-        (navigation as any).navigate('booking', { venueId: item.id })
-      }
-    >
+        (navigation as any).navigate('booking', {venueId: item.id})
+      }>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>
           {item.name}
@@ -39,7 +37,6 @@ const BookingScreen = () => {
       </Card.Content>
     </Card>
   );
-
 
   const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
   return (
@@ -69,7 +66,6 @@ const BookingScreen = () => {
 
 export default BookingScreen;
 
-
 const styles = StyleSheet.create({
   card: {
     marginBottom: 16,
@@ -81,7 +77,7 @@ const styles = StyleSheet.create({
   },
   shadow: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
@@ -128,4 +124,4 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     padding: 10,
   },
-})
+});
