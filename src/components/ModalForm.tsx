@@ -64,7 +64,7 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
         contentContainerStyle={{paddingBottom: insets.bottom}}>
         <View
           className="w-full mx-auto m-4 bg-white rounded-2xl p-3 shadow-lg"
-          style={{borderRadius: 20}}>
+          style={{borderRadius: 20, backgroundColor: 'white', margin: 20}}>
           <Text
             className="text-xl font-semibold text-center mb-4"
             style={{textAlign: 'center', fontWeight: '600', padding: 5}}>

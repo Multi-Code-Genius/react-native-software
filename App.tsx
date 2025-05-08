@@ -1,7 +1,7 @@
 import React from 'react';
 import {QueryClientProvider} from '@tanstack/react-query';
-import queryClient from './android/app/src/config/queryClient';
-import AppNavigator from './android/app/src/navigation/routes';
+import queryClient from './src/config/queryClient';
+import AppNavigator from './src/navigation/routes';
 import './global.css';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';

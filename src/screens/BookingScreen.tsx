@@ -3,11 +3,12 @@ import React from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import {useGetVenue} from '../api/vanue';
-import BookingCalenderScreen from './BookingCalenderScreen';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
   const {data} = useGetVenue();
+
+  console.log('data', data);
 
   const renderItem = ({item}: any) => (
     <Card
@@ -36,28 +37,23 @@ const BookingScreen = () => {
     </Card>
   );
 
-  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
   return (
     <View className="flex-1">
-      {hasVenues ? (
-        <View style={styles.venueListContainer}>
-          <View style={styles.header}>
-            <Text variant="headlineLarge" style={styles.headerText}>
-              Venue Details
-            </Text>
-          </View>
-          <FlatList
-            data={data?.games}
-            renderItem={renderItem}
-            keyExtractor={(item: any) =>
-              item.id?.toString() ?? Math.random().toString()
-            }
-            showsVerticalScrollIndicator={false}
-          />
+      <View style={styles.venueListContainer}>
+        <View style={styles.header}>
+          <Text variant="headlineLarge" style={styles.headerText}>
+            Venue Details
+          </Text>
         </View>
-      ) : (
-        <BookingCalenderScreen />
-      )}
+        <FlatList
+          data={data?.games}
+          renderItem={renderItem}
+          keyExtractor={(item: any) =>
+            item.id?.toString() ?? Math.random().toString()
+          }
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
     </View>
   );
 };
@@ -118,7 +114,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   venueListContainer: {
-    flex: 1,
+    // flex: 1,
     marginBottom: 20,
     padding: 10,
   },

@@ -4,6 +4,7 @@ module.exports = {
     './App.{js,jsx,ts,tsx}',
     './android/**/*.{js,jsx,ts,tsx}',
     './android/app/src/**/*.{js,jsx,ts,tsx}',
+    './src/app/src/**/*.{js,jsx,ts,tsx}',
   ],
 
   presets: [require('nativewind/preset')],

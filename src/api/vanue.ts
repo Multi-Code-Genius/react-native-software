@@ -1,7 +1,7 @@
-import {useMutation, useQueries, useQuery} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
+import queryClient from '../config/queryClient';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
-import queryClient from '../config/queryClient';
 
 export const getVanues = async () => {
   try {

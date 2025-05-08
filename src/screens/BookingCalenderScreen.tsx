@@ -35,8 +35,6 @@ const BookingCalenderScreen = () => {
     date,
   });
 
-  console.log('data', data);
-
   const {mutate} = useCreateBooking();
 
   const debouncedRefetch = useMemo(
@@ -123,7 +121,7 @@ const BookingCalenderScreen = () => {
   };
 
   return (
-    <View className="flex-1">
+    <View style={{flex: 1}} className="flex-1">
       <Appbar.Header
         style={{backgroundColor: theme.colors.primary}}
         statusBarHeight={0}>
@@ -148,7 +146,9 @@ const BookingCalenderScreen = () => {
         events={mappedEvents}
         onPressEvent={handleOpenSheet}>
         <CalendarHeader />
+
         <ScrollView
+          style={{flex: 1}}
           className="flex-1"
           refreshControl={
             <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
@@ -206,7 +206,7 @@ export default BookingCalenderScreen;
 
 const styles = StyleSheet.create({
   loadingContainer: {
-    flex: 1,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
