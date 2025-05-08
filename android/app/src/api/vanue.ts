@@ -57,3 +57,24 @@ export const useAddVenue = (
     onError,
   });
 };
+
+export const venueById = async (id: any) => {
+  try {
+    const response = await api(`/api/game/id/${id}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    return response;
+  } catch (error) {
+    console.error('message Error:', error);
+    throw new Error(error instanceof Error ? error.message : 'message failed');
+  }
+};
+
+export const useGetVenueById = (id: any) => {
+  return useQuery({
+    queryKey: ['venueId', id],
+    queryFn: () => venueById(id),
+  });
+};
