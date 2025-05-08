@@ -1,20 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, ScrollView, Alert} from 'react-native';
-import {TextInput, Text, Button, ActivityIndicator} from 'react-native-paper';
-import {useUpdateAccountInfo} from '../api/account';
-import {useRoute} from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, ScrollView, Alert, Image } from 'react-native';
+import { TextInput, Text, Button, ActivityIndicator, IconButton } from 'react-native-paper';
+import { useUpdateAccountInfo, useUploadImage } from '../api/account';
+import { useRoute } from '@react-navigation/native';
+import ImagePicker from 'react-native-image-crop-picker';
 
 const ProfileInfoScreen = () => {
-  const {params} = useRoute();
-  const {data} = params as {data: any};
+  const { params } = useRoute();
+  const { data } = params as { data: any };
   const [pressed, setPressed] = useState(false);
-  const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
+  const [profilePicUri, setProfilePicUri] = useState(data?.user?.profile_pic || '');
+  const { mutate: updateInfo, isPending } = useUpdateAccountInfo();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
     mobileNumber: '',
   });
-
+  const userId = data?.user?.id;
   useEffect(() => {
     if (data) {
       setFormData({
@@ -31,6 +33,16 @@ const ProfileInfoScreen = () => {
       [key]: value,
     }));
   };
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        email: data?.user?.email || '',
+        name: data?.user?.name || '',
+        mobileNumber: data?.user?.mobileNumber || '',
+      });
+      setProfilePicUri(data?.user?.profile_pic || '');
+    }
+  }, []);
 
   const handleSubmit = () => {
     const updateFields: Partial<typeof formData> = {};
@@ -47,9 +59,66 @@ const ProfileInfoScreen = () => {
     });
   };
 
+  const uploadImageMutation = useUploadImage(
+    res => {
+      if (!res?.user) {
+        Alert.alert('Upload failed', 'Invalid response from server');
+        return;
+      }
+      setProfilePicUri(res.user.profile_pic);
+      Alert.alert('Success', 'Profile image uploaded successfully');
+    },
+    error => {
+      Alert.alert('Error', 'Image upload failed');
+      console.log('Upload error:', error);
+    }
+  );
+
+  const handleMediaPick = () => {
+    if (!userId) return;
+
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true,
+      cropperCircleOverlay: true,
+      avoidEmptySpaceAroundImage: true,
+    })
+      .then((image: { path: any; mime: any; }) => {
+        const formData = new FormData();
+        formData.append('profile_pic', {
+          uri: image.path,
+          name: 'image.jpg',
+          type: image.mime,
+        });
+
+        uploadImageMutation.mutate({
+          id: userId,
+          payload: formData,
+        });
+      })
+      .catch(err => {
+        console.log('Image pick error:', err);
+      });
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.profileRound} />
+      <View style={styles.profileImageWrapper}>
+        <Image
+          source={{ uri: profilePicUri }}
+          style={styles.profileImage}
+          resizeMode="cover"
+        />
+        <IconButton
+          icon="pencil"
+          size={20}
+          onPress={handleMediaPick}
+          iconColor="#fff"
+          style={styles.iconOverlay}
+        />
+      </View>
+
       <Text style={styles.title}>Profile Information</Text>
       <View style={styles.form}>
         <TextInput
@@ -94,7 +163,7 @@ const ProfileInfoScreen = () => {
           )}
         </Button>
       </View>
-    </ScrollView>
+    </ScrollView >
   );
 };
 
@@ -107,12 +176,31 @@ const styles = StyleSheet.create({
     padding: 24,
     backgroundColor: '#f9f9f9',
   },
-  profileRound: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
-    backgroundColor: '#e0e0e0',
+  profileImageWrapper: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderWidth: 4,
+    borderColor: '#333',
     marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 75,
+  },
+  iconOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#000',
+    borderRadius: 20,
+    padding: 6,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
   },
   text: {
     color: 'white',
