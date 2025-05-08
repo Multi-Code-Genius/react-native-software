@@ -1,6 +1,6 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { Appbar, Card, Text, useTheme } from 'react-native-paper';
+import { Card, Text, useTheme } from 'react-native-paper';
 import { useGetVenue } from '../api/vanue';
 import { useNavigation } from '@react-navigation/native';
 import BookingCalenderScreen from './BookingCalenderScreen';
@@ -44,13 +44,6 @@ const BookingScreen = () => {
   const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
   return (
     <View className="flex-1">
-      <Appbar.Header
-        style={{ backgroundColor: theme.colors.primary }}
-        statusBarHeight={0}>
-        <Appbar.Content color={theme.colors.onPrimary} title="Bookings" />
-        <Appbar.Action icon="calendar" color={theme.colors.onPrimary} />
-        <Appbar.Action icon="home" color={theme.colors.onPrimary} />
-      </Appbar.Header>
       {hasVenues ? (
         <View style={styles.venueListContainer}>
           <View style={styles.header}>

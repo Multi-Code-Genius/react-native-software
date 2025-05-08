@@ -7,7 +7,7 @@ import CalendarKit, {
     OnEventResponse,
     RenderHourProps,
 } from '@howljs/calendar-kit';
-import { Portal, Text, useTheme } from 'react-native-paper';
+import { Appbar, Portal, Text, useTheme } from 'react-native-paper';
 import { TIME_SLOT_ICONS } from '../constants/TIME_SLOT_ICONS';
 import BottomSheet, {
     BottomSheetBackdrop,
@@ -55,7 +55,15 @@ const BookingCalenderScreen = () => {
         [],
     );
     return (
+
         <View className='flex-1'>
+            <Appbar.Header
+                style={{ backgroundColor: theme.colors.primary }}
+                statusBarHeight={0}>
+                <Appbar.Content color={theme.colors.onPrimary} title="Bookings" />
+                <Appbar.Action icon="calendar" color={theme.colors.onPrimary} />
+                <Appbar.Action icon="home" color={theme.colors.onPrimary} />
+            </Appbar.Header>
             <CalendarContainer
                 allowPinchToZoom
                 hourWidth={100}
