@@ -49,10 +49,10 @@ const BasicDetailsComponent = () => {
             style={styles.newIcon}
           />
           <TextInput
-            style={[styles.input]}
+            style={[styles.textareaInput]}
             placeholder="Enter venue description"
             multiline
-            numberOfLines={4}
+            numberOfLines={14}
             onChangeText={text => updateField('description', text)}
             value={formData.description || ''}
           />
@@ -150,5 +150,10 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 14,
     color: '#000',
+  },
+  textareaInput: {
+    flex: 1,
+    color: 'black',
+    fontSize: 14,
   },
 });

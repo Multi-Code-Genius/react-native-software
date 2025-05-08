@@ -1,6 +1,32 @@
 import {useMutation, useQueries, useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
+import queryClient from '../config/queryClient';
+
+export const getVanues = async () => {
+  try {
+    const response = await api('/api/game/all', {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+
+    return response;
+  } catch (error) {
+    console.error('message Error:', error);
+    throw new Error(error instanceof Error ? error.message : 'message failed');
+  }
+};
+
+export const useGetVenue = (
+  _onSuccess?: (data: any) => void,
+  _onError?: (error: any) => void,
+) => {
+  return useQuery({
+    queryKey: ['vanues'],
+    queryFn: getVanues,
+  });
+};
 
 export const addVenue = async (data: Partial<VenueFormData>) => {
   try {
@@ -25,33 +51,9 @@ export const useAddVenue = (
   return useMutation<any, Error, Partial<VenueFormData>>({
     mutationFn: data => addVenue(data),
     onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['vanues']});
       useVenueStore.getState().resetForm();
     },
     onError,
-  });
-};
-
-export const getVanues = async () => {
-  try {
-    const response = await api('/api/game/all', {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-      cache: 'no-store',
-    });
-
-    return response;
-  } catch (error) {
-    console.error('message Error:', error);
-    throw new Error(error instanceof Error ? error.message : 'message failed');
-  }
-};
-
-export const useGetVenue = (
-  _onSuccess?: (data: any) => void,
-  _onError?: (error: any) => void,
-) => {
-  return useQuery({
-    queryKey: ['vanues'],
-    queryFn: getVanues,
   });
 };
