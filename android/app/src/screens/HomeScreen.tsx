@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
   },
   venueListContainer: {
     flex: 1,
-    marginBottom: 20,
   },
   welcomeContainer: {
     flex: 1,

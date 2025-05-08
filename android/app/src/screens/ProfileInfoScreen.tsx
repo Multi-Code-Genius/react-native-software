@@ -1,16 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, ScrollView, Alert, Image } from 'react-native';
-import { TextInput, Text, Button, ActivityIndicator, IconButton } from 'react-native-paper';
-import { useUpdateAccountInfo, useUploadImage } from '../api/account';
-import { useRoute } from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, View, ScrollView, Alert, Image} from 'react-native';
+import {
+  TextInput,
+  Text,
+  Button,
+  ActivityIndicator,
+  IconButton,
+} from 'react-native-paper';
+import {useUpdateAccountInfo, useUploadImage} from '../api/account';
+import {useRoute} from '@react-navigation/native';
 import ImagePicker from 'react-native-image-crop-picker';
 
 const ProfileInfoScreen = () => {
-  const { params } = useRoute();
-  const { data } = params as { data: any };
+  const {params} = useRoute();
+  const {data} = params as {data: any};
   const [pressed, setPressed] = useState(false);
-  const [profilePicUri, setProfilePicUri] = useState(data?.user?.profile_pic || '');
-  const { mutate: updateInfo, isPending } = useUpdateAccountInfo();
+  const [profilePicUri, setProfilePicUri] = useState(
+    data?.user?.profile_pic || '',
+  );
+  const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -71,7 +79,7 @@ const ProfileInfoScreen = () => {
     error => {
       Alert.alert('Error', 'Image upload failed');
       console.log('Upload error:', error);
-    }
+    },
   );
 
   const handleMediaPick = () => {
@@ -84,7 +92,7 @@ const ProfileInfoScreen = () => {
       cropperCircleOverlay: true,
       avoidEmptySpaceAroundImage: true,
     })
-      .then((image: { path: any; mime: any; }) => {
+      .then((image: {path: any; mime: any}) => {
         const formData = new FormData();
         formData.append('profile_pic', {
           uri: image.path,
@@ -106,13 +114,13 @@ const ProfileInfoScreen = () => {
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.profileImageWrapper}>
         <Image
-          source={{ uri: profilePicUri }}
+          source={{uri: profilePicUri}}
           style={styles.profileImage}
           resizeMode="cover"
         />
         <IconButton
           icon="pencil"
-          size={20}
+          size={16}
           onPress={handleMediaPick}
           iconColor="#fff"
           style={styles.iconOverlay}
@@ -163,7 +171,7 @@ const ProfileInfoScreen = () => {
           )}
         </Button>
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
 
@@ -177,11 +185,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
   },
   profileImageWrapper: {
-    width: 150,
-    height: 150,
+    width: 140,
+    height: 140,
     borderRadius: 75,
-    borderWidth: 4,
-    borderColor: '#333',
+    borderWidth: 2,
+    borderColor: '#a7a0a0',
     marginBottom: 20,
     justifyContent: 'center',
     alignItems: 'center',
