@@ -1,148 +1,138 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useCallback, useRef, useState} from 'react';
-import CalendarKit, {
-  CalendarBody,
-  CalendarContainer,
-  CalendarHeader,
-} from '@howljs/calendar-kit';
-import {Appbar, Icon, Portal, Text, useTheme} from 'react-native-paper';
-import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
+import { FlatList, StyleSheet, View } from 'react-native';
+import React from 'react';
+import { Appbar, Card, Text, useTheme } from 'react-native-paper';
+import { useGetVenue } from '../api/vanue';
+import { useNavigation } from '@react-navigation/native';
+import BookingCalenderScreen from './BookingCalenderScreen';
 
 const BookingScreen = () => {
   const theme = useTheme();
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const navigation = useNavigation();
+  const { data, isPending } = useGetVenue();
 
-  const renderHour = useCallback(({hourStr}: RenderHourProps) => {
-    const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
-    const iconName = timeSlot?.icon;
+  const renderItem = ({ item }: any) => (
+    <Card
+      style={[styles.card, styles.shadow]}
+      mode="elevated"
+      onPress={() =>
+        (navigation as any).navigate('booking', { venueId: item.id })
+      }
+    >
+      <Card.Content>
+        <Text variant="titleMedium" style={styles.venueName}>
+          {item.name}
+        </Text>
+        <Text style={styles.chip}>{item.category}</Text>
 
-    return (
-      <View
-        style={{
-          marginLeft: 25,
-          gap: 10,
-        }}>
-        <Text variant="bodySmall">{hourStr}</Text>
-        <Text variant="bodyLarge">{iconName}</Text>
-      </View>
-    );
-  }, []);
-
-  const renderBackdrop = useCallback(
-    props => (
-      <BottomSheetBackdrop
-        {...props}
-        disappearsOnIndex={-1}
-        appearsOnIndex={0}
-        pressBehavior="close"
-      />
-    ),
-    [],
+        <Text style={styles.cardText}>
+          🏛️ <Text style={styles.boldText}>Address:</Text> {item.address}
+        </Text>
+        <Text style={styles.cardText}>
+          👥 <Text style={styles.boldText}>Capacity:</Text> {item.capacity}
+        </Text>
+        <Text style={styles.cardText}>
+          💰 <Text style={styles.boldText}>Price:</Text> ₹{item.hourlyPrice}/hr
+        </Text>
+        <Text style={styles.locationText}>
+          📍 {item.location?.area}, {item.location?.city}
+        </Text>
+      </Card.Content>
+    </Card>
   );
 
-  const snapPoints = ['25%', '50%'];
 
-  const handleOpenSheet = event => {
-    setSelectedEvent(event);
-    bottomSheetRef.current?.snapToIndex(0);
-  };
-
+  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
   return (
     <View className="flex-1">
       <Appbar.Header
-        style={{backgroundColor: theme.colors.primary}}
+        style={{ backgroundColor: theme.colors.primary }}
         statusBarHeight={0}>
         <Appbar.Content color={theme.colors.onPrimary} title="Bookings" />
         <Appbar.Action icon="calendar" color={theme.colors.onPrimary} />
         <Appbar.Action icon="home" color={theme.colors.onPrimary} />
       </Appbar.Header>
-
-      <CalendarContainer
-        allowPinchToZoom
-        hourWidth={100}
-        numberOfDays={1}
-        scrollByDay={true}
-        scrollToNow={true}
-        events={[
-          {
-            id: '1',
-            title: 'Soccer - Rajesh Kumar (Confirmed)',
-            start: {dateTime: '2025-05-07T10:00:00Z'},
-            end: {dateTime: '2025-05-07T11:00:00Z'},
-            description: '7-a-side football, Paid ₹1500, Contact: 9876543210',
-            color: '#B7B1F2',
-          },
-          {
-            id: '2',
-            title: 'Turf - Preet Pandya (Confirmed)',
-            start: {dateTime: '2025-05-07T07:00:00Z'},
-            end: {dateTime: '2025-05-07T09:00:00Z'},
-            description: '2 turf net, Paid ₹3500, Contact: 8849321658',
-            color: '#B7B1F2',
-          },
-        ]}
-        onPressEvent={handleOpenSheet}>
-        <CalendarHeader />
-        <ScrollView className="flex-1">
-          <CalendarBody
-            showNowIndicator={false}
-            renderHour={renderHour}
-            hourFormat="h:mm a"
-          />
-        </ScrollView>
-      </CalendarContainer>
-      <Portal>
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          backdropComponent={renderBackdrop}
-          enablePanDownToClose={true}
-          onChange={index => {
-            if (index === -1) {
-              setSelectedEvent(null);
+      {hasVenues ? (
+        <View style={styles.venueListContainer}>
+          <View style={styles.header}>
+            <Text variant="headlineLarge" style={styles.headerText}>
+              Venue Details
+            </Text>
+          </View>
+          <FlatList
+            data={data.games}
+            renderItem={renderItem}
+            keyExtractor={(item: any) =>
+              item.id?.toString() ?? Math.random().toString()
             }
-          }}
-          enableDynamicSizing={true}>
-          <BottomSheetView style={styles.contentContainer}>
-            {selectedEvent ? (
-              <>
-                <Text variant="titleMedium">{selectedEvent.title}</Text>
-                <Text variant="bodyMedium">{selectedEvent.description}</Text>
-                <Text variant="bodySmall">
-                  From:{' '}
-                  {new Date(selectedEvent.start.dateTime).toLocaleTimeString()}
-                </Text>
-                <Text variant="bodySmall">
-                  To:{' '}
-                  {new Date(selectedEvent.end.dateTime).toLocaleTimeString()}
-                </Text>
-              </>
-            ) : (
-              <Text>Loading event...</Text>
-            )}
-          </BottomSheetView>
-        </BottomSheet>
-      </Portal>
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      ) : (
+        <BookingCalenderScreen />
+      )}
     </View>
   );
 };
 
 export default BookingScreen;
 
+
 const styles = StyleSheet.create({
-  container: {
+  card: {
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
     flex: 1,
-    backgroundColor: 'grey',
+    margin: 8,
+    backgroundColor: '#fff',
   },
-  contentContainer: {
-    flex: 1,
-    padding: 36,
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  venueName: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  chip: {
+    backgroundColor: '#e0f7fa',
+    color: '#00796b',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    fontSize: 12,
+    marginBottom: 8,
+  },
+  cardText: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  boldText: {
+    fontWeight: '600',
+  },
+  locationText: {
+    marginTop: 6,
+    fontSize: 13,
+    color: 'gray',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 10,
   },
-});
+  headerText: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  venueListContainer: {
+    flex: 1,
+    marginBottom: 20,
+    padding: 10,
+  },
+})
