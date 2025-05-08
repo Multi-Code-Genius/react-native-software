@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {
   ActivityIndicator,
@@ -6,40 +6,45 @@ import {
   StyleSheet,
   View,
   ScrollView,
+  TouchableOpacity,
 } from 'react-native';
-import { Button, Card, Divider, Text, useTheme } from 'react-native-paper';
-import { useAccountLogic } from '../hooks/useAccountLogic';
-import { useGetVenue } from '../api/vanue';
+import {Button, Card, Divider, Text, useTheme} from 'react-native-paper';
+import {useAccountLogic} from '../hooks/useAccountLogic';
+import {useGetVenue, useGetVenueById} from '../api/vanue';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { colors } = useTheme();
+  const {colors} = useTheme();
 
-  const { account, isLoading, onRefresh, refetch, refreshing } =
+  const {account, isLoading, onRefresh, refetch, refreshing} =
     useAccountLogic();
-  const { data, isPending } = useGetVenue();
+  const {data, isPending} = useGetVenue();
+
   console.log('data', data);
 
-  const renderItem = ({ item }: any) => (
-    <Card style={styles.card} mode="outlined">
-      <Card.Cover source={{ uri: item?.images?.[0] }} />
-      <Card.Title title={item.name} subtitle={item.category} />
-      <Card.Content>
-        <Text variant="titleMedium">{item.address}</Text>
-        <Text variant="bodyMedium" style={styles.cardText}>
-          Capacity: {item.capacity} | ₹{item.hourlyPrice}/hr
-        </Text>
-        <Text variant="bodySmall" style={styles.locationText}>
-          Location: {item.location?.area}, {item.location?.city}
-        </Text>
-      </Card.Content>
-    </Card>
+  const renderItem = ({item}: any) => (
+    <TouchableOpacity
+      onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
+      <Card style={styles.card} mode="outlined">
+        <Card.Cover source={{uri: item?.images?.[0]}} />
+        <Card.Title title={item.name} subtitle={item.category} />
+        <Card.Content>
+          <Text variant="titleMedium">{item.address}</Text>
+          <Text variant="bodyMedium" style={styles.cardText}>
+            Capacity: {item.capacity} | ₹{item.hourlyPrice}/hr
+          </Text>
+          <Text variant="bodySmall" style={styles.locationText}>
+            Location: {item.location?.area}, {item.location?.city}
+          </Text>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 
   const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <View style={[styles.container, {backgroundColor: colors.background}]}>
       {isPending ? (
         <ActivityIndicator color="#000000" />
       ) : hasVenues ? (
@@ -75,7 +80,7 @@ const HomeScreen = () => {
 
           <Divider style={styles.divider} />
 
-          <Text variant="bodyMedium" style={{ color: colors.onBackground }}>
+          <Text variant="bodyMedium" style={{color: colors.onBackground}}>
             Please complete your profile to add venues, manage all your
             bookings, and access all features.
           </Text>
@@ -84,7 +89,7 @@ const HomeScreen = () => {
             mode="contained"
             onPress={() => navigation.navigate('Account')}
             style={styles.button}
-            labelStyle={{ fontWeight: 'bold' }}>
+            labelStyle={{fontWeight: 'bold'}}>
             Complete Profile
           </Button>
 
@@ -92,7 +97,7 @@ const HomeScreen = () => {
 
           <Text
             variant="titleMedium"
-            style={[styles.welcomeText, { marginBottom: 8 }]}>
+            style={[styles.welcomeText, {marginBottom: 8}]}>
             Are you a sports turf owner?
           </Text>
 
@@ -100,7 +105,7 @@ const HomeScreen = () => {
             mode="contained"
             onPress={() => navigation.navigate('Addvenue')}
             style={styles.button}
-            labelStyle={{ fontWeight: 'bold' }}>
+            labelStyle={{fontWeight: 'bold'}}>
             Add venue
           </Button>
         </View>
