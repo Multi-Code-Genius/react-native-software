@@ -1,30 +1,35 @@
-import React, { useCallback, useState } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Image } from 'react-native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
-  Card,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {
+  ActivityIndicator,
+  Button,
+  Dialog,
   Divider,
   Icon,
   IconButton,
-  Text,
-  Dialog,
   Portal,
-  Button,
-  ActivityIndicator,
+  Text,
 } from 'react-native-paper';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { useAccountInfo } from '../api/account';
-import { useAuthStore } from '../store/authStore';
-import { useAccountStore } from '../store/accountStore';
+import {useAccountInfo} from '../api/account';
+import {useAccountStore} from '../store/accountStore';
+import {useAuthStore} from '../store/authStore';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const { data, isPending } = useAccountInfo();
+  const {data, isPending} = useAccountInfo();
   const [visible, setVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       useAccountStore.getState().loadAccountData();
-    }, [])
+    }, []),
   );
 
   const showDialog = () => setVisible(true);
@@ -39,14 +44,14 @@ const AccountScreen = () => {
     }
   };
   const menuItems = [
-    { id: '1', icon: 'map-outline', title: 'Venue Manage' },
-    { id: '2', icon: 'people', title: 'Customers' },
-    { id: '3', icon: 'cog', title: 'Settings' },
-    { id: '4', icon: 'help-circle-outline', title: 'Help' },
-    { id: '5', icon: 'log-out', title: 'Logout' },
+    {id: '1', icon: 'map-outline', title: 'Venue Manage'},
+    {id: '2', icon: 'people', title: 'Customers'},
+    {id: '3', icon: 'cog', title: 'Settings'},
+    {id: '4', icon: 'help-circle-outline', title: 'Help'},
+    {id: '5', icon: 'log-out', title: 'Logout'},
   ];
 
-  const renderMenuItem = ({ item }: any) => {
+  const renderMenuItem = ({item}: any) => {
     const onPress = () => {
       if (item.title === 'Logout') {
         showDialog();
@@ -73,7 +78,7 @@ const AccountScreen = () => {
               icon="pencil"
               size={20}
               iconColor="green"
-              onPress={() => (navigation as any).navigate('Profile', { data })}
+              onPress={() => (navigation as any).navigate('Profile', {data})}
             />
           </View>
           <View style={styles.profileContainer}>
@@ -83,7 +88,7 @@ const AccountScreen = () => {
               <>
                 {data?.user?.profile_pic ? (
                   <Image
-                    source={{ uri: data?.user?.profile_pic }}
+                    source={{uri: data?.user?.profile_pic}}
                     style={styles.profileImage}
                   />
                 ) : (

@@ -49,6 +49,7 @@
     "@react-native/metro-config": "0.79.2",
     "@react-native/typescript-config": "^0.79.2",
     "@types/jest": "^29.5.13",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/react": "^19.1.2",
     "@types/react-native-onboarding-swiper": "^1.1.9",
     "@types/react-native-vector-icons": "^6.4.18",

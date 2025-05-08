@@ -4,8 +4,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAuthStore} from '../store/authStore';
 
 const DashboardScreen = () => (
-  // You have to use SafeAreaView like below every time you are making screen wrap your screen with it.
-  // (NOT A COMPONENT I AM TALKING ABOUT SCREENS !)
   <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
     <View className="flex-1 justify-center">
       <Text>Home Screen</Text>

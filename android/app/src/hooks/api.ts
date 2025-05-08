@@ -60,7 +60,6 @@ export const api = async (endpoint: string, config: any = {}) => {
     // const apiUrl = 'http://192.168.1.17:5001';
 
     const response = await fetch(`${apiUrl}${endpoint}`, requestConfig);
-    console.log('response', response);
     if (!response.ok) {
       const errorData = await response
         .json()

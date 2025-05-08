@@ -1,12 +1,12 @@
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, Alert} from 'react-native';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useAddVenue} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
 import {useVenueStore} from '../store/useVenueStore';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useAddVenue} from '../api/vanue';
-import {ActivityIndicator} from 'react-native-paper';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
