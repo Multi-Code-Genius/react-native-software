@@ -3,15 +3,15 @@ import {create} from 'zustand';
 export type VenueFormData = {
   name: string;
   description: string;
-  state: string;
-  city: string;
+  // state: string;
+  // city: string;
   address: string;
-  postalCode: string;
+  // postalCode: string;
   capacity: number;
   category: string;
   hourlyPrice: number;
   // turfTypes: string[];
-  surface: string;
+  // surface: string;
   net: number;
   images: string[];
   location: {
