@@ -15,7 +15,7 @@ const BookingScreen = () => {
       style={[styles.card, styles.shadow]}
       mode="elevated"
       onPress={() =>
-        (navigation as any).navigate('booking', {venueId: item.id})
+        (navigation as any).navigate('bookingData', {venueId: item.id})
       }>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>

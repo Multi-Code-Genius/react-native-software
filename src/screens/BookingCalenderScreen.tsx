@@ -135,30 +135,31 @@ const BookingCalenderScreen = ({navigation}) => {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={[]}>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
       <View style={{flex: 1}}>
         <View>
           <Appbar.Header
-            style={{backgroundColor: theme.colors.primary}}
+            style={{
+              backgroundColor: 'white',
+              borderBottomColor: '#e0e0e0',
+              borderBottomWidth: 2,
+            }}
             statusBarHeight={0}>
             <IconButton
               icon="arrow-back"
-              iconColor={theme.colors.onPrimary}
+              iconColor={'black'}
               onPress={() => navigation.goBack()}
             />
-            <Appbar.Content
-              title="Bookings"
-              titleStyle={{color: theme.colors.onPrimary}}
-            />
+            <Appbar.Content title="Bookings" titleStyle={{color: 'black'}} />
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <IconButton
                 icon="calendar"
-                iconColor={theme.colors.onPrimary}
+                iconColor="black"
                 onPress={handleOpenDatePicker}
               />
               <Appbar.Action
                 icon="add-circle"
-                color={theme.colors.onPrimary}
+                color="black"
                 onPress={() => setVisible(true)}
               />
             </View>
