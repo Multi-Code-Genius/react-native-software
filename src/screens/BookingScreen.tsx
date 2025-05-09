@@ -1,20 +1,20 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import React from 'react';
-import {FlatList, StyleSheet, View} from 'react-native';
-import {Card, Text} from 'react-native-paper';
-import {useGetVenue} from '../api/vanue';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Card, Text } from 'react-native-paper';
+import { useGetVenue } from '../api/vanue';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
-  const {data} = useGetVenue();
+  const { data } = useGetVenue();
 
-  console.log('data', data);
-
-  const renderItem = ({item}: any) => (
+  const renderItem = ({ item }: any) => (
     <Card
       style={[styles.card, styles.shadow]}
       mode="elevated"
-      onPress={() => navigation.navigate('bookingData', {venueId: item?.id})}>
+      onPress={() =>
+        (navigation as any).navigate('booking', { venueId: item.id })
+      }>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>
           {item.name}
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
   },
   shadow: {
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
