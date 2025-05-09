@@ -14,15 +14,13 @@ import moment from 'moment';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {Appbar, IconButton, Portal, Text, useTheme} from 'react-native-paper';
+import {Appbar, IconButton, Portal, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useBookingInfo, useCreateBooking} from '../api/booking';
 import ModalForm from '../components/ModalForm';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 
 const BookingCalenderScreen = ({navigation}) => {
-  const theme = useTheme();
-
   const route = useRoute();
   const {venueId} = route?.params;
   const bottomSheetRef = useRef<BottomSheet>(null);
