@@ -150,13 +150,13 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   input: {
-    flex: 1,
+    // flex: 1,
     height: 40,
     fontSize: 14,
     color: '#000',
   },
   textareaInput: {
-    flex: 1,
+    // flex: 1,
     color: 'black',
     fontSize: 14,
   },
