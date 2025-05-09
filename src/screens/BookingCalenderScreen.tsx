@@ -149,7 +149,7 @@ const BookingCalenderScreen = ({navigation}) => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={{flex: 1}}>
         <View>
           <Appbar.Header

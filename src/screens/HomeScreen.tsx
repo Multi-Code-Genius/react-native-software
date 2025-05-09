@@ -17,29 +17,31 @@ const HomeScreen = () => {
 
   const {data, isLoading} = useGetVenue();
 
-  const renderItem = ({item}: any) => (
-    <TouchableOpacity
-      onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
-      <Card style={styles.card} mode="outlined">
-        <Card.Cover source={{uri: item?.images?.[0]}} />
-        <Card.Title title={item.name} subtitle={item.category} />
-        <Card.Content>
-          <Text variant="titleMedium">{item.address}</Text>
-          <Text variant="bodyMedium" style={styles.cardText}>
-            Capacity: {item.capacity} | ₹{item.hourlyPrice}/hr
-          </Text>
-          <Text variant="bodySmall" style={styles.locationText}>
-            Location: {item.location?.area}, {item.location?.city}
-          </Text>
-        </Card.Content>
-      </Card>
-    </TouchableOpacity>
-  );
+  const renderItem = ({item}: any) => {
+    return (
+      <TouchableOpacity
+        onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
+        <Card style={styles.card} mode="outlined">
+          <Card.Cover source={{uri: item?.images?.[0]}} />
+          <Card.Title title={item.name} subtitle={item.category} />
+          <Card.Content>
+            <Text variant="titleMedium">{item.address}</Text>
+            <Text variant="bodyMedium" style={styles.cardText}>
+              Capacity: {item.capacity} | ₹{item.hourlyPrice}/hr
+            </Text>
+            <Text variant="bodySmall" style={styles.locationText}>
+              Location: {item.location?.area}, {item.location?.city}
+            </Text>
+          </Card.Content>
+        </Card>
+      </TouchableOpacity>
+    );
+  };
 
   const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={[styles.container, {backgroundColor: colors.background}]}>
         {isLoading ? (
           <ActivityIndicator color="#000000" />

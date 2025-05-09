@@ -1,41 +1,41 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { Card, Icon, Text } from 'react-native-paper';
-import { useGetVenue } from '../api/vanue';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {Card, Icon, Text} from 'react-native-paper';
+import {useGetVenue} from '../api/vanue';
 
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
-  const { data } = useGetVenue();
+  const {data} = useGetVenue();
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <Card
       style={[styles.card, styles.shadow]}
       mode="elevated"
       onPress={() =>
-        (navigation as any).navigate('bookingData', { venueId: item.id })
+        (navigation as any).navigate('bookingData', {venueId: item.id})
       }>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>
           {item.name}
         </Text>
         <Text style={styles.chip}>{item.category}</Text>
-        <View style={{ flex: 1, gap: 8 }}>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+        <View style={{flex: 1, gap: 8}}>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="location" size={18} color="green" />
             <Text style={styles.boldText}>Address: {item.address}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="people" size={18} color="skyblue" />
             <Text style={styles.boldText}>Capacity: {item.capacity}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="cash" size={18} color="brown" />
             <Text style={styles.boldText}>Price: ₹{item.hourlyPrice}/hr</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="map" size={18} color="orange" />
             <Text>
               {item.location?.area}, {item.location?.city}
@@ -47,7 +47,7 @@ const BookingScreen = () => {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={['top']}>
+    <SafeAreaView style={styles.safeArea} edges={[]}>
       <View className="flex-1">
         <View style={styles.venueListContainer}>
           <View style={styles.header}>
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   shadow: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   venueListContainer: {
     margin: 10,
     backgroundColor: 'white',
-    marginBottom: 90,
+    marginBottom: 100,
     padding: 10,
   },
 });

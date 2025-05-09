@@ -50,11 +50,11 @@ export default function App() {
             settings={{
               icon: props => <Ionicons {...props} />,
             }}>
-            <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+            <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
               <StatusBar
                 translucent
                 backgroundColor={theme.colors.primary}
-                barStyle="dark-content"
+                barStyle="light-content"
               />
               <AppNavigator />
             </SafeAreaView>
