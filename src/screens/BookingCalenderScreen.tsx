@@ -121,7 +121,7 @@ const BookingCalenderScreen = () => {
   };
 
   return (
-    <View style={{flex: 1}} className="flex-1">
+    <View style={{flex: 1}}>
       <Appbar.Header
         style={{backgroundColor: theme.colors.primary}}
         statusBarHeight={0}>

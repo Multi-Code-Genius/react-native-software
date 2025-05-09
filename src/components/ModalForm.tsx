@@ -1,16 +1,16 @@
 import React from 'react';
-import {Controller, useForm} from 'react-hook-form';
 import {
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  StyleSheet,
 } from 'react-native';
 import {Button, Modal, Portal} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {twMerge} from 'tailwind-merge';
+import {Controller, useForm} from 'react-hook-form';
 
 interface Props {
   visible: boolean;
@@ -59,20 +59,14 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
     <Portal>
       <Modal
         visible={visible}
-        style={{margin: 20}}
+        style={styles.modal}
         onDismiss={onDismiss}
         contentContainerStyle={{paddingBottom: insets.bottom}}>
-        <View
-          className="w-full mx-auto m-4 bg-white rounded-2xl p-3 shadow-lg"
-          style={{borderRadius: 20, backgroundColor: 'white', margin: 20}}>
-          <Text
-            className="text-xl font-semibold text-center mb-4"
-            style={{textAlign: 'center', fontWeight: '600', padding: 5}}>
-            Booking Info
-          </Text>
+        <View style={styles.container}>
+          <Text style={styles.title}>Booking Info</Text>
 
           <ScrollView
-            contentContainerStyle={{paddingBottom: 16}}
+            contentContainerStyle={styles.scrollContent}
             showsVerticalScrollIndicator={false}>
             {[
               {label: 'Name', name: 'name'},
@@ -92,89 +86,64 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
                 name={name}
                 control={control}
                 render={({field: {onChange, value}}) => (
-                  <View className="mb-3 px-3">
-                    <Text className="text-gray-700 mb-1">{label}</Text>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>{label}</Text>
                     <TextInput
                       placeholder={label}
                       keyboardType={keyboardType || 'default'}
                       value={value}
                       onChangeText={onChange}
-                      className={twMerge(
-                        'border border-gray-300 rounded-xl px-4 py-2 text-base bg-white',
-                        'focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500',
-                      )}
+                      style={styles.input}
                     />
                   </View>
                 )}
               />
             ))}
 
-            <Controller
-              name="date"
-              control={control}
-              render={({field: {onChange, value}}) => (
-                <View className="mb-3 px-3">
-                  <Text className="text-gray-700 mb-1">Date</Text>
-                  <TouchableOpacity
-                    onPress={() => openFieldPicker('date', 'date')}
-                    className={twMerge(
-                      'border border-gray-300 rounded-xl px-4 py-2 bg-white',
-                    )}>
-                    <Text className="text-base text-gray-800">
-                      {value || 'Select Date'}
+            {['date', 'startTime', 'endTime'].map(field => (
+              <Controller
+                key={field}
+                name={field}
+                control={control}
+                render={({field: {onChange, value}}) => (
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.label}>
+                      {field === 'date'
+                        ? 'Date'
+                        : field === 'startTime'
+                        ? 'Start Time'
+                        : 'End Time'}
                     </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-
-            <Controller
-              name="startTime"
-              control={control}
-              render={({field: {onChange, value}}) => (
-                <View className="mb-3 px-3">
-                  <Text className="text-gray-700 mb-1">Start Time</Text>
-                  <TouchableOpacity
-                    onPress={() => openFieldPicker('time', 'startTime')}
-                    className={twMerge(
-                      'border border-gray-300 rounded-xl px-4 py-2 bg-white',
-                    )}>
-                    <Text className="text-base text-gray-800">
-                      {value || 'Select Start Time'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
-
-            <Controller
-              name="endTime"
-              control={control}
-              render={({field: {onChange, value}}) => (
-                <View className="mb-3 px-3">
-                  <Text className="text-gray-700 mb-1">End Time</Text>
-                  <TouchableOpacity
-                    onPress={() => openFieldPicker('time', 'endTime')}
-                    className={twMerge(
-                      'border border-gray-300 rounded-xl px-4 py-2 bg-white',
-                    )}>
-                    <Text className="text-base text-gray-800">
-                      {value || 'Select End Time'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-              )}
-            />
+                    <TouchableOpacity
+                      onPress={() =>
+                        openFieldPicker(
+                          field === 'date' ? 'date' : 'time',
+                          field as any,
+                        )
+                      }
+                      style={styles.pickerButton}>
+                      <Text style={styles.pickerText}>
+                        {value ||
+                          `Select ${
+                            field === 'date'
+                              ? 'Date'
+                              : field === 'startTime'
+                              ? 'Start Time'
+                              : 'End Time'
+                          }`}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              />
+            ))}
           </ScrollView>
 
-          <View className="flex-row justify-end mt-4">
+          <View style={styles.buttonRow}>
             <Button onPress={onDismiss} mode="text">
               Cancel
             </Button>
-            <Button
-              onPress={handleSubmit(handleFormSubmit)}
-              mode="contained"
-              className="ml-2">
+            <Button onPress={handleSubmit(handleFormSubmit)} mode="contained">
               Book
             </Button>
           </View>
@@ -195,7 +164,6 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
                     hour: '2-digit',
                     minute: '2-digit',
                   });
-
             setValue(pickerField!, formatted);
           }}
           onCancel={() => setOpenPicker(false)}
@@ -204,3 +172,63 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
     </Portal>
   );
 }
+
+const styles = StyleSheet.create({
+  modal: {
+    margin: 20,
+  },
+  container: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 16,
+    margin: 20,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  scrollContent: {
+    paddingBottom: 16,
+  },
+  inputGroup: {
+    marginBottom: 12,
+  },
+  label: {
+    marginBottom: 4,
+    color: '#374151',
+    fontSize: 14,
+  },
+  input: {
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    backgroundColor: 'white',
+  },
+  pickerButton: {
+    borderColor: '#D1D5DB',
+    borderWidth: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    backgroundColor: 'white',
+  },
+  pickerText: {
+    fontSize: 16,
+    color: '#1F2937',
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 8,
+    marginTop: 16,
+  },
+});

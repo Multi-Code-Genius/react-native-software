@@ -18,35 +18,33 @@ export default function EmailLoginSlide({
   return {
     backgroundColor: 'white',
     image: (
-      <View
-        className="w-full"
-        style={{
-          justifyContent: 'center',
-          padding: 10,
-          gap: 10,
-        }}>
-        <View>
-          <Text variant="headlineLarge">Login</Text>
-          <Text variant="bodyMedium">
-            otp chaahiye? niche ka button daba. kisiko batane ka nahi otp thik
+      <View style={{padding: 20}}>
+        <View style={{gap: 16}}>
+          <Text variant="headlineLarge" style={{textAlign: 'center'}}>
+            Login
+          </Text>
+
+          <Text variant="bodyMedium" style={{textAlign: 'center'}}>
+            OTP chaahiye? Niche ka button daba. Kisiko batane ka nahi OTP thik
             hai!
           </Text>
+
+          <TextInput
+            label="Email"
+            mode="outlined"
+            keyboardType="email-address"
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          <Button
+            mode="contained"
+            onPress={sendOtp}
+            loading={isPending}
+            style={{alignSelf: 'center', width: '50%'}}>
+            Send OTP
+          </Button>
         </View>
-        <TextInput
-          style={{height: 20, maxHeight: 60, backgroundColor: ''}}
-          label="Email"
-          mode="outlined"
-          keyboardType="email-address"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <Button
-          mode="contained"
-          onPress={sendOtp}
-          loading={isPending}
-          className="w-[50%] mx-auto">
-          Send OTP
-        </Button>
       </View>
     ),
     title: '',
