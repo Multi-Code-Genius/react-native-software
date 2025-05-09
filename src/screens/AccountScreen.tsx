@@ -24,13 +24,14 @@ import {useAuthStore} from '../store/authStore';
 
 const AccountScreen = () => {
   const navigation = useNavigation();
-  const {data, isPending} = useAccountInfo();
+  const {data, isPending, refetch} = useAccountInfo();
   const [visible, setVisible] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
+      refetch();
       useAccountStore.getState().loadAccountData();
-    }, []),
+    }, [refetch]),
   );
 
   const showDialog = () => setVisible(true);

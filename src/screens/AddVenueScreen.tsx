@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useAddVenue } from '../api/vanue';
+import React, {useState} from 'react';
+import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {ActivityIndicator} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useAddVenue} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import VenueDetails from '../components/VenueDetails';
-import { useVenueStore } from '../store/useVenueStore';
+import {useVenueStore} from '../store/useVenueStore';
 import ImageUpload from '../components/ImageUplod';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
 
-  const { mutate, isPending } = useAddVenue();
+  const {mutate, isPending} = useAddVenue();
 
   const validateStep = () => {
     if (currentStep === 0) {
-      const { name, description, address, location } = formData;
+      const {name, description, address, location} = formData;
       if (!name || !description || !address || !location?.area) {
         Alert.alert(
           'Validation Error',
@@ -27,7 +27,7 @@ const AddVenueScreen = () => {
     }
 
     if (currentStep === 1) {
-      const { capacity, category, hourlyPrice, net, gameInfo } = formData;
+      const {capacity, category, hourlyPrice, net, gameInfo} = formData;
 
       const isTurfTypeSelected =
         gameInfo?.indoor === 'true' ||
@@ -79,9 +79,9 @@ const AddVenueScreen = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['left', 'right']}>
-      <View style={{ flex: 1 }}>
-        <View style={{ flex: 1 }}>{steps[currentStep]}</View>
+    <SafeAreaView style={{flex: 1}} edges={['left', 'right']}>
+      <View style={{flex: 1}}>
+        <View style={{flex: 1}}>{steps[currentStep]}</View>
 
         <View style={styles.container}>
           <TouchableOpacity
@@ -90,7 +90,10 @@ const AddVenueScreen = () => {
             disabled={currentStep === 0}>
             <Text style={styles.text}>Previous</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.input]} onPress={goNext} disabled={isPending}>
+          <TouchableOpacity
+            style={[styles.input]}
+            onPress={goNext}
+            disabled={isPending}>
             {isPending ? (
               <ActivityIndicator color="#fff" />
             ) : (
