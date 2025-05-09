@@ -96,7 +96,7 @@ const AccountScreen = () => {
                   ) : (
                     <View style={styles.profileRound} />
                   )}
-                  <View>
+                  <View style={styles.userCard}>
                     <Text style={styles.userInfo}>
                       {data?.user?.name || 'Name'}
                     </Text>
@@ -163,6 +163,10 @@ const styles = StyleSheet.create({
   userInfo: {
     fontSize: 16,
     marginBottom: 4,
+    flexWrap: 'wrap',
+  },
+  userCard: {
+    maxWidth: '70%',
   },
 
   divider: {
