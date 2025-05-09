@@ -1,6 +1,6 @@
 import React from 'react';
 import {View} from 'react-native';
-import {Text, TextInput, Button} from 'react-native-paper';
+import {Button, Text, TextInput} from 'react-native-paper';
 
 export default function EmailLoginSlide({
   email,
@@ -20,7 +20,11 @@ export default function EmailLoginSlide({
     image: (
       <View
         className="w-full"
-        style={{justifyContent: 'center', padding: 10, gap: 10}}>
+        style={{
+          justifyContent: 'center',
+          padding: 10,
+          gap: 10,
+        }}>
         <View>
           <Text variant="headlineLarge">Login</Text>
           <Text variant="bodyMedium">
@@ -29,6 +33,7 @@ export default function EmailLoginSlide({
           </Text>
         </View>
         <TextInput
+          style={{height: 20, maxHeight: 60, backgroundColor: ''}}
           label="Email"
           mode="outlined"
           keyboardType="email-address"
