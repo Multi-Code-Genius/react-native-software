@@ -64,6 +64,8 @@ const BookingCalenderScreen = ({navigation}) => {
         if (res?.booking) {
           const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
           setDate(formattedDate);
+
+          refetch();
         }
       },
       onError: err => {

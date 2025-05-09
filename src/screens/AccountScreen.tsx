@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 4,
   },
+
   divider: {
     marginVertical: 8,
     height: 1,
