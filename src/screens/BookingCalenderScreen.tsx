@@ -23,13 +23,14 @@ import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 const BookingCalenderScreen = ({navigation}) => {
   const route = useRoute();
   const {venueId} = route?.params;
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const calendarRef = useRef(null);
-  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
 
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const calendarRef = useRef(null);
+
+  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [visible, setVisible] = useState(false);
 
   const {data, refetch, isRefetching, isLoading} = useBookingInfo({
@@ -51,7 +52,6 @@ const BookingCalenderScreen = ({navigation}) => {
 
   useEffect(() => {
     debouncedRefetch();
-
     return () => {
       debouncedRefetch.cancel();
     };
@@ -62,9 +62,7 @@ const BookingCalenderScreen = ({navigation}) => {
     mutate(formData, {
       onSuccess: res => {
         if (res?.booking) {
-          const {date: resDate} = res?.booking;
-
-          const formattedDate = moment(resDate).format('DD-MM-YYYY');
+          const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
           setDate(formattedDate);
         }
       },
@@ -131,6 +129,16 @@ const BookingCalenderScreen = ({navigation}) => {
   const handleOpenDatePicker = () => {
     setDatePickerVisible(true);
   };
+
+  const renderLoadingModal = () => (
+    <>
+      {isLoading && (
+        <View style={styles.modalOverlay}>
+          <ActivityIndicator size="large" animating={true} />
+        </View>
+      )}
+    </>
+  );
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
@@ -276,5 +284,12 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 36,
     alignItems: 'center',
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 999,
   },
 });
