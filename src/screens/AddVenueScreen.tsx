@@ -109,13 +109,16 @@ export default AddVenueScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
+    backgroundColor: 'white',
   },
   container: {
     flexDirection: 'row',
     gap: 10,
     paddingHorizontal: 16,
     backgroundColor: 'white',
-    width: '100%',
+    margin: 'auto',
+    width: '95%',
+    borderRadius: 10,
     elevation: 10,
   },
   input: {

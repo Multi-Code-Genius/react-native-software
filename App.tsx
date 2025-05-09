@@ -1,13 +1,14 @@
-import React from 'react';
 import {QueryClientProvider} from '@tanstack/react-query';
+import React from 'react';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import './global.css';
 import queryClient from './src/config/queryClient';
 import AppNavigator from './src/navigation/routes';
-import './global.css';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+
+import {StatusBar, StyleSheet} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {StatusBar} from 'react-native';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 export default function App() {
   const theme = {
@@ -49,10 +50,11 @@ export default function App() {
             settings={{
               icon: props => <Ionicons {...props} />,
             }}>
-            <SafeAreaView style={{flex: 1}} edges={['top', 'bottom']}>
+            <SafeAreaView style={styles.safeArea} edges={['bottom']}>
               <StatusBar
-                barStyle="light-content"
+                translucent
                 backgroundColor={theme.colors.primary}
+                barStyle="dark-content"
               />
               <AppNavigator />
             </SafeAreaView>
@@ -62,3 +64,10 @@ export default function App() {
     </QueryClientProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+});

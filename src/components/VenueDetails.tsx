@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, {useState} from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import {SegmentedButtons} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useVenueStore } from '../store/useVenueStore';
-import CustomMultiselect from './CustomMultiselect';
-import { SegmentedButtons } from 'react-native-paper';
+import {useVenueStore} from '../store/useVenueStore';
 
 const VenueDetails = () => {
   const updateField = useVenueStore(state => state.updateField);
@@ -12,11 +11,11 @@ const VenueDetails = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(formData?.category || '');
   const [items, setItems] = useState([
-    { label: 'Football', value: 'Football' },
-    { label: 'Cricket', value: 'Cricket' },
-    { label: 'Basketball', value: 'Basketball' },
+    {label: 'Football', value: 'Football'},
+    {label: 'Cricket', value: 'Cricket'},
+    {label: 'Basketball', value: 'Basketball'},
   ]);
-  // const [selectedTurfTypes, setSelectedTurfTypes] = useState<string[]>([]);
+
   const [selectedTurfType, setSelectedTurfType] = useState<string>('');
 
   return (
@@ -94,12 +93,12 @@ const VenueDetails = () => {
               outdoor: selected === 'outdoor' ? 'true' : 'false',
               roof: selected === 'roof' ? 'true' : 'false',
             };
-            updateField('gameInfo', { ...formData.gameInfo, ...gameInfoUpdate });
+            updateField('gameInfo', {...formData.gameInfo, ...gameInfoUpdate});
           }}
           buttons={[
-            { value: 'indoor', label: 'Indoor' },
-            { value: 'outdoor', label: 'Outdoor' },
-            { value: 'roof', label: 'Roof' },
+            {value: 'indoor', label: 'Indoor'},
+            {value: 'outdoor', label: 'Outdoor'},
+            {value: 'roof', label: 'Roof'},
           ]}
         />
       </View>
@@ -112,7 +111,7 @@ const VenueDetails = () => {
             style={styles.input}
             placeholder="Enter Surface"
             onChangeText={text =>
-              updateField('gameInfo', { ...formData.gameInfo, surface: text })
+              updateField('gameInfo', {...formData.gameInfo, surface: text})
             }
             value={formData.gameInfo?.surface || ''}
           />

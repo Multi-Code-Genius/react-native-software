@@ -3,12 +3,12 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useEffect} from 'react';
 import {PrivateRoute} from '../routes/PrivateRoute';
 import AddVenueScreen from '../screens/AddVenueScreen';
-import OnboardingScreen from '../screens/OnboardingScreen';
-import {useAuthStore} from '../store/authStore';
-import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 import BookingCalenderScreen from '../screens/BookingCalenderScreen';
-import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
 import EditVenueDetailsScreen from '../screens/EditVenueDetailsScreen';
+import OnboardingScreen from '../screens/OnboardingScreen';
+import ProfileInfoScreen from '../screens/ProfileInfoScreen';
+import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
+import {useAuthStore} from '../store/authStore';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -37,19 +37,22 @@ export default function AppNavigator() {
           />
           <Stack.Screen name="Addvenue" component={AddVenueScreen} />
           <Stack.Screen name="Profile" component={ProfileInfoScreen} />
-          <Stack.Screen
+          {/* <Stack.Screen
             name="bookingData"
             component={BookingCalenderScreen}
             options={{
               headerShown: false,
             }}
-          />
+          /> */}
           <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
+
           <Stack.Screen
-            name="booking"
+            name="bookingData"
             component={BookingCalenderScreen}
             options={{headerShown: false}}
           />
+          {/* <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} /> */}
+          <Stack.Screen name="booking" component={BookingCalenderScreen} />
           <Stack.Screen
             name="EditVenueDetails"
             component={EditVenueDetailsScreen}

@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, ScrollView, Alert, Image} from 'react-native';
-import {
-  TextInput,
-  Text,
-  Button,
-  ActivityIndicator,
-  IconButton,
-} from 'react-native-paper';
-import {useUpdateAccountInfo, useUploadImage} from '../api/account';
 import {useRoute} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {Alert, Image, ScrollView, StyleSheet, View} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
+import {
+  ActivityIndicator,
+  Button,
+  IconButton,
+  Text,
+  TextInput,
+} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {useUpdateAccountInfo, useUploadImage} from '../api/account';
 
 const ProfileInfoScreen = () => {
   const {params} = useRoute();
@@ -111,73 +112,79 @@ const ProfileInfoScreen = () => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.profileImageWrapper}>
-        <Image
-          source={{uri: profilePicUri}}
-          style={styles.profileImage}
-          resizeMode="cover"
-        />
-        <IconButton
-          icon="pencil"
-          size={16}
-          onPress={handleMediaPick}
-          iconColor="#fff"
-          style={styles.iconOverlay}
-        />
-      </View>
+    <SafeAreaView style={styles.safeArea} edges={[]}>
+      <ScrollView contentContainerStyle={styles.container}>
+        <View style={styles.profileImageWrapper}>
+          <Image
+            source={{uri: profilePicUri}}
+            style={styles.profileImage}
+            resizeMode="cover"
+          />
+          <IconButton
+            icon="pencil"
+            size={16}
+            onPress={handleMediaPick}
+            iconColor="#fff"
+            style={styles.iconOverlay}
+          />
+        </View>
 
-      <Text style={styles.title}>Profile Information</Text>
-      <View style={styles.form}>
-        <TextInput
-          label="Email"
-          mode="outlined"
-          keyboardType="email-address"
-          style={styles.input}
-          value={formData?.email}
-          placeholder="Enter your email"
-          onChangeText={text => handleChange('email', text)}
-        />
-        <TextInput
-          label="Name"
-          mode="outlined"
-          style={styles.input}
-          value={formData?.name}
-          placeholder="Enter your name"
-          onChangeText={text => handleChange('name', text)}
-        />
-        <TextInput
-          label="Phone Number"
-          mode="outlined"
-          keyboardType="phone-pad"
-          style={styles.input}
-          value={formData?.mobileNumber}
-          placeholder="Enter your phone number"
-          onChangeText={text => handleChange('mobileNumber', text)}
-        />
-        <Button
-          mode="contained"
-          onPressIn={() => setPressed(true)}
-          onPressOut={() => setPressed(false)}
-          style={[styles.button, pressed && styles.buttonPressed]}
-          labelStyle={styles.buttonLabel}
-          onPress={handleSubmit}
-          disabled={isPending}
-          rippleColor="rgba(255, 255, 255, 0.3)">
-          {isPending ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.text}>Submit Info</Text>
-          )}
-        </Button>
-      </View>
-    </ScrollView>
+        <Text style={styles.title}>Profile Information</Text>
+        <View style={styles.form}>
+          <TextInput
+            label="Email"
+            mode="outlined"
+            keyboardType="email-address"
+            style={styles.input}
+            value={formData?.email}
+            placeholder="Enter your email"
+            onChangeText={text => handleChange('email', text)}
+          />
+          <TextInput
+            label="Name"
+            mode="outlined"
+            style={styles.input}
+            value={formData?.name}
+            placeholder="Enter your name"
+            onChangeText={text => handleChange('name', text)}
+          />
+          <TextInput
+            label="Phone Number"
+            mode="outlined"
+            keyboardType="phone-pad"
+            style={styles.input}
+            value={formData?.mobileNumber}
+            placeholder="Enter your phone number"
+            onChangeText={text => handleChange('mobileNumber', text)}
+          />
+          <Button
+            mode="contained"
+            onPressIn={() => setPressed(true)}
+            onPressOut={() => setPressed(false)}
+            style={[styles.button, pressed && styles.buttonPressed]}
+            labelStyle={styles.buttonLabel}
+            onPress={handleSubmit}
+            disabled={isPending}
+            rippleColor="rgba(255, 255, 255, 0.3)">
+            {isPending ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.text}>Submit Info</Text>
+            )}
+          </Button>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 export default ProfileInfoScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   container: {
     flexGrow: 1,
     alignItems: 'center',

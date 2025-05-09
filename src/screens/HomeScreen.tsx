@@ -8,16 +8,14 @@ import {
   View,
 } from 'react-native';
 import {Button, Card, Divider, Text, useTheme} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenue} from '../api/vanue';
-import {useAccountLogic} from '../hooks/useAccountLogic';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {colors} = useTheme();
 
-  const {account, isLoading, onRefresh, refetch, refreshing} =
-    useAccountLogic();
-  const {data, isPending} = useGetVenue();
+  const {data, isLoading} = useGetVenue();
 
   const renderItem = ({item}: any) => (
     <TouchableOpacity
@@ -41,79 +39,86 @@ const HomeScreen = () => {
   const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
 
   return (
-    <View style={[styles.container, {backgroundColor: colors.background}]}>
-      {isPending ? (
-        <ActivityIndicator color="#000000" />
-      ) : hasVenues ? (
-        <View style={styles.venueListContainer}>
-          <View style={styles.header}>
-            <Text variant="headlineLarge" style={styles.headerText}>
-              Venue Details
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View style={[styles.container, {backgroundColor: colors.background}]}>
+        {isLoading ? (
+          <ActivityIndicator color="#000000" />
+        ) : hasVenues ? (
+          <View style={styles.venueListContainer}>
+            <View style={styles.header}>
+              <Text variant="headlineLarge" style={styles.headerText}>
+                Venue Details
+              </Text>
+              <Button
+                mode="contained"
+                onPress={() => navigation.navigate('Addvenue')}
+                style={styles.button}>
+                + Add venue
+              </Button>
+            </View>
+            <FlatList
+              data={data.games}
+              renderItem={renderItem}
+              keyExtractor={(item: any) =>
+                item.id?.toString() ?? Math.random().toString()
+              }
+              showsVerticalScrollIndicator={false}
+            />
+          </View>
+        ) : (
+          <View style={styles.welcomeContainer}>
+            <Text variant="headlineLarge" style={styles.welcomeText}>
+              Congratulations!
             </Text>
+            <Text variant="titleMedium" style={styles.welcomeText}>
+              Your account has been created successfully.
+            </Text>
+
+            <Divider style={styles.divider} />
+
+            <Text variant="bodyMedium" style={{color: colors.onBackground}}>
+              Please complete your profile to add venues, manage all your
+              bookings, and access all features.
+            </Text>
+
+            <Button
+              mode="contained"
+              onPress={() => navigation.navigate('Account')}
+              style={styles.button}
+              labelStyle={{fontWeight: 'bold'}}>
+              Complete Profile
+            </Button>
+
+            <Text style={styles.separator}>──── or ────</Text>
+
+            <Text
+              variant="titleMedium"
+              style={[styles.welcomeText, {marginBottom: 8}]}>
+              Are you a sports turf owner?
+            </Text>
+
             <Button
               mode="contained"
               onPress={() => navigation.navigate('Addvenue')}
-              style={styles.button}>
-              + Add venue
+              style={styles.button}
+              labelStyle={{fontWeight: 'bold'}}>
+              Add venue
             </Button>
           </View>
-          <FlatList
-            data={data.games}
-            renderItem={renderItem}
-            keyExtractor={(item: any) =>
-              item.id?.toString() ?? Math.random().toString()
-            }
-            showsVerticalScrollIndicator={false}
-          />
-        </View>
-      ) : (
-        <View style={styles.welcomeContainer}>
-          <Text variant="headlineLarge" style={styles.welcomeText}>
-            Congratulations!
-          </Text>
-          <Text variant="titleMedium" style={styles.welcomeText}>
-            Your account has been created successfully.
-          </Text>
-
-          <Divider style={styles.divider} />
-
-          <Text variant="bodyMedium" style={{color: colors.onBackground}}>
-            Please complete your profile to add venues, manage all your
-            bookings, and access all features.
-          </Text>
-
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate('Account')}
-            style={styles.button}
-            labelStyle={{fontWeight: 'bold'}}>
-            Complete Profile
-          </Button>
-
-          <Text style={styles.separator}>──── or ────</Text>
-
-          <Text
-            variant="titleMedium"
-            style={[styles.welcomeText, {marginBottom: 8}]}>
-            Are you a sports turf owner?
-          </Text>
-
-          <Button
-            mode="contained"
-            onPress={() => navigation.navigate('Addvenue')}
-            style={styles.button}
-            labelStyle={{fontWeight: 'bold'}}>
-            Add venue
-          </Button>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </SafeAreaView>
   );
 };
 
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
   container: {
     flex: 1,
     padding: 16,

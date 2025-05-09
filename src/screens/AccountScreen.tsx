@@ -17,6 +17,7 @@ import {
   Portal,
   Text,
 } from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAccountInfo} from '../api/account';
 import {useAccountStore} from '../store/accountStore';
 import {useAuthStore} from '../store/authStore';
@@ -69,72 +70,81 @@ const AccountScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <View>
-          <View style={styles.headerRow}>
-            <Text style={styles.title}>Account</Text>
-            <IconButton
-              icon="pencil"
-              size={20}
-              iconColor="green"
-              onPress={() => (navigation as any).navigate('Profile', {data})}
-            />
-          </View>
-          <View style={styles.profileContainer}>
-            {isPending ? (
-              <ActivityIndicator color="#0c0c0c" />
-            ) : (
-              <>
-                {data?.user?.profile_pic ? (
-                  <Image
-                    source={{uri: data?.user?.profile_pic}}
-                    style={styles.profileImage}
-                  />
-                ) : (
-                  <View style={styles.profileRound} />
-                )}
-                <View>
-                  <Text style={styles.userInfo}>
-                    {data?.user?.name || 'Name'}
-                  </Text>
-                  <Text style={styles.userInfo}>
-                    {data?.user?.mobileNumber || 'Mobile Number'}
-                  </Text>
-                </View>
-              </>
-            )}
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View style={styles.container}>
+        <View style={styles.card}>
+          <View>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>Account</Text>
+              <IconButton
+                icon="pencil"
+                size={20}
+                iconColor="green"
+                onPress={() => (navigation as any).navigate('Profile', {data})}
+              />
+            </View>
+            <View style={styles.profileContainer}>
+              {isPending ? (
+                <ActivityIndicator color="#0c0c0c" />
+              ) : (
+                <>
+                  {data?.user?.profile_pic ? (
+                    <Image
+                      source={{uri: data?.user?.profile_pic}}
+                      style={styles.profileImage}
+                    />
+                  ) : (
+                    <View style={styles.profileRound} />
+                  )}
+                  <View>
+                    <Text style={styles.userInfo}>
+                      {data?.user?.name || 'Name'}
+                    </Text>
+                    <Text style={styles.userInfo}>
+                      {data?.user?.mobileNumber || 'Mobile Number'}
+                    </Text>
+                  </View>
+                </>
+              )}
+            </View>
           </View>
         </View>
+
+        <Divider style={styles.divider} />
+
+        <FlatList
+          data={menuItems}
+          renderItem={renderMenuItem}
+          keyExtractor={item => item.id}
+          contentContainerStyle={styles.menuContainer}
+          scrollEnabled={false}
+        />
+
+        <Portal>
+          <Dialog
+            visible={visible}
+            onDismiss={hideDialog}
+            style={styles.dialog}>
+            <Dialog.Title>Confirm Logout</Dialog.Title>
+            <Dialog.Content>
+              <Text>Are you sure you want to logout?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={hideDialog}>Cancel</Button>
+              <Button onPress={handleLogout}>Logout</Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
-
-      <Divider style={styles.divider} />
-
-      <FlatList
-        data={menuItems}
-        renderItem={renderMenuItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.menuContainer}
-        scrollEnabled={false}
-      />
-
-      <Portal>
-        <Dialog visible={visible} onDismiss={hideDialog} style={styles.dialog}>
-          <Dialog.Title>Confirm Logout</Dialog.Title>
-          <Dialog.Content>
-            <Text>Are you sure you want to logout?</Text>
-          </Dialog.Content>
-          <Dialog.Actions>
-            <Button onPress={hideDialog}>Cancel</Button>
-            <Button onPress={handleLogout}>Logout</Button>
-          </Dialog.Actions>
-        </Dialog>
-      </Portal>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
     padding: 16,

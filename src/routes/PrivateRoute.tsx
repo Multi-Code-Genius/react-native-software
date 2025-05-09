@@ -1,8 +1,8 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {IconButton, Text, useTheme} from 'react-native-paper';
 import AccountScreen from '../screens/AccountScreen';
 import BookingScreen from '../screens/BookingScreen';
 import HomeScreen from '../screens/HomeScreen';
-import {IconButton, Text, useTheme} from 'react-native-paper';
 
 export function PrivateRoute() {
   const Tab = createBottomTabNavigator();
@@ -20,6 +20,7 @@ export function PrivateRoute() {
           elevation: 50,
           paddingVertical: 'auto',
           paddingTop: 10,
+          marginVertical: 'auto',
           paddingBottom: 10,
         },
 

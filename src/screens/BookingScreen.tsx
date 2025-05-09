@@ -1,72 +1,82 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { Card, Icon, Text } from 'react-native-paper';
-import { useGetVenue } from '../api/vanue';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {Card, Icon, Text} from 'react-native-paper';
+import {useGetVenue} from '../api/vanue';
+
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
-  const { data } = useGetVenue();
+  const {data} = useGetVenue();
 
-  const renderItem = ({ item }: any) => (
+  const renderItem = ({item}: any) => (
     <Card
       style={[styles.card, styles.shadow]}
       mode="elevated"
       onPress={() =>
-        (navigation as any).navigate('booking', { venueId: item.id })
+        (navigation as any).navigate('booking', {venueId: item.id})
       }>
       <Card.Content>
         <Text variant="titleMedium" style={styles.venueName}>
           {item.name}
         </Text>
         <Text style={styles.chip}>{item.category}</Text>
-        <View style={{ flex: 1, gap: 8 }}>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-            <Icon source="location" size={18} color='green' />
+        <View style={{flex: 1, gap: 8}}>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
+            <Icon source="location" size={18} color="green" />
             <Text style={styles.boldText}>Address: {item.address}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-            <Icon source="people" size={18} color='skyblue' />
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
+            <Icon source="people" size={18} color="skyblue" />
             <Text style={styles.boldText}>Capacity: {item.capacity}</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-            <Icon source="cash" size={18} color='brown' />
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
+            <Icon source="cash" size={18} color="brown" />
             <Text style={styles.boldText}>Price: ₹{item.hourlyPrice}/hr</Text>
           </View>
-          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
-            <Icon source="map" size={18} color='orange' />
-            <Text>{item.location?.area}, {item.location?.city}</Text>
+          <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
+            <Icon source="map" size={18} color="orange" />
+            <Text>
+              {item.location?.area}, {item.location?.city}
+            </Text>
           </View>
         </View>
-
       </Card.Content>
     </Card>
   );
 
   return (
-    <View style={{flex: 1}}>
-      <View style={styles.venueListContainer}>
-        <View style={styles.header}>
-          <Text variant="headlineLarge" style={styles.headerText}>
-            Venue Details
-          </Text>
+    <SafeAreaView style={styles.safeArea} edges={['top']}>
+      <View className="flex-1">
+        <View style={styles.venueListContainer}>
+          <View style={styles.header}>
+            <Text variant="headlineLarge" style={styles.headerText}>
+              Venue Details
+            </Text>
+          </View>
+          <FlatList
+            data={data?.games}
+            renderItem={renderItem}
+            keyExtractor={(item: any) =>
+              item.id?.toString() ?? Math.random().toString()
+            }
+            showsVerticalScrollIndicator={false}
+          />
         </View>
-        <FlatList
-          data={data?.games}
-          renderItem={renderItem}
-          keyExtractor={(item: any) =>
-            item.id?.toString() ?? Math.random().toString()
-          }
-          showsVerticalScrollIndicator={false}
-        />
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 export default BookingScreen;
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+
   card: {
     marginBottom: 16,
     borderRadius: 16,
@@ -77,7 +87,7 @@ const styles = StyleSheet.create({
   },
   shadow: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 4,
@@ -103,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     gap: 10,
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   boldText: {
     fontWeight: '600',
@@ -127,5 +137,8 @@ const styles = StyleSheet.create({
   },
   venueListContainer: {
     margin: 10,
+    backgroundColor: 'white',
+    marginBottom: 90,
+    padding: 10,
   },
 });
