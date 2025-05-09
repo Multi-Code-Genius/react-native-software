@@ -13,24 +13,35 @@ import debounce from 'lodash.debounce';
 import moment from 'moment';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
-import {Appbar, Portal, Text, useTheme} from 'react-native-paper';
+import {
+  Appbar,
+  Icon,
+  IconButton,
+  Portal,
+  Text,
+  TextInput,
+  useTheme,
+} from 'react-native-paper';
 import {useBookingInfo, useCreateBooking} from '../api/booking';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import ModalForm from '../components/ModalForm';
+import DatePicker from 'react-native-date-picker';
 
-const BookingCalenderScreen = () => {
+const BookingCalenderScreen = ({navigation}) => {
   const theme = useTheme();
 
   const route = useRoute();
   const {venueId} = route?.params;
   const bottomSheetRef = useRef<BottomSheet>(null);
   const [selectedEvent, setSelectedEvent] = useState<any>(null);
-
+  const calendarRef = useRef(null);
   const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
+  const [datePickerVisible, setDatePickerVisible] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   const [visible, setVisible] = useState(false);
 
-  const {data, refetch, isRefetching} = useBookingInfo({
+  const {data, refetch, isRefetching, isLoading} = useBookingInfo({
     gameId: venueId,
     date,
   });
@@ -120,36 +131,66 @@ const BookingCalenderScreen = () => {
     bottomSheetRef.current?.snapToIndex(0);
   };
 
+  const handleDateChange = (newDate: Date) => {
+    setSelectedDate(newDate);
+    setDate(moment(newDate).format('DD-MM-YYYY'));
+    calendarRef.current?.goToDate(newDate);
+  };
+
+  const handleOpenDatePicker = () => {
+    setDatePickerVisible(true);
+  };
+
   return (
     <View style={{flex: 1}}>
-      <Appbar.Header
-        style={{backgroundColor: theme.colors.primary}}
-        statusBarHeight={0}>
-        <Appbar.Content color={theme.colors.onPrimary} title="Bookings" />
-        <Appbar.Action
-          icon="calendar"
-          color={theme.colors.onPrimary}
-          onPress={() => setVisible(true)}
-        />
-        <Appbar.Action icon="home" color={theme.colors.onPrimary} />
-      </Appbar.Header>
+      <View>
+        <Appbar.Header
+          style={{backgroundColor: theme.colors.primary}}
+          statusBarHeight={0}>
+          <IconButton
+            icon="arrow-back"
+            iconColor={theme.colors.onPrimary}
+            onPress={() => navigation.goBack()}
+          />
+          <Appbar.Content
+            title="Bookings"
+            titleStyle={{color: theme.colors.onPrimary}}
+          />
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <IconButton
+              icon="calendar"
+              iconColor={theme.colors.onPrimary}
+              onPress={handleOpenDatePicker}
+            />
+            <Appbar.Action
+              icon="add-circle"
+              color={theme.colors.onPrimary}
+              onPress={() => setVisible(true)}
+            />
+          </View>
+        </Appbar.Header>
+      </View>
       <CalendarContainer
-        initialDate={moment(date).format('YYYY-MM-DD')}
+        key={date}
+        ref={calendarRef}
+        isLoading={isLoading}
         allowPinchToZoom
         onChange={x => {
           setDate(moment(x).format('DD-MM-YYYY'));
+          setSelectedDate(new Date(x));
         }}
+        initialDate={selectedDate}
         hourWidth={100}
         scrollToNow={false}
         numberOfDays={1}
         scrollByDay={true}
         events={mappedEvents}
-        onPressEvent={handleOpenSheet}>
+        onPressEvent={handleOpenSheet}
+        animateColumnWidth>
         <CalendarHeader />
 
         <ScrollView
           style={{flex: 1}}
-          className="flex-1"
           refreshControl={
             <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
           }>
@@ -160,6 +201,25 @@ const BookingCalenderScreen = () => {
           />
         </ScrollView>
       </CalendarContainer>
+
+      {/* Date Picker Modal */}
+      <Portal>
+        <DatePicker
+          modal
+          open={datePickerVisible}
+          date={selectedDate}
+          mode="date"
+          onConfirm={date => {
+            setDatePickerVisible(false);
+            handleDateChange(date);
+          }}
+          onCancel={() => {
+            setDatePickerVisible(false);
+          }}
+        />
+      </Portal>
+
+      {/* Event Details Bottom Sheet */}
       <Portal>
         <BottomSheet
           ref={bottomSheetRef}
@@ -179,11 +239,11 @@ const BookingCalenderScreen = () => {
                 <Text variant="titleMedium">{selectedEvent?.title}</Text>
                 <Text variant="bodyMedium">{selectedEvent?.description}</Text>
                 <Text variant="bodySmall">
-                  From:{' '}
+                  From:
                   {new Date(selectedEvent?.start.dateTime).toLocaleTimeString()}
                 </Text>
                 <Text variant="bodySmall">
-                  To:{' '}
+                  To:
                   {new Date(selectedEvent.end.dateTime).toLocaleTimeString()}
                 </Text>
               </>
@@ -192,7 +252,8 @@ const BookingCalenderScreen = () => {
             )}
           </BottomSheetView>
         </BottomSheet>
-      </Portal>{' '}
+      </Portal>
+
       <ModalForm
         visible={visible}
         onDismiss={() => setVisible(false)}

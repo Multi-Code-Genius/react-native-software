@@ -7,7 +7,7 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import {Button, Modal, Portal} from 'react-native-paper';
+import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {Controller, useForm} from 'react-hook-form';
@@ -55,19 +55,18 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
     setOpenPicker(true);
   };
 
+  const theme = useTheme();
+
   return (
     <Portal>
-      <Modal
+      <Dialog
         visible={visible}
-        style={styles.modal}
         onDismiss={onDismiss}
-        contentContainerStyle={{paddingBottom: insets.bottom}}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Booking Info</Text>
-
-          <ScrollView
-            contentContainerStyle={styles.scrollContent}
-            showsVerticalScrollIndicator={false}>
+        style={[styles.dialog, {backgroundColor: theme.colors.onPrimary}]}>
+        <Dialog.Title>Booking Info</Dialog.Title>
+        <Dialog.ScrollArea>
+          <View
+            style={[styles.scrollContent, {paddingBottom: insets.bottom + 16}]}>
             {[
               {label: 'Name', name: 'name'},
               {
@@ -137,63 +136,57 @@ export default function ModalForm({visible, onDismiss, onSubmit}: Props) {
                 )}
               />
             ))}
-          </ScrollView>
-
-          <View style={styles.buttonRow}>
-            <Button onPress={onDismiss} mode="text">
-              Cancel
-            </Button>
-            <Button onPress={handleSubmit(handleFormSubmit)} mode="contained">
-              Book
-            </Button>
           </View>
-        </View>
+        </Dialog.ScrollArea>
 
-        <DatePicker
-          modal
-          open={openPicker}
-          date={tempDate}
-          mode={pickerMode}
-          minuteInterval={30}
-          onConfirm={date => {
-            setOpenPicker(false);
-            const formatted =
-              pickerMode === 'date'
-                ? date.toISOString().split('T')[0]
-                : date.toLocaleTimeString([], {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  });
-            setValue(pickerField!, formatted);
-          }}
-          onCancel={() => setOpenPicker(false)}
-        />
-      </Modal>
+        <Dialog.Actions
+          style={{
+            width: '100%',
+          }}>
+          <Button style={{width: '30%'}} onPress={onDismiss}>
+            Cancel
+          </Button>
+          <Button
+            style={{width: '30%'}}
+            mode="contained"
+            icon="checkmark-circle"
+            onPress={handleSubmit(handleFormSubmit)}>
+            Book
+          </Button>
+        </Dialog.Actions>
+      </Dialog>
+
+      <DatePicker
+        modal
+        open={openPicker}
+        date={tempDate}
+        mode={pickerMode}
+        minuteInterval={30}
+        onConfirm={date => {
+          setOpenPicker(false);
+          const formatted =
+            pickerMode === 'date'
+              ? date.toISOString().split('T')[0]
+              : date.toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                });
+          setValue(pickerField!, formatted);
+        }}
+        onCancel={() => setOpenPicker(false)}
+      />
     </Portal>
   );
 }
 
 const styles = StyleSheet.create({
-  modal: {
-    margin: 20,
-  },
-  container: {
-    backgroundColor: 'white',
+  dialog: {
+    marginHorizontal: 20,
     borderRadius: 20,
-    padding: 16,
-    margin: 20,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 16,
+    overflow: 'hidden',
   },
   scrollContent: {
+    paddingHorizontal: 24,
     paddingBottom: 16,
   },
   inputGroup: {
@@ -224,11 +217,5 @@ const styles = StyleSheet.create({
   pickerText: {
     fontSize: 16,
     color: '#1F2937',
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 8,
-    marginTop: 16,
   },
 });

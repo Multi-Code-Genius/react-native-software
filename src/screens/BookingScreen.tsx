@@ -44,7 +44,7 @@ const BookingScreen = () => {
   );
 
   return (
-    <View className="flex-1">
+    <View style={{flex: 1}}>
       <View style={styles.venueListContainer}>
         <View style={styles.header}>
           <Text variant="headlineLarge" style={styles.headerText}>
@@ -126,8 +126,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   venueListContainer: {
-    // flex: 1,
-    marginBottom: 20,
-    padding: 10,
+    margin: 10,
   },
 });
