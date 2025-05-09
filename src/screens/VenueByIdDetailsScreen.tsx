@@ -1,18 +1,19 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import React from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
-import {Button, Divider, Icon, Text} from 'react-native-paper';
-import {useGetVenueById} from '../api/vanue';
-import {ActivityIndicator} from 'react-native-paper';
+import { Image, ScrollView, StyleSheet, View } from 'react-native';
+import { Button, Divider, Icon, Text } from 'react-native-paper';
+import { useGetVenueById } from '../api/vanue';
+import { ActivityIndicator } from 'react-native-paper';
 
 type GameInfoKeys = 'indoor' | 'outdoor' | 'roof';
-import {SafeAreaView} from 'react-native-safe-area-context';
 
 export const VenueByIdDetailsScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const venueById = route.params as {id?: string};
-  const {data, isLoading} = useGetVenueById(venueById?.id);
+  const venueById = route.params as { id?: string };
+  const { data, isLoading } = useGetVenueById(venueById?.id);
+
+  console.log("venueById", data);
 
   if (isLoading) {
     return (
@@ -23,19 +24,8 @@ export const VenueByIdDetailsScreen = () => {
   }
   const game = data?.game;
 
-  if (!game || isLoading) {
-    return (
-      <View
-        style={{
-          display: 'flex',
-          height: '100%',
-          width: '100%',
-          justifyContent: 'center',
-          alignContent: 'center',
-        }}>
-        <ActivityIndicator color="#000000" />;
-      </View>
-    );
+  if (!game) {
+    return <Text>No venue data found.</Text>;
   }
 
   const gameInfo = game.gameInfo as Partial<Record<GameInfoKeys, any>>;
@@ -47,148 +37,132 @@ export const VenueByIdDetailsScreen = () => {
   };
 
   const trueFields = (Object.keys(gameInfo) as GameInfoKeys[]).filter(
-    key => gameInfo[key] === 'true',
+    (key) => gameInfo[key] === 'true'
   );
-  console.log('truefileds');
+  console.log("truefileds")
   return (
-    <SafeAreaView style={styles.safeArea} edges={[]}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.iconContainer}>
-          <View style={styles.editRow}>
-            <View style={{flex: 1}} />
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.navigate('EditVenueDetails', {id: venueById?.id})
-              }
-              style={styles.editButton}
-              labelStyle={{fontSize: 12}}>
-              Edit
-            </Button>
-          </View>
-          <Divider className="mb-2" />
-          {game.images?.[0] && (
-            <Image source={{uri: game.images[0]}} style={styles.image} />
-          )}
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.iconContainer}>
+        <View style={styles.editRow}>
+          <View style={{ flex: 1 }} />
+          <Button
+            mode="contained"
+            onPress={() =>
+              navigation.navigate('EditVenueDetails', { id: venueById?.id })
+            }
+            style={styles.editButton}
+            labelStyle={{ fontSize: 12 }}>
+            Edit
+          </Button>
         </View>
         <Divider className="mb-2" />
         {game.images?.[0] && (
-          <Image source={{uri: game.images[0]}} style={styles.image} />
+          <Image source={{ uri: game.images[0] }} style={styles.image} />
         )}
-
-        <View style={styles.card}>
-          <View style={styles.cardContainer}>
-            <View style={styles.columnContainer}>
-              <View style={styles.details2}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="logo-dropbox" size={18} color="green" />
-                  <Text style={styles.category}>Turf Name:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.name}</Text>
+      </View>
+      <View style={styles.card}>
+        <View style={styles.cardContainer}>
+          <View style={styles.columnContainer}>
+            <View style={styles.details2}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="logo-dropbox" size={18} color='green' />
+                <Text style={styles.category}>Turf Name:</Text>
               </View>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="tennisball" size={18} color="brown" />
-                  <Text style={styles.category}>Category:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.category}</Text>
-              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.name}</Text>
             </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="location" size={18} color="red" />
-                  <Text style={styles.category}>Address:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.address}</Text>
+            <View style={styles.details}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="tennisball" size={18} color='brown' />
+                <Text style={styles.category}>Category:</Text>
               </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="map" size={18} color="green" />
-                  <Text style={styles.category}> Location:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>
-                  {game.location.area}, {game.location.city}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="people" size={18} color="grey" />
-                  <Text style={styles.category}>Capacity:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.capacity}</Text>
-              </View>
-              <View style={styles.details2}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="cash" size={18} color="brown" />
-                  <Text style={styles.category}>Price/hr:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>₹{game.hourlyPrice}</Text>
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={[styles.details, {width: '100%'}]}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="clipboard" size={18} color="purple" />
-                  <Text style={styles.category}>Description</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.description}</Text>
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              {trueFields &&
-                trueFields.map(fieldKey => (
-                  <View style={styles.columnContainer} key={fieldKey}>
-                    <View style={styles.details}>
-                      <View style={{flexDirection: 'row', gap: 5}}>
-                        <Icon source="move-sharp" size={18} />
-                        <Text style={styles.category}>
-                          {labelMap[fieldKey]}
-                        </Text>
-                      </View>
-                      <Divider className="mb-2" />
-                      <Text style={styles.data}>{gameInfo[fieldKey]}</Text>
-                    </View>
-                    <Divider className="mb-2" />
-                    <Text style={styles.data}>{game.address}</Text>
-                  </View>
-                ))}
-              <View style={styles.details2}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="extension-puzzle" size={18} color="green" />
-                  <Text style={styles.category}>Surface</Text>
-                </View>
-              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.category}</Text>
             </View>
           </View>
+          <View style={styles.columnContainer}>
+            <View style={styles.details}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="location" size={18} color='red' />
+                <Text style={styles.category}>Address:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.address}</Text>
+            </View>
+          </View>
+          <View style={styles.columnContainer}>
+            <View style={styles.details}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="map" size={18} color='green' />
+                <Text style={styles.category}> Location:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.location.area}, {game.location.city}</Text>
+            </View>
+          </View>
+          <View style={styles.columnContainer}>
+            <View style={styles.details}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="people" size={18} color='grey' />
+                <Text style={styles.category}>Capacity:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.capacity}</Text>
+            </View>
+            <View style={styles.details2}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="cash" size={18} color='brown' />
+                <Text style={styles.category}>Price/hr:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>₹{game.hourlyPrice}</Text>
+            </View>
+          </View>
+          <View style={styles.columnContainer}>
+            <View style={[styles.details, { width: '100%' }]}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="clipboard" size={18} color='purple' />
+                <Text style={styles.category}>Description</Text>
+              </View>
+              <Divider className="mb-2" />
+              <Text style={styles.data}>{game.description}</Text>
+            </View>
+          </View>
+          <View style={styles.columnContainer}>
+            {trueFields && trueFields.map((fieldKey) => (
+              <View style={styles.columnContainer} key={fieldKey}>
+                <View style={styles.details}>
+                  <View style={{ flexDirection: 'row', gap: 5 }}>
+                    <Icon source="move-sharp" size={18} />
+                    <Text style={styles.category}>{labelMap[fieldKey]}</Text>
+                  </View>
+                  <Divider className="mb-2" />
+                  <Text style={styles.data}>{gameInfo[fieldKey]}</Text>
+                </View>
+              </View>
+            ))}
+            <View style={styles.details2}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="extension-puzzle" size={18} color='green' />
+                <Text style={styles.category}>Surface</Text>
+              </View>
+              <Divider className="mb-2" />
+              <Text style={styles.data}>{game.gameInfo?.surface}</Text>
+            </View>
+          </View>
+
         </View>
-      </ScrollView>
-    </SafeAreaView>
+      </View>
+    </ScrollView>
   );
 };
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
   container: {
     padding: 16,
   },
   data: {
     paddingTop: 10,
-    fontSize: 15,
-    color: 'white',
+    fontSize: 15
   },
   loaderContainer: {
     flex: 1,
@@ -261,7 +235,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flex: 1,
     gap: 10,
-    marginBottom: 10,
+    marginBottom: 10
   },
   image: {
     width: '100%',
@@ -278,7 +252,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     fontSize: 15,
     fontWeight: 'bold',
-    color: 'black',
     marginBottom: 10,
   },
   text: {

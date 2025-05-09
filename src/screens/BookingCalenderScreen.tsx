@@ -8,21 +8,21 @@ import {
   CalendarHeader,
   RenderHourProps,
 } from '@howljs/calendar-kit';
-import {useRoute} from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 import debounce from 'lodash.debounce';
 import moment from 'moment';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import {Appbar, IconButton, Portal, Text} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {useBookingInfo, useCreateBooking} from '../api/booking';
+import { Appbar, IconButton, Portal, Text } from 'react-native-paper';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBookingInfo, useCreateBooking } from '../api/booking';
 import ModalForm from '../components/ModalForm';
-import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
+import { TIME_SLOT_ICONS } from '../constants/TIME_SLOT_ICONS';
 
-const BookingCalenderScreen = ({navigation}) => {
+const BookingCalenderScreen = ({ navigation }) => {
   const route = useRoute();
-  const {venueId} = route?.params;
+  const { venueId } = route?.params;
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const calendarRef = useRef(null);
@@ -33,12 +33,12 @@ const BookingCalenderScreen = ({navigation}) => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  const {data, refetch, isRefetching, isLoading} = useBookingInfo({
+  const { data, refetch, isRefetching, isLoading } = useBookingInfo({
     gameId: venueId,
     date,
   });
 
-  const {mutate} = useCreateBooking();
+  const { mutate } = useCreateBooking();
 
   const debouncedRefetch = useMemo(
     () =>
@@ -76,27 +76,26 @@ const BookingCalenderScreen = ({navigation}) => {
 
   const mappedEvents = data
     ? (data || [])?.booking.map((item: any) => ({
-        id: item?.id,
-        title: `${item?.nets > 1 ? 'Turf' : 'Soccer'} - ${item.user?.name} (${
-          item?.status
+      id: item?.id,
+      title: `${item?.nets > 1 ? 'Turf' : 'Soccer'} - ${item.user?.name} (${item?.status
         })`,
-        start: {dateTime: item?.startTime},
-        end: {dateTime: item?.endTime},
-        description: `${item?.nets} turf net, ₹${item?.totalAmount}, Contact: ${item?.userMobile}`,
-        color: '#B7B1F2',
-      }))
+      start: { dateTime: item?.startTime },
+      end: { dateTime: item?.endTime },
+      description: `${item?.nets} turf net, ₹${item?.totalAmount}, Contact: ${item?.userMobile}`,
+      color: '#B7B1F2',
+    }))
     : [];
 
   const onRefresh = useCallback(() => {
     refetch();
   }, [refetch]);
 
-  const renderHour = useCallback(({hourStr}: RenderHourProps) => {
+  const renderHour = useCallback(({ hourStr }: RenderHourProps) => {
     const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
     const iconName = timeSlot?.icon;
 
     return (
-      <View style={{marginLeft: 25, gap: 10}}>
+      <View style={{ marginLeft: 25, gap: 10 }}>
         <Text variant="bodySmall">{hourStr}</Text>
         <Text variant="bodyLarge">{iconName}</Text>
       </View>
@@ -144,7 +143,7 @@ const BookingCalenderScreen = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         <View>
           <Appbar.Header
             style={{
@@ -158,8 +157,8 @@ const BookingCalenderScreen = ({navigation}) => {
               iconColor={'black'}
               onPress={() => navigation.goBack()}
             />
-            <Appbar.Content title="Bookings" titleStyle={{color: 'black'}} />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Appbar.Content title="Bookings" titleStyle={{ color: 'black' }} />
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <IconButton
                 icon="calendar"
                 iconColor="black"
@@ -193,7 +192,7 @@ const BookingCalenderScreen = ({navigation}) => {
           <CalendarHeader />
 
           <ScrollView
-            style={{flex: 1}}
+            style={{ flex: 1 }}
             refreshControl={
               <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
             }>
@@ -222,7 +221,6 @@ const BookingCalenderScreen = ({navigation}) => {
           />
         </Portal>
 
-        {/* Event Details Bottom Sheet */}
         <Portal>
           <BottomSheet
             ref={bottomSheetRef}
