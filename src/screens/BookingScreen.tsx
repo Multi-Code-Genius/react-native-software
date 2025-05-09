@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { Card, Text } from 'react-native-paper';
+import { Card, Icon, Text } from 'react-native-paper';
 import { useGetVenue } from '../api/vanue';
 
 const BookingScreen = () => {
@@ -20,19 +20,25 @@ const BookingScreen = () => {
           {item.name}
         </Text>
         <Text style={styles.chip}>{item.category}</Text>
+        <View style={{ flex: 1, gap: 8 }}>
+          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+            <Icon source="location" size={18} color='green' />
+            <Text style={styles.boldText}>Address: {item.address}</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+            <Icon source="people" size={18} color='skyblue' />
+            <Text style={styles.boldText}>Capacity: {item.capacity}</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+            <Icon source="cash" size={18} color='brown' />
+            <Text style={styles.boldText}>Price: ₹{item.hourlyPrice}/hr</Text>
+          </View>
+          <View style={{ flex: 1, flexDirection: 'row', gap: 10 }}>
+            <Icon source="map" size={18} color='orange' />
+            <Text>{item.location?.area}, {item.location?.city}</Text>
+          </View>
+        </View>
 
-        <Text style={styles.cardText}>
-          🏛️ <Text style={styles.boldText}>Address:</Text> {item.address}
-        </Text>
-        <Text style={styles.cardText}>
-          👥 <Text style={styles.boldText}>Capacity:</Text> {item.capacity}
-        </Text>
-        <Text style={styles.cardText}>
-          💰 <Text style={styles.boldText}>Price:</Text> ₹{item.hourlyPrice}/hr
-        </Text>
-        <Text style={styles.locationText}>
-          📍 {item.location?.area}, {item.location?.city}
-        </Text>
       </Card.Content>
     </Card>
   );
@@ -92,8 +98,12 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardText: {
-    fontSize: 14,
-    marginBottom: 4,
+    // fontSize: 14,
+    // marginBottom: 4,
+    flex: 1,
+    gap: 10,
+    flexDirection: 'row',
+    alignItems: 'center'
   },
   boldText: {
     fontWeight: '600',
@@ -102,6 +112,8 @@ const styles = StyleSheet.create({
     marginTop: 6,
     fontSize: 13,
     color: 'gray',
+    flex: 1,
+    gap: 10,
   },
   header: {
     flexDirection: 'row',

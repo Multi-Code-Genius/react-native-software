@@ -13,6 +13,7 @@ export const VenueByIdDetailsScreen = () => {
   const venueById = route.params as { id?: string };
   const { data, isLoading } = useGetVenueById(venueById?.id);
 
+  console.log("venueById", data);
 
   if (isLoading) {
     return (
@@ -38,6 +39,7 @@ export const VenueByIdDetailsScreen = () => {
   const trueFields = (Object.keys(gameInfo) as GameInfoKeys[]).filter(
     (key) => gameInfo[key] === 'true'
   );
+  console.log("truefileds")
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.iconContainer}>
@@ -61,13 +63,27 @@ export const VenueByIdDetailsScreen = () => {
       <View style={styles.card}>
         <View style={styles.cardContainer}>
           <View style={styles.columnContainer}>
-            <View style={styles.detailsmain}>
-              <Text style={styles.category}> Turf Name:  {game.name}</Text>
-              <Text style={styles.category}>Category: {game.category}</Text>
+            <View style={styles.details2}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="logo-dropbox" size={18} color='green' />
+                <Text style={styles.category}>Turf Name:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.name}</Text>
             </View>
             <View style={styles.details}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="location" size={18} />
+                <Icon source="tennisball" size={18} color='brown' />
+                <Text style={styles.category}>Category:</Text>
+              </View>
+              <Divider className='mb-2' />
+              <Text style={styles.data}>{game.category}</Text>
+            </View>
+          </View>
+          <View style={styles.columnContainer}>
+            <View style={styles.details}>
+              <View style={{ flexDirection: 'row', gap: 5 }}>
+                <Icon source="location" size={18} color='red' />
                 <Text style={styles.category}>Address:</Text>
               </View>
               <Divider className='mb-2' />
@@ -77,7 +93,7 @@ export const VenueByIdDetailsScreen = () => {
           <View style={styles.columnContainer}>
             <View style={styles.details}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="map" size={18} />
+                <Icon source="map" size={18} color='green' />
                 <Text style={styles.category}> Location:</Text>
               </View>
               <Divider className='mb-2' />
@@ -87,7 +103,7 @@ export const VenueByIdDetailsScreen = () => {
           <View style={styles.columnContainer}>
             <View style={styles.details}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="people" size={18} />
+                <Icon source="people" size={18} color='grey' />
                 <Text style={styles.category}>Capacity:</Text>
               </View>
               <Divider className='mb-2' />
@@ -95,7 +111,7 @@ export const VenueByIdDetailsScreen = () => {
             </View>
             <View style={styles.details2}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="cash" size={18} />
+                <Icon source="cash" size={18} color='brown' />
                 <Text style={styles.category}>Price/hr:</Text>
               </View>
               <Divider className='mb-2' />
@@ -105,7 +121,7 @@ export const VenueByIdDetailsScreen = () => {
           <View style={styles.columnContainer}>
             <View style={[styles.details, { width: '100%' }]}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="clipboard" size={18} />
+                <Icon source="clipboard" size={18} color='purple' />
                 <Text style={styles.category}>Description</Text>
               </View>
               <Divider className="mb-2" />
@@ -127,7 +143,7 @@ export const VenueByIdDetailsScreen = () => {
             ))}
             <View style={styles.details2}>
               <View style={{ flexDirection: 'row', gap: 5 }}>
-                <Icon source="extension-puzzle" size={18} />
+                <Icon source="extension-puzzle" size={18} color='green' />
                 <Text style={styles.category}>Surface</Text>
               </View>
               <Divider className="mb-2" />
