@@ -17,9 +17,12 @@ import DatePicker from 'react-native-date-picker';
 import {
   ActivityIndicator,
   Appbar,
+  Chip,
+  Icon,
   IconButton,
   Portal,
   Text,
+  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useBookingInfo, useCreateBooking} from '../api/booking';
@@ -46,6 +49,7 @@ const BookingCalenderScreen = ({navigation}) => {
   });
 
   const {mutate} = useCreateBooking();
+  const theme = useTheme();
 
   const debouncedRefetch = useMemo(
     () =>
@@ -81,18 +85,17 @@ const BookingCalenderScreen = ({navigation}) => {
     });
   };
 
-  const mappedEvents = data
-    ? (data || [])?.booking.map((item: any) => ({
-        id: item?.id,
-        title: `${item?.nets > 1 ? 'Turf' : 'Soccer'} - ${item.user?.name} (${
-          item?.status
-        })`,
-        start: {dateTime: item?.startTime},
-        end: {dateTime: item?.endTime},
-        description: `${item?.nets} turf net, ₹${item?.totalAmount}, Contact: ${item?.userMobile}`,
-        color: '#B7B1F2',
-      }))
-    : [];
+  const mappedEvents =
+    data?.booking?.map((item: any) => ({
+      id: item?.id,
+      title: `${item?.nets > 1 ? 'Turf' : 'Soccer'} - ${item?.user?.name}`,
+      status: item?.status,
+      start: {dateTime: item?.startTime},
+      end: {dateTime: item?.endTime},
+      totalAmount: item?.totalAmount,
+      net: item?.nets,
+      contact: item?.userMobile,
+    })) || [];
 
   const onRefresh = useCallback(() => {
     refetch();
@@ -140,14 +143,75 @@ const BookingCalenderScreen = ({navigation}) => {
     setDatePickerVisible(true);
   };
 
-  const renderLoadingModal = () => (
-    <>
-      {isLoading && (
-        <View style={styles.modalOverlay}>
-          <ActivityIndicator size="large" animating={true} />
+  const renderEvent = useCallback(
+    (event: PackedEvent) => (
+      <View
+        style={{
+          backgroundColor: '#EFFDF4',
+          flex: 1,
+          width: '100%',
+          height: '100%',
+          padding: 12,
+          borderRadius: 20,
+          borderWidth: 1,
+          borderColor: '#BAF7D0',
+          flexDirection: 'column',
+          gap: 8, // Added gap for consistent spacing between children
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: 8,
+          }}>
+          <Text variant="titleMedium" style={{flexShrink: 1}}>
+            {event.title}
+          </Text>
+          <Chip
+            icon="wallet-outline"
+            mode="outlined"
+            style={{backgroundColor: '#DCFCE7', borderColor: '#EFFDF4'}}>
+            {event.status}
+          </Chip>
         </View>
-      )}
-    </>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            gap: 8,
+          }}>
+          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+            <Icon source="basketball-outline" size={20} />
+            <Text>{event.net}</Text>
+          </View>
+          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+            <Icon source="cash-outline" size={20} />
+            <Text>{event.totalAmount}</Text>
+          </View>
+          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
+            <Icon source="call-outline" size={20} />
+            <Text>{event.contact}</Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4,
+            marginTop: 4, // Reduced from 10 to create more balanced spacing
+          }}>
+          <Icon source="time-outline" size={20} />
+          <Text>
+            {new Date(event.start.dateTime).toLocaleTimeString()}-
+            {new Date(event.end.dateTime).toLocaleTimeString()}
+          </Text>
+        </View>
+      </View>
+    ),
+    [],
   );
 
   return (
@@ -212,6 +276,7 @@ const BookingCalenderScreen = ({navigation}) => {
               showNowIndicator={false}
               renderHour={renderHour}
               hourFormat="h:mm a"
+              renderEvent={renderEvent}
             />
           </ScrollView>
         </CalendarContainer>
