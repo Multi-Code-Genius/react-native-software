@@ -67,3 +67,29 @@ export const useCreateBooking = (
     onError,
   });
 };
+
+const cancelBooking = async (id: string) => {
+  try {
+    const response = await api(`/api/booking/cancel/${id}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    console.log('Bokking Response', error);
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useCancelBooking = (
+  onSuccess?: () => void,
+  onError?: () => void,
+) => {
+  return useMutation({
+    mutationFn: (id: string) => cancelBooking(id),
+    onSuccess,
+    onError,
+  });
+};

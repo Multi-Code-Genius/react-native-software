@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import React, {useEffect} from 'react';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useVenueStore } from '../store/useVenueStore';
+import {useVenueStore} from '../store/useVenueStore';
 
 const BasicDetailsComponent = () => {
   const updateField = useVenueStore(state => state.updateField);
