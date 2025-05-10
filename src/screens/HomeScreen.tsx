@@ -3,11 +3,12 @@ import React from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  Image,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Card, Divider, Text, useTheme} from 'react-native-paper';
+import {Button, Card, Divider, Icon, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenue} from '../api/vanue';
 
@@ -21,19 +22,21 @@ const HomeScreen = () => {
     return (
       <TouchableOpacity
         onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
-        <Card style={styles.card} mode="outlined">
-          <Card.Cover source={{uri: item?.images?.[0]}} />
-          <Card.Title title={item.name} subtitle={item.category} />
-          <Card.Content>
-            <Text variant="titleMedium">{item.address}</Text>
-            <Text variant="bodyMedium" style={styles.cardText}>
-              Capacity: {item.capacity} | ₹{item.hourlyPrice}/hr
+        <View style={styles.card}>
+          <Image source={{uri: item?.images?.[0]}} style={styles.image} />
+          <View style={styles.info}>
+            <Text style={styles.title}>{item.name}</Text>
+            <Text>{item.category}</Text>
+            <Text>{item.address}</Text>
+            <Text style={{marginTop: 4}}>
+              ₹{item.hourlyPrice} /
+              <Icon source={'person'} size={10} />
             </Text>
-            <Text variant="bodySmall" style={styles.locationText}>
-              Location: {item.location?.area}, {item.location?.city}
+            <Text style={styles.location}>
+              {item.location?.area} - {item.location?.city}
             </Text>
-          </Card.Content>
-        </Card>
+          </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -75,14 +78,11 @@ const HomeScreen = () => {
             <Text variant="titleMedium" style={styles.welcomeText}>
               Your account has been created successfully.
             </Text>
-
             <Divider style={styles.divider} />
-
             <Text variant="bodyMedium" style={{color: colors.onBackground}}>
               Please complete your profile to add venues, manage all your
               bookings, and access all features.
             </Text>
-
             <Button
               mode="contained"
               onPress={() => navigation.navigate('Account')}
@@ -90,15 +90,12 @@ const HomeScreen = () => {
               labelStyle={{fontWeight: 'bold'}}>
               Complete Profile
             </Button>
-
             <Text style={styles.separator}>──── or ────</Text>
-
             <Text
               variant="titleMedium"
               style={[styles.welcomeText, {marginBottom: 8}]}>
               Are you a sports turf owner?
             </Text>
-
             <Button
               mode="contained"
               onPress={() => navigation.navigate('Addvenue')}
@@ -120,22 +117,40 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
   container: {
     flex: 1,
     padding: 16,
   },
   card: {
-    marginBottom: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    marginBottom: 12,
+    backgroundColor: 'white',
     borderRadius: 12,
-    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  cardText: {
-    marginTop: 4,
+  image: {
+    width: 150,
+    height: 150,
+    borderRadius: 10,
+    marginRight: 12,
   },
-  locationText: {
+  info: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  location: {
     marginTop: 4,
     color: 'gray',
+    fontSize: 12,
   },
   header: {
     flexDirection: 'row',
