@@ -17,7 +17,9 @@ import DatePicker from 'react-native-date-picker';
 import {
   ActivityIndicator,
   Appbar,
+  Badge,
   Chip,
+  FAB,
   Icon,
   IconButton,
   Portal,
@@ -265,7 +267,14 @@ const BookingCalenderScreen = ({navigation}) => {
           onPressEvent={handleOpenSheet}
           animateColumnWidth>
           <CalendarHeader />
-
+          <FAB
+            style={[styles.fab, {backgroundColor: '#DCFCE7'}]}
+            mode="flat"
+            variant="surface"
+            animated
+            label={`${data?.booking.length || 0} Total Bookings`}
+            loading={isLoading}
+          />
           <ScrollView
             style={{flex: 1}}
             showsVerticalScrollIndicator={false}
@@ -368,5 +377,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     zIndex: 999,
+  },
+  fab: {
+    position: 'absolute',
+    marginHorizontal: 10,
+    marginVertical: 1,
+    right: 0,
+    top: 0,
+    zIndex: 999999999,
   },
 });
