@@ -38,6 +38,7 @@ const BookingCalenderScreen = ({navigation}) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [forceCalendarReset, setForceCalendarReset] = useState(false);
 
   const {data, refetch, isRefetching, isLoading} = useBookingInfo({
     gameId: venueId,
@@ -131,7 +132,8 @@ const BookingCalenderScreen = ({navigation}) => {
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
     setDate(moment(newDate).format('DD-MM-YYYY'));
-    calendarRef.current?.goToDate(newDate);
+    setForceCalendarReset(true);
+    // calendarRef.current?.goToDate(newDate);
   };
 
   const handleOpenDatePicker = () => {
@@ -180,15 +182,17 @@ const BookingCalenderScreen = ({navigation}) => {
           </Appbar.Header>
         </View>
         <CalendarContainer
-          key={date}
+          key={forceCalendarReset ? selectedDate.toISOString() : undefined}
           ref={calendarRef}
           isLoading={isLoading}
           allowPinchToZoom
           onChange={x => {
             setDate(moment(x).format('DD-MM-YYYY'));
             setSelectedDate(new Date(x));
+            setForceCalendarReset(false);
           }}
           initialDate={selectedDate}
+          // currentDate={selectedDate}
           hourWidth={100}
           scrollToNow={false}
           numberOfDays={1}
@@ -200,6 +204,7 @@ const BookingCalenderScreen = ({navigation}) => {
 
           <ScrollView
             style={{flex: 1}}
+            showsVerticalScrollIndicator={false}
             refreshControl={
               <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
             }>
