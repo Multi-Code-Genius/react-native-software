@@ -5,7 +5,7 @@ import './global.css';
 import queryClient from './src/config/queryClient';
 import AppNavigator from './src/navigation/routes';
 
-import {StatusBar, StyleSheet} from 'react-native';
+import {StatusBar, StyleSheet, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -50,12 +50,12 @@ export default function App() {
             settings={{
               icon: props => <Ionicons {...props} />,
             }}>
-            <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-              <StatusBar
-                translucent
-                backgroundColor={theme.colors.primary}
-                barStyle="light-content"
-              />
+            <SafeAreaView
+              style={[styles.safeArea, {backgroundColor: theme.colors.primary}]}
+              edges={['top', 'bottom']}>
+              <View>
+                <StatusBar barStyle={'light-content'} translucent={false} />
+              </View>
               <AppNavigator />
             </SafeAreaView>
           </PaperProvider>
