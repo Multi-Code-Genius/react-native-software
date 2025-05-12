@@ -10,6 +10,7 @@ import {
 import DatePicker from 'react-native-date-picker';
 import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {parseTimeTo24Hour} from '../utils/helper';
 
 interface Props {
   visible: boolean;
@@ -245,14 +246,40 @@ export default function ModalForm({
           pickerMode === 'time' && pickerField !== 'date'
             ? (() => {
                 const selectedDate = control._formValues?.date;
-                if (!selectedDate) return undefined;
-                const todayStr = new Date().toISOString().split('T')[0];
-                return selectedDate === todayStr ? new Date() : undefined;
+                const startTimeRaw = control._formValues?.startTime;
+                const now = new Date();
+
+                if (!selectedDate) {
+                  return new Date();
+                }
+
+                if (pickerField === 'endTime' && startTimeRaw) {
+                  const startTime24 = parseTimeTo24Hour(startTimeRaw);
+                  const startDateTime = new Date(
+                    `${selectedDate}T${startTime24}`,
+                  );
+
+                  if (isNaN(startDateTime.getTime())) {
+                    return now;
+                  }
+
+                  const minEndTime = new Date(
+                    startDateTime.getTime() + 60 * 60 * 1000,
+                  );
+
+                  return minEndTime > now ? minEndTime : now;
+                }
+
+                const todayStr = now.toISOString().split('T')[0];
+                if (selectedDate === todayStr) {
+                  return now;
+                }
+
+                return undefined;
               })()
             : new Date()
         }
         mode={pickerMode}
-        minimumDate={new Date()}
         minuteInterval={30}
         onConfirm={date => {
           setOpenPicker(false);
