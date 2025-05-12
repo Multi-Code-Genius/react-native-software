@@ -21,16 +21,6 @@ interface Props {
   price: string;
 }
 
-const defaultValues = {
-  name: '',
-  number: '',
-  date: '',
-  startTime: '',
-  endTime: '',
-  nets: 1,
-  totalAmount: 0,
-};
-
 export default function ModalForm({
   visible,
   onDismiss,
@@ -39,6 +29,16 @@ export default function ModalForm({
   defaultValues,
   price,
 }: Props) {
+  const defaultValues2 = {
+    name: '',
+    number: '',
+    date: '',
+    startTime: '',
+    endTime: '',
+    nets: 1,
+    totalAmount: 0,
+  };
+
   const {control, handleSubmit, reset, setValue} = useForm({
     defaultValues: defaultValues || {
       name: '',
@@ -125,7 +125,7 @@ export default function ModalForm({
 
   const cancelBooking = () => {
     onDismiss();
-    reset(defaultValues);
+    reset(defaultValues2);
   };
 
   return (

@@ -82,6 +82,10 @@ const BookingCalenderScreen = ({navigation}) => {
 
   const handleCreateBooking = (formData: any) => {
     formData.gameId = venueId;
+    formData.nets = 1;
+
+    console.log('formdata65465456+4564564', formData);
+
     mutate(formData, {
       onSuccess: res => {
         if (res?.booking) {
@@ -101,6 +105,7 @@ const BookingCalenderScreen = ({navigation}) => {
     if (modalMode === 'edit') {
       console.log('Edited booking data:', data);
     } else {
+      console.log('triggger');
       handleCreateBooking(data);
     }
   };
@@ -310,15 +315,15 @@ const BookingCalenderScreen = ({navigation}) => {
                   setModalMode('add');
                   setFormDefaults(null);
                   setVisible(true);
-                  setFormDefaults({
-                    name: '',
-                    number: '',
-                    date: '',
-                    startTime: '',
-                    endTime: '',
-                    nets: '',
-                    totalAmount: '',
-                  });
+                  // setFormDefaults({
+                  //   name: '',
+                  //   number: '',
+                  //   date: '',
+                  //   startTime: '',
+                  //   endTime: '',
+                  //   nets: '',
+                  //   totalAmount: '',
+                  // });
                 }}
               />
             </View>
