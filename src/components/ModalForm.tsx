@@ -123,6 +123,11 @@ export default function ModalForm({
 
   const theme = useTheme();
 
+  const cancelBooking = () => {
+    onDismiss();
+    reset(defaultValues);
+  };
+
   return (
     <Portal>
       <Dialog
@@ -201,12 +206,13 @@ export default function ModalForm({
             <Controller
               name="totalAmount"
               control={control}
-              render={({field: {value}}) => (
+              render={({field: {value, onChange}}) => (
                 <View style={styles.inputGroup}>
                   <Text style={styles.label}>Total Amount</Text>
                   <TextInput
                     value={value.toString()}
-                    editable={false}
+                    onChangeText={text => onChange(Number(text))}
+                    keyboardType="numeric"
                     style={styles.input}
                   />
                 </View>
@@ -219,7 +225,7 @@ export default function ModalForm({
           style={{
             width: '100%',
           }}>
-          <Button style={{width: '30%'}} onPress={onDismiss}>
+          <Button style={{width: '30%'}} onPress={cancelBooking}>
             Cancel
           </Button>
           <Button
@@ -236,6 +242,7 @@ export default function ModalForm({
         modal
         open={openPicker}
         date={tempDate}
+        minimumDate={new Date()}
         mode={pickerMode}
         minuteInterval={30}
         onConfirm={date => {

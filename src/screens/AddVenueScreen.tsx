@@ -8,10 +8,12 @@ import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
 import {useAuthStore} from '../store/authStore';
 import {useVenueStore} from '../store/useVenueStore';
+import {useNavigation} from '@react-navigation/native';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
+  const navigation = useNavigation();
 
   const {mutate: createGameMutate, isPending} = useCreateGame(
     data => console.log('Success:', data),
