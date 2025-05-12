@@ -20,6 +20,7 @@ import {
   Badge,
   Button,
   Chip,
+  Dialog,
   FAB,
   Icon,
   IconButton,
@@ -51,6 +52,7 @@ const BookingCalenderScreen = ({navigation}) => {
   const [forceCalendarReset, setForceCalendarReset] = useState(false);
   const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
   const [formDefaults, setFormDefaults] = useState<any>(null);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
   const {data, refetch, isRefetching, isLoading} = useBookingInfo({
     gameId: venueId,
@@ -135,9 +137,13 @@ const BookingCalenderScreen = ({navigation}) => {
     const iconName = timeSlot?.icon;
 
     return (
-      <View style={{marginLeft: 25, gap: 10}}>
-        <Text variant="bodySmall">{hourStr}</Text>
-        <Text variant="bodyLarge">{iconName}</Text>
+      <View style={{flexDirection: 'column'}}>
+        <Text style={{textAlign: 'right'}} variant="bodySmall">
+          {hourStr}
+        </Text>
+        <Text style={{textAlign: 'right'}} variant="bodyLarge">
+          {iconName}
+        </Text>
       </View>
     );
   }, []);
@@ -441,9 +447,10 @@ const BookingCalenderScreen = ({navigation}) => {
                       icon="ban"
                       mode="text"
                       loading={isPending}
-                      onPress={() => handleCancelBooking(selectedEvent.id)}>
+                      onPress={() => setShowCancelConfirm(true)}>
                       Cancel Booking
                     </Button>
+
                     <Button
                       style={{width: '50%', borderRadius: 8}}
                       icon="pencil"
@@ -487,6 +494,30 @@ const BookingCalenderScreen = ({navigation}) => {
           defaultValues={formDefaults}
           price={price}
         />
+        <Portal>
+          <Dialog
+            style={{backgroundColor: theme.colors.onPrimary}}
+            visible={showCancelConfirm}
+            onDismiss={() => setShowCancelConfirm(false)}>
+            <Dialog.Title>Confirm Cancellation</Dialog.Title>
+            <Dialog.Content>
+              <Text>Are you sure you want to cancel this booking?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setShowCancelConfirm(false)}>No</Button>
+              <Button
+                loading={isPending}
+                onPress={() => {
+                  if (selectedEvent?.id) {
+                    handleCancelBooking(selectedEvent.id);
+                    setShowCancelConfirm(false);
+                  }
+                }}>
+                Yes
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </View>
     </SafeAreaView>
   );
