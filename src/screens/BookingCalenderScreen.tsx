@@ -38,7 +38,7 @@ import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 
 const BookingCalenderScreen = ({navigation}) => {
   const route = useRoute();
-  const {venueId} = route?.params;
+  const {venueId, price} = route?.params;
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const calendarRef = useRef(null);
@@ -485,6 +485,7 @@ const BookingCalenderScreen = ({navigation}) => {
           onSubmit={handleModalSubmit}
           mode={modalMode}
           defaultValues={formDefaults}
+          price={price}
         />
       </View>
     </SafeAreaView>

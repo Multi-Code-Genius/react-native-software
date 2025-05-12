@@ -10,7 +10,7 @@ import {
 import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Controller, useForm} from 'react-hook-form';
+import {Controller, useForm, useWatch} from 'react-hook-form';
 
 interface Props {
   visible: boolean;
@@ -18,6 +18,7 @@ interface Props {
   onSubmit: (data: any) => void;
   mode?: 'add' | 'edit';
   defaultValues?: any;
+  price: string;
 }
 
 const defaultValues = {
@@ -36,6 +37,7 @@ export default function ModalForm({
   onSubmit,
   mode,
   defaultValues,
+  price,
 }: Props) {
   const {control, handleSubmit, reset, setValue} = useForm({
     defaultValues: defaultValues || {
@@ -56,6 +58,45 @@ export default function ModalForm({
   }, [defaultValues, reset]);
 
   const insets = useSafeAreaInsets();
+
+  const watchStartTime = useWatch({control, name: 'startTime'});
+  const watchEndTime = useWatch({control, name: 'endTime'});
+
+  useEffect(() => {
+    if (!watchStartTime || !watchEndTime || !price) return;
+
+    const convertTo24Hour = (timeStr: any) => {
+      const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
+      const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
+      const [hourStr, minuteStr] = time.split(':');
+
+      let hour = parseInt(hourStr, 10);
+      const minute = parseInt(minuteStr, 10);
+
+      if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
+
+      return {hour, minute};
+    };
+
+    try {
+      const start = convertTo24Hour(watchStartTime);
+      const end = convertTo24Hour(watchEndTime);
+
+      const startMs = start.hour * 60 + start.minute;
+      const endMs = end.hour * 60 + end.minute;
+
+      const diffMinutes = endMs - startMs;
+      if (diffMinutes <= 0) return;
+
+      const durationHours = diffMinutes / 60;
+      const total = Math.round(durationHours * Number(price));
+
+      setValue('totalAmount', total);
+    } catch (e: any) {
+      console.warn('Invalid time format:', e.message);
+    }
+  }, [watchStartTime, watchEndTime, price, setValue]);
 
   const handleFormSubmit = (data: any) => {
     onSubmit(data);
@@ -98,11 +139,6 @@ export default function ModalForm({
                 label: 'Phone Number',
                 name: 'number',
                 keyboardType: 'phone-pad',
-              },
-              {
-                label: 'Total Amount',
-                name: 'totalAmount',
-                keyboardType: 'number-pad',
               },
             ].map(({label, name, keyboardType}) => (
               <Controller
@@ -161,6 +197,21 @@ export default function ModalForm({
                 )}
               />
             ))}
+
+            <Controller
+              name="totalAmount"
+              control={control}
+              render={({field: {value}}) => (
+                <View style={styles.inputGroup}>
+                  <Text style={styles.label}>Total Amount</Text>
+                  <TextInput
+                    value={value.toString()}
+                    editable={false}
+                    style={styles.input}
+                  />
+                </View>
+              )}
+            />
           </View>
         </Dialog.ScrollArea>
 
