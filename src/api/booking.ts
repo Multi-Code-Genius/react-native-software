@@ -1,5 +1,6 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
+import queryClient from '../config/queryClient';
 
 const fetchBooking = async (data: any) => {
   try {
@@ -71,7 +72,7 @@ export const useCreateBooking = (
 const cancelBooking = async (id: string) => {
   try {
     const response = await api(`/api/booking/cancel/${id}`, {
-      method: 'POST',
+      method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
     });
@@ -89,7 +90,9 @@ export const useCancelBooking = (
 ) => {
   return useMutation({
     mutationFn: (id: string) => cancelBooking(id),
-    onSuccess,
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['booking']});
+    },
     onError,
   });
 };

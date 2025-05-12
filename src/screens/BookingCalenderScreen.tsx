@@ -18,6 +18,7 @@ import {
   ActivityIndicator,
   Appbar,
   Badge,
+  Button,
   Chip,
   FAB,
   Icon,
@@ -27,7 +28,11 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useBookingInfo, useCreateBooking} from '../api/booking';
+import {
+  useBookingInfo,
+  useCancelBooking,
+  useCreateBooking,
+} from '../api/booking';
 import ModalForm from '../components/ModalForm';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 
@@ -51,6 +56,7 @@ const BookingCalenderScreen = ({navigation}) => {
   });
 
   const {mutate} = useCreateBooking();
+  const {mutate: cancelBookingMutation, isPending} = useCancelBooking();
   const theme = useTheme();
 
   const debouncedRefetch = useMemo(
@@ -83,6 +89,17 @@ const BookingCalenderScreen = ({navigation}) => {
       },
       onError: err => {
         console.error('Booking creation failed', err);
+      },
+    });
+  };
+
+  const handleCancelBooking = (bookingId: any) => {
+    cancelBookingMutation(bookingId, {
+      onSuccess: () => {
+        bottomSheetRef.current?.close();
+      },
+      onError: err => {
+        console.error('Cancel booking failed', err);
       },
     });
   };
@@ -127,7 +144,7 @@ const BookingCalenderScreen = ({navigation}) => {
     [],
   );
 
-  const snapPoints = ['25%', '50%'];
+  const snapPoints = ['50%', '75%'];
 
   const handleOpenSheet = (event: any) => {
     setSelectedEvent(event);
@@ -258,7 +275,6 @@ const BookingCalenderScreen = ({navigation}) => {
             setForceCalendarReset(false);
           }}
           initialDate={selectedDate}
-          // currentDate={selectedDate}
           hourWidth={100}
           scrollToNow={false}
           numberOfDays={1}
@@ -320,24 +336,64 @@ const BookingCalenderScreen = ({navigation}) => {
               }
             }}
             enableDynamicSizing={true}>
-            <BottomSheetView style={styles.contentContainer}>
+            <BottomSheetView style={styles.sheetContent}>
               {selectedEvent ? (
-                <>
-                  <Text variant="titleMedium">{selectedEvent?.title}</Text>
-                  <Text variant="bodyMedium">{selectedEvent?.description}</Text>
-                  <Text variant="bodySmall">
-                    From:
-                    {new Date(
-                      selectedEvent?.start.dateTime,
-                    ).toLocaleTimeString()}
+                <View style={styles.sheetCard}>
+                  <Text variant="titleLarge" style={styles.sheetTitle}>
+                    {selectedEvent?.title}
                   </Text>
-                  <Text variant="bodySmall">
-                    To:
-                    {new Date(selectedEvent.end.dateTime).toLocaleTimeString()}
-                  </Text>
-                </>
+
+                  <View style={styles.sheetRow}>
+                    <Icon source="wallet-outline" size={20} />
+                    <Text style={styles.sheetText}>
+                      Status: {selectedEvent?.status}
+                    </Text>
+                  </View>
+
+                  <View style={styles.sheetRow}>
+                    <Icon source="calendar-outline" size={20} />
+                    <Text style={styles.sheetText}>
+                      {moment(selectedEvent.start.dateTime).format(
+                        'DD MMM YYYY',
+                      )}
+                    </Text>
+                  </View>
+
+                  <View style={styles.sheetRow}>
+                    <Icon source="time-outline" size={20} />
+                    <Text style={styles.sheetText}>
+                      {moment(selectedEvent?.start.dateTime).format('h:mm A')} -{' '}
+                      {moment(selectedEvent.end.dateTime).format('h:mm A')}
+                    </Text>
+                  </View>
+
+                  <View style={styles.sheetRow}>
+                    <Icon source="cash-outline" size={20} />
+                    <Text style={styles.sheetText}>
+                      Amount: ₹{selectedEvent?.totalAmount}
+                    </Text>
+                  </View>
+
+                  <View style={styles.sheetRow}>
+                    <Icon source="call-outline" size={20} />
+                    <Text style={styles.sheetText}>
+                      Contact: {selectedEvent?.contact}
+                    </Text>
+                  </View>
+
+                  <Button
+                    style={styles.cancelButton}
+                    mode="contained"
+                    onPress={() => handleCancelBooking(selectedEvent.id)}>
+                    {isPending ? (
+                      <ActivityIndicator color="#fefdfd" />
+                    ) : (
+                      '  Cancel Booking'
+                    )}
+                  </Button>
+                </View>
               ) : (
-                <Text>Loading event...</Text>
+                <ActivityIndicator animating />
               )}
             </BottomSheetView>
           </BottomSheet>
@@ -385,5 +441,48 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     zIndex: 999999999,
+  },
+
+  sheetContent: {
+    flex: 1,
+    paddingHorizontal: 24,
+    paddingVertical: 32,
+    backgroundColor: '#F8F8F8',
+  },
+
+  sheetCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    padding: 20,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowOffset: {width: 0, height: 2},
+    shadowRadius: 4,
+    elevation: 3,
+    gap: 12,
+  },
+
+  sheetTitle: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+
+  sheetRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+
+  sheetText: {
+    fontSize: 14,
+    color: '#333',
+  },
+
+  cancelButton: {
+    marginTop: 20,
+    borderRadius: 8,
+    backgroundColor: '#749680',
+    borderColor: '#EFFDF4',
   },
 });
