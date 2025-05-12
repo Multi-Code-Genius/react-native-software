@@ -2,11 +2,12 @@ import React, {useRef, useState} from 'react';
 import {Alert} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import {useTheme} from 'react-native-paper';
-import {useAuthStore} from '../store/authStore';
 import {useRequestOtp, useVerifyOtp} from '../api/auth';
-import WelcomeSlide from '../components/onboarding/WelcomeSlide';
 import EmailLoginSlide from '../components/onboarding/EmailLoginSlide';
 import OtpSlide from '../components/onboarding/OtpSlide';
+import WelcomeSlide from '../components/onboarding/WelcomeSlide';
+import {useAuthStore} from '../store/authStore';
+import Toast from 'react-native-toast-message';
 
 const OnboardingScreen = () => {
   const [email, setEmail] = useState('');
@@ -20,12 +21,17 @@ const OnboardingScreen = () => {
   const {mutate: requestOtp, isPending} = useRequestOtp();
   const {mutate: verifyOtp} = useVerifyOtp();
 
+  setTimeout(() => {
+    Toast.hide();
+  }, 2000); // hides after 2 seconds
+
   const sendOtp = () => {
     if (!email.includes('@')) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
       return;
     }
     requestOtp({email});
+
     onboardingRef.current?.goNext();
     setPageIndex(2);
   };

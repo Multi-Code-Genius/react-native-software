@@ -1,16 +1,15 @@
 import React, {useEffect} from 'react';
+import {Controller, useForm, useWatch} from 'react-hook-form';
 import {
-  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
-  StyleSheet,
 } from 'react-native';
-import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
+import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Controller, useForm, useWatch} from 'react-hook-form';
 
 interface Props {
   visible: boolean;
@@ -253,6 +252,7 @@ export default function ModalForm({
             : new Date()
         }
         mode={pickerMode}
+        minimumDate={new Date()}
         minuteInterval={30}
         onConfirm={date => {
           setOpenPicker(false);

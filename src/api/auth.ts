@@ -1,5 +1,6 @@
 import {useMutation} from '@tanstack/react-query';
 import {api} from '../hooks/api';
+import Toast from 'react-native-toast-message';
 
 export const requestOtp = async (email: {email: string}) => {
   try {
@@ -16,13 +17,25 @@ export const requestOtp = async (email: {email: string}) => {
 };
 
 export const useRequestOtp = (
-  onSuccess?: (data: any) => void,
-  onError?: (error: any) => void,
+  _onSuccess?: (data: any) => void,
+  _onError?: (error: any) => void,
 ) => {
   return useMutation({
     mutationFn: (email: {email: string}) => requestOtp(email),
-    onSuccess,
-    onError,
+    onSuccess: () => {
+      Toast.show({
+        type: 'success',
+        text1: 'OTP sent to email',
+        text2: 'Please check Email spam Folder',
+      });
+    },
+    onError: (err: any) => {
+      Toast.show({
+        type: 'error',
+        text1: err.message,
+        text2: 'Something Went Wrong',
+      });
+    },
   });
 };
 
@@ -66,12 +79,24 @@ export const verifyOtp = async (data: {email: string; otp: string}) => {
 };
 
 export const useVerifyOtp = (
-  onSuccess?: (data: any) => void,
-  onError?: (error: any) => void,
+  _onSuccess?: (data: any) => void,
+  _onError?: (error: any) => void,
 ) => {
   return useMutation({
     mutationFn: (data: {email: string; otp: string}) => verifyOtp(data),
-    onSuccess,
-    onError,
+    onSuccess: () => {
+      Toast.show({
+        type: 'success',
+        text1: 'OTP verified successfully',
+        // text2: 'Something Went Wrong',
+      });
+    },
+    onError: (err: any) => {
+      Toast.show({
+        type: 'error',
+        text1: err.message,
+        text2: 'Something Went Wrong',
+      });
+    },
   });
 };

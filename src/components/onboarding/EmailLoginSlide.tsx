@@ -7,7 +7,6 @@ export default function EmailLoginSlide({
   setEmail,
   sendOtp,
   isPending,
-  paperTheme,
 }: {
   email: string;
   setEmail: (text: string) => void;
@@ -33,8 +32,11 @@ export default function EmailLoginSlide({
             label="Email"
             mode="outlined"
             keyboardType="email-address"
+            style={{textTransform: 'none'}}
+            autoCapitalize="none"
+            autoCorrect={false}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={text => setEmail(text.toLowerCase())}
           />
 
           <Button
