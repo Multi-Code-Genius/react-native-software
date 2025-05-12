@@ -6,6 +6,7 @@ import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
+  PackedEvent,
   RenderHourProps,
 } from '@howljs/calendar-kit';
 import {useRoute} from '@react-navigation/native';
@@ -85,21 +86,21 @@ const BookingCalenderScreen = ({navigation}) => {
     formData.gameId = venueId;
     formData.nets = 1;
 
-    console.log('formdata65465456+4564564', formData);
+    console.log('object', formData.endTime);
 
-    mutate(formData, {
-      onSuccess: res => {
-        if (res?.booking) {
-          const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
-          setDate(formattedDate);
+    // mutate(formData, {
+    //   onSuccess: res => {
+    //     if (res?.booking) {
+    //       const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
+    //       setDate(formattedDate);
 
-          refetch();
-        }
-      },
-      onError: err => {
-        console.error('Booking creation failed', err);
-      },
-    });
+    //       refetch();
+    //     }
+    //   },
+    //   onError: err => {
+    //     console.error('Booking creation failed', err);
+    //   },
+    // });
   };
 
   const handleModalSubmit = (data: any) => {
@@ -165,8 +166,6 @@ const BookingCalenderScreen = ({navigation}) => {
     ),
     [],
   );
-
-  const snapPoints = ['50%', '75%'];
 
   const handleOpenSheet = (event: any) => {
     setSelectedEvent(event);
