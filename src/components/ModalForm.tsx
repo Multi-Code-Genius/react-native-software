@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ScrollView,
   Text,
@@ -7,15 +7,17 @@ import {
   View,
   StyleSheet,
 } from 'react-native';
-import { Button, Dialog, Portal, useTheme } from 'react-native-paper';
+import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Controller, useForm } from 'react-hook-form';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {Controller, useForm} from 'react-hook-form';
 
 interface Props {
   visible: boolean;
   onDismiss: () => void;
   onSubmit: (data: any) => void;
+  mode?: 'add' | 'edit';
+  defaultValues?: any;
 }
 
 const defaultValues = {
@@ -28,8 +30,31 @@ const defaultValues = {
   totalAmount: 0,
 };
 
-export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
-  const { control, handleSubmit, reset, setValue } = useForm({ defaultValues });
+export default function ModalForm({
+  visible,
+  onDismiss,
+  onSubmit,
+  mode,
+  defaultValues,
+}: Props) {
+  const {control, handleSubmit, reset, setValue} = useForm({
+    defaultValues: defaultValues || {
+      name: '',
+      number: '',
+      date: '',
+      startTime: '',
+      endTime: '',
+      nets: 1,
+      totalAmount: 0,
+    },
+  });
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues, reset]);
+
   const insets = useSafeAreaInsets();
 
   const handleFormSubmit = (data: any) => {
@@ -62,13 +87,13 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
       <Dialog
         visible={visible}
         onDismiss={onDismiss}
-        style={[styles.dialog, { backgroundColor: theme.colors.onPrimary }]}>
+        style={[styles.dialog, {backgroundColor: theme.colors.onPrimary}]}>
         <Dialog.Title>Booking Info</Dialog.Title>
         <Dialog.ScrollArea>
           <View
-            style={[styles.scrollContent, { paddingBottom: insets.bottom + 16 }]}>
+            style={[styles.scrollContent, {paddingBottom: insets.bottom + 16}]}>
             {[
-              { label: 'Name', name: 'name' },
+              {label: 'Name', name: 'name'},
               {
                 label: 'Phone Number',
                 name: 'number',
@@ -79,12 +104,12 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
                 name: 'totalAmount',
                 keyboardType: 'number-pad',
               },
-            ].map(({ label, name, keyboardType }) => (
+            ].map(({label, name, keyboardType}) => (
               <Controller
                 key={name}
                 name={name}
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({field: {onChange, value}}) => (
                   <View style={styles.inputGroup}>
                     <Text style={styles.label}>{label}</Text>
                     <TextInput
@@ -104,14 +129,14 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
                 key={field}
                 name={field}
                 control={control}
-                render={({ field: { onChange, value } }) => (
+                render={({field: {onChange, value}}) => (
                   <View style={styles.inputGroup}>
                     <Text style={styles.label}>
                       {field === 'date'
                         ? 'Date'
                         : field === 'startTime'
-                          ? 'Start Time'
-                          : 'End Time'}
+                        ? 'Start Time'
+                        : 'End Time'}
                     </Text>
                     <TouchableOpacity
                       onPress={() =>
@@ -123,9 +148,10 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
                       style={styles.pickerButton}>
                       <Text style={styles.pickerText}>
                         {value ||
-                          `Select ${field === 'date'
-                            ? 'Date'
-                            : field === 'startTime'
+                          `Select ${
+                            field === 'date'
+                              ? 'Date'
+                              : field === 'startTime'
                               ? 'Start Time'
                               : 'End Time'
                           }`}
@@ -142,15 +168,15 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
           style={{
             width: '100%',
           }}>
-          <Button style={{ width: '30%' }} onPress={onDismiss}>
+          <Button style={{width: '30%'}} onPress={onDismiss}>
             Cancel
           </Button>
           <Button
-            style={{ width: '30%' }}
+            style={{width: '30%'}}
             mode="contained"
-            icon="checkmark-circle"
+            icon={mode === 'edit' ? 'pencil' : 'checkmark-circle'}
             onPress={handleSubmit(handleFormSubmit)}>
-            Book
+            {mode === 'edit' ? 'Update' : 'Book'}
           </Button>
         </Dialog.Actions>
       </Dialog>
@@ -167,9 +193,9 @@ export default function ModalForm({ visible, onDismiss, onSubmit }: Props) {
             pickerMode === 'date'
               ? date.toISOString().split('T')[0]
               : date.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
-              });
+                  hour: '2-digit',
+                  minute: '2-digit',
+                });
           setValue(pickerField!, formatted);
         }}
         onCancel={() => setOpenPicker(false)}
@@ -186,7 +212,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingBottom: 16,
-    paddingVertical: 10
+    paddingVertical: 10,
   },
   inputGroup: {
     marginBottom: 12,

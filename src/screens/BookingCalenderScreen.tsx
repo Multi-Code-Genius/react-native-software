@@ -49,6 +49,8 @@ const BookingCalenderScreen = ({navigation}) => {
   const [datePickerVisible, setDatePickerVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [forceCalendarReset, setForceCalendarReset] = useState(false);
+  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
+  const [formDefaults, setFormDefaults] = useState<any>(null);
 
   const {data, refetch, isRefetching, isLoading} = useBookingInfo({
     gameId: venueId,
@@ -91,6 +93,14 @@ const BookingCalenderScreen = ({navigation}) => {
         console.error('Booking creation failed', err);
       },
     });
+  };
+
+  const handleModalSubmit = (data: any) => {
+    if (modalMode === 'edit') {
+      console.log('Edited booking data:', data);
+    } else {
+      handleCreateBooking(data);
+    }
   };
 
   const handleCancelBooking = (bookingId: any) => {
@@ -259,7 +269,11 @@ const BookingCalenderScreen = ({navigation}) => {
               <Appbar.Action
                 icon="add-circle"
                 color="black"
-                onPress={() => setVisible(true)}
+                onPress={() => {
+                  setModalMode('add');
+                  setFormDefaults(null);
+                  setVisible(true);
+                }}
               />
             </View>
           </Appbar.Header>
@@ -380,17 +394,52 @@ const BookingCalenderScreen = ({navigation}) => {
                       Contact: {selectedEvent?.contact}
                     </Text>
                   </View>
-
-                  <Button
-                    style={styles.cancelButton}
-                    mode="contained"
-                    onPress={() => handleCancelBooking(selectedEvent.id)}>
-                    {isPending ? (
-                      <ActivityIndicator color="#fefdfd" />
-                    ) : (
-                      '  Cancel Booking'
-                    )}
-                  </Button>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      gap: 5,
+                      marginTop: 20,
+                    }}>
+                    <Button
+                      style={{
+                        width: '50%',
+                        borderRadius: 8,
+                      }}
+                      icon="ban"
+                      mode="text"
+                      loading={isPending}
+                      onPress={() => handleCancelBooking(selectedEvent.id)}>
+                      Cancel Booking
+                    </Button>
+                    <Button
+                      style={{width: '50%', borderRadius: 8}}
+                      icon="pencil"
+                      mode="contained"
+                      onPress={() => {
+                        setModalMode('edit');
+                        setFormDefaults({
+                          name: selectedEvent?.title?.split(' - ')[1] || '',
+                          number: selectedEvent?.contact || '',
+                          date: moment(selectedEvent?.start.dateTime).format(
+                            'YYYY-MM-DD',
+                          ),
+                          startTime: moment(
+                            selectedEvent?.start.dateTime,
+                          ).format('hh:mm A'),
+                          endTime: moment(selectedEvent?.end.dateTime).format(
+                            'hh:mm A',
+                          ),
+                          nets: selectedEvent?.net,
+                          totalAmount: selectedEvent?.totalAmount,
+                        });
+                        setVisible(true);
+                        bottomSheetRef.current?.close();
+                      }}>
+                      Edit booking info
+                    </Button>
+                  </View>
                 </View>
               ) : (
                 <ActivityIndicator animating />
@@ -402,7 +451,9 @@ const BookingCalenderScreen = ({navigation}) => {
         <ModalForm
           visible={visible}
           onDismiss={() => setVisible(false)}
-          onSubmit={handleCreateBooking}
+          onSubmit={handleModalSubmit}
+          mode={modalMode}
+          defaultValues={formDefaults}
         />
       </View>
     </SafeAreaView>
@@ -445,21 +496,15 @@ const styles = StyleSheet.create({
 
   sheetContent: {
     flex: 1,
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+    padding: 20,
     backgroundColor: '#F8F8F8',
   },
 
   sheetCard: {
-    backgroundColor: '#ffffff',
+    // backgroundColor: '#ffffff',
     borderRadius: 16,
-    padding: 20,
+
     width: '100%',
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: {width: 0, height: 2},
-    shadowRadius: 4,
-    elevation: 3,
     gap: 12,
   },
 
@@ -477,12 +522,5 @@ const styles = StyleSheet.create({
   sheetText: {
     fontSize: 14,
     color: '#333',
-  },
-
-  cancelButton: {
-    marginTop: 20,
-    borderRadius: 8,
-    backgroundColor: '#749680',
-    borderColor: '#EFFDF4',
   },
 });
