@@ -86,21 +86,19 @@ const BookingCalenderScreen = ({navigation}) => {
     formData.gameId = venueId;
     formData.nets = 1;
 
-    console.log('object', formData.endTime);
+    mutate(formData, {
+      onSuccess: res => {
+        if (res?.booking) {
+          const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
+          setDate(formattedDate);
 
-    // mutate(formData, {
-    //   onSuccess: res => {
-    //     if (res?.booking) {
-    //       const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
-    //       setDate(formattedDate);
-
-    //       refetch();
-    //     }
-    //   },
-    //   onError: err => {
-    //     console.error('Booking creation failed', err);
-    //   },
-    // });
+          refetch();
+        }
+      },
+      onError: err => {
+        console.error('Booking creation failed', err);
+      },
+    });
   };
 
   const handleModalSubmit = (data: any) => {
