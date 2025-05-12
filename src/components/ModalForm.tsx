@@ -242,7 +242,16 @@ export default function ModalForm({
         modal
         open={openPicker}
         date={tempDate}
-        minimumDate={new Date()}
+        minimumDate={
+          pickerMode === 'time' && pickerField !== 'date'
+            ? (() => {
+                const selectedDate = control._formValues?.date;
+                if (!selectedDate) return undefined;
+                const todayStr = new Date().toISOString().split('T')[0];
+                return selectedDate === todayStr ? new Date() : undefined;
+              })()
+            : new Date()
+        }
         mode={pickerMode}
         minuteInterval={30}
         onConfirm={date => {
