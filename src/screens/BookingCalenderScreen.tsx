@@ -243,6 +243,17 @@ const BookingCalenderScreen = ({navigation}) => {
     [],
   );
 
+  const renderCustomHorizontalLine = useCallback(({index, borderColor}) => {
+    return (
+      <View
+        key={`horizontal-line-${index}`}
+        style={{
+          borderColor: 'transparent',
+        }}
+      />
+    );
+  }, []);
+
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <View style={{flex: 1}}>
@@ -316,6 +327,7 @@ const BookingCalenderScreen = ({navigation}) => {
               renderHour={renderHour}
               hourFormat="h:mm a"
               renderEvent={renderEvent}
+              renderCustomHorizontalLine={renderCustomHorizontalLine}
             />
           </ScrollView>
         </CalendarContainer>
