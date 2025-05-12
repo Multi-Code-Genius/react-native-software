@@ -172,8 +172,41 @@ const BookingCalenderScreen = ({navigation}) => {
     setDatePickerVisible(true);
   };
 
-  const renderEvent = useCallback(
-    (event: PackedEvent) => (
+  const renderEvent = useCallback((event: PackedEvent) => {
+    const startTime = moment(event.start.dateTime);
+    const endTime = moment(event.end.dateTime);
+    const duration = moment.duration(endTime.diff(startTime)).asHours();
+
+    const isOneHour = duration === 1;
+
+    if (isOneHour) {
+      return (
+        <View
+          style={{
+            backgroundColor: '#EFFDF4',
+            flex: 1,
+            width: '100%',
+            height: '100%',
+            padding: 12,
+            borderRadius: 20,
+            borderWidth: 1,
+            borderColor: '#BAF7D0',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: 8,
+          }}>
+          <Text variant="titleMedium">{event.title}</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
+            <Icon source="time-outline" size={20} />
+            <Text>
+              {startTime.format('h:mm A')} - {endTime.format('h:mm A')}
+            </Text>
+          </View>
+        </View>
+      );
+    }
+
+    return (
       <View
         style={{
           backgroundColor: '#EFFDF4',
@@ -185,7 +218,7 @@ const BookingCalenderScreen = ({navigation}) => {
           borderWidth: 1,
           borderColor: '#BAF7D0',
           flexDirection: 'column',
-          gap: 8, // Added gap for consistent spacing between children
+          gap: 8,
         }}>
         <View
           style={{
@@ -230,18 +263,16 @@ const BookingCalenderScreen = ({navigation}) => {
             flexDirection: 'row',
             alignItems: 'center',
             gap: 4,
-            marginTop: 4, // Reduced from 10 to create more balanced spacing
+            marginTop: 4,
           }}>
           <Icon source="time-outline" size={20} />
           <Text>
-            {new Date(event.start.dateTime).toLocaleTimeString()}-
-            {new Date(event.end.dateTime).toLocaleTimeString()}
+            {startTime.format('h:mm A')} - {endTime.format('h:mm A')}
           </Text>
         </View>
       </View>
-    ),
-    [],
-  );
+    );
+  }, []);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
