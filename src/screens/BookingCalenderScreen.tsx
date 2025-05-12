@@ -36,6 +36,7 @@ import {
 } from '../api/booking';
 import ModalForm from '../components/ModalForm';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
+import {Easing} from 'react-native-reanimated';
 
 const BookingCalenderScreen = ({navigation}) => {
   const route = useRoute();
@@ -392,11 +393,17 @@ const BookingCalenderScreen = ({navigation}) => {
           <BottomSheet
             ref={bottomSheetRef}
             backdropComponent={renderBackdrop}
+            index={-1}
             snapPoints={['40%']}
             handleStyle={{
               backgroundColor: '#F8F8F8',
             }}
             enablePanDownToClose={true}
+            animationConfigs={{
+              duration: 1000,
+              stiffness: 0,
+              easing: Easing.out(Easing.exp),
+            }}
             enableDynamicSizing={true}>
             <BottomSheetView style={styles.sheetContent}>
               {selectedEvent ? (

@@ -21,6 +21,7 @@ const HomeScreen = () => {
   const renderItem = ({item}: any) => {
     return (
       <TouchableOpacity
+        activeOpacity={1}
         onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
         <View style={styles.card}>
           <Image source={{uri: item?.images?.[0]}} style={styles.image} />
