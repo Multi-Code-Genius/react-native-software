@@ -310,6 +310,15 @@ const BookingCalenderScreen = ({navigation}) => {
                   setModalMode('add');
                   setFormDefaults(null);
                   setVisible(true);
+                  setFormDefaults({
+                    name: '',
+                    number: '',
+                    date: '',
+                    startTime: '',
+                    endTime: '',
+                    nets: '',
+                    totalAmount: '',
+                  });
                 }}
               />
             </View>
@@ -377,15 +386,12 @@ const BookingCalenderScreen = ({navigation}) => {
         <Portal>
           <BottomSheet
             ref={bottomSheetRef}
-            index={-1}
-            snapPoints={snapPoints}
             backdropComponent={renderBackdrop}
-            enablePanDownToClose={true}
-            onChange={index => {
-              if (index === -1) {
-                setSelectedEvent(null);
-              }
+            snapPoints={['40%']}
+            handleStyle={{
+              backgroundColor: '#F8F8F8',
             }}
+            enablePanDownToClose={true}
             enableDynamicSizing={true}>
             <BottomSheetView style={styles.sheetContent}>
               {selectedEvent ? (
