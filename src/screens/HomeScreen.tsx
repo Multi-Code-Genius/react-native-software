@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Card, Divider, Icon, Text, useTheme} from 'react-native-paper';
+import {Button, Divider, Icon, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenue} from '../api/vanue';
 

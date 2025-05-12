@@ -3,6 +3,7 @@ import queryClient from '../config/queryClient';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
 import {VenueFormDetails} from '../types/venue';
+import {createGame} from '../services/gameService';
 
 export const getVanues = async () => {
   try {
@@ -28,37 +29,6 @@ export const useGetVenue = (
     queryFn: getVanues,
   });
 };
-
-export const addVenue = async (data: Partial<VenueFormData>) => {
-  try {
-    const response = await api('/api/game/create', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      cache: 'no-store',
-      body: JSON.stringify(data),
-    });
-
-    return response;
-  } catch (error) {
-    console.error('message Error:', error);
-    throw new Error(error instanceof Error ? error.message : 'message failed');
-  }
-};
-
-export const useAddVenue = (
-  _onSuccess?: (data: any) => void,
-  onError?: (error: any) => void,
-) => {
-  return useMutation<any, Error, Partial<VenueFormData>>({
-    mutationFn: data => addVenue(data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['vanues']});
-      useVenueStore.getState().resetForm();
-    },
-    onError,
-  });
-};
-
 export const venueById = async (id: any) => {
   try {
     const response = await api(`/api/game/id/${id}`, {
@@ -124,5 +94,16 @@ export const useEditVenueDetails = (
       console.error('Failed to update venue:', error);
       onError?.(error);
     },
+  });
+};
+
+export const useCreateGame = (
+  onSuccess?: (data: any) => void,
+  onError?: (error: Error) => void,
+) => {
+  return useMutation({
+    mutationFn: createGame,
+    onSuccess,
+    onError,
   });
 };

@@ -10,13 +10,13 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {Asset, launchImageLibrary} from 'react-native-image-picker';
 import {useVenueStore} from '../store/useVenueStore';
 
 const MAX_IMAGES = 10;
 
 const ImageUpload = () => {
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<Asset[]>([]);
   const updateField = useVenueStore(state => state.updateField);
 
   const requestPermission = async () => {
@@ -51,13 +51,15 @@ const ImageUpload = () => {
         quality: 1,
       },
       response => {
-        if (response.didCancel) return;
-        if (response.errorMessage) {
+        if (response.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (response.errorMessage) {
           Alert.alert('Error', response.errorMessage);
         } else if (response.assets && response.assets.length > 0) {
-          const uri = response.assets[0].uri;
-          if (uri && images.length < MAX_IMAGES) {
-            const newImages = [...images, uri];
+          const asset = response.assets[0];
+          if (asset.uri && images.length < MAX_IMAGES) {
+            const newImages = [...images, asset];
+
             setImages(newImages);
             updateField('images', newImages);
           }
@@ -79,7 +81,7 @@ const ImageUpload = () => {
       <View style={styles.imageGrid}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageWrapper}>
-            <Image source={{uri: img}} style={styles.image} />
+            <Image source={{uri: img.uri}} style={styles.image} />
             <Pressable
               onPress={() => removeImage(index)}
               style={styles.removeButton}>

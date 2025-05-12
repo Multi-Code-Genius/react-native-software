@@ -2,17 +2,21 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useAddVenue} from '../api/vanue';
+import {useCreateGame} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
-import VenueDetails from '../components/VenueDetails';
-import {useVenueStore} from '../store/useVenueStore';
 import ImageUpload from '../components/ImageUplod';
+import VenueDetails from '../components/VenueDetails';
+import {useAuthStore} from '../store/authStore';
+import {useVenueStore} from '../store/useVenueStore';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
 
-  const {mutate, isPending} = useAddVenue();
+  const {mutate: createGameMutate, isPending} = useCreateGame(
+    data => console.log('Success:', data),
+    error => console.log('Error:', error.message),
+  );
 
   const validateStep = () => {
     if (currentStep === 0) {
@@ -68,7 +72,35 @@ const AddVenueScreen = () => {
       setCurrentStep(currentStep + 1);
     } else {
       console.log('All steps completed');
-      mutate(formData);
+
+      const images = formData.images?.filter(img => img?.uri) || [];
+
+      createGameMutate({
+        name: formData?.name!,
+        category: formData.category!,
+        description: formData.description!,
+        hourlyPrice: 23,
+        capacity: 45,
+        net: 1,
+        token: useAuthStore.getState().token || '',
+        location: {
+          city: formData.location?.city!,
+          area: formData.location?.area!,
+          address: formData.address!,
+        },
+        gameInfo: {
+          surface: formData.gameInfo?.surface!,
+          indoor: !!formData.gameInfo?.indoor!,
+          outdoor: !!formData.gameInfo?.indoor!,
+          roof: !!formData.gameInfo?.roof!,
+          equipmentProvided: false,
+        },
+        images: images.map((img, index) => ({
+          uri: img.uri,
+          name: img.fileName || `image_${index}.jpg`,
+          type: img.type || 'image/jpeg',
+        })),
+      });
     }
   };
 
