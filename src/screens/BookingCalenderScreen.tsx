@@ -90,6 +90,7 @@ const BookingCalenderScreen = ({navigation}) => {
       console.warn('Please fill in all fields and select a time slot.');
       return;
     }
+    console.log('name', name);
     Keyboard.dismiss();
     mutate(
       {
@@ -106,7 +107,7 @@ const BookingCalenderScreen = ({navigation}) => {
         onSuccess: () => {
           refetch();
           resetForm();
-          bottomSheetRef.current?.forceClose();
+          bottomSheetRef.current?.close();
         },
       },
     );
@@ -124,6 +125,8 @@ const BookingCalenderScreen = ({navigation}) => {
     [],
   );
 
+  console.log('formattedEvents', formattedEvents);
+
   return (
     <View style={styles.container}>
       <BookingScreenAppBar navigation={navigation} />
@@ -139,7 +142,6 @@ const BookingCalenderScreen = ({navigation}) => {
           setInitialDate(moment(date).format('DD-MM-YYYY'))
         }
         dragStep={30}
-        allowDragToEdit
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}>
         <CalendarHeader />
