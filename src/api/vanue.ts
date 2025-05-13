@@ -122,6 +122,7 @@ export const useCreateGame = (
   return useMutation({
     mutationFn: createGame,
     onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['vanues']});
       showToast({
         message: 'Venue created successfully!',
         type: 'success',
