@@ -16,7 +16,7 @@ const getDashboardData = async (venueId: string) => {
   }
 };
 
-export const useDashboardData = (venueId: string) => {
+export const useDashboardData = (venueId: string, userId: string) => {
   return useQuery({
     queryKey: ['dashboard', venueId],
     queryFn: () => getDashboardData(venueId),
@@ -24,6 +24,6 @@ export const useDashboardData = (venueId: string) => {
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     retry: 0,
-    enabled: !!venueId,
+    enabled: !!venueId && !!userId,
   });
 };

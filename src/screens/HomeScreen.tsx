@@ -1,23 +1,35 @@
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   RefreshControl,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {PieChart} from 'react-native-chart-kit';
-import {Card, Text, Title} from 'react-native-paper';
+import {ActivityIndicator, Card, Text, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
 import DashboardBarChart from '../components/DashboardBarChart';
+import {useAccountLogic} from '../hooks/useAccountLogic';
 
 const screenWidth = Dimensions.get('window').width;
 
 const HomeScreen = () => {
+  const {account, isLoading: accountLoading} = useAccountLogic();
+
+  const [selectedVenue, setSelectedVenue] = useState<string>('');
+
+  useEffect(() => {
+    if (account?.games?.length > 0) {
+      setSelectedVenue(account.games[0].id);
+    }
+  }, [account]);
   const {data, refetch, isLoading} = useDashboardData(
-    '7eb4708b-463e-41e0-be17-ea323cd1a172',
+    selectedVenue,
+    account?.user?.id || '',
   );
 
   const [refreshing, setRefreshing] = useState(false);
@@ -63,6 +75,14 @@ const HomeScreen = () => {
     },
   ];
 
+  if (accountLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <ScrollView
@@ -71,6 +91,30 @@ const HomeScreen = () => {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
         <Title style={styles.heading}>Dashboard</Title>
+        {/* Venue Switch Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabContainer}>
+          {account &&
+            account?.games.map((venue: any) => (
+              <TouchableOpacity
+                key={venue.id}
+                style={[
+                  styles.tabButton,
+                  selectedVenue === venue.id && styles.tabButtonActive,
+                ]}
+                onPress={() => setSelectedVenue(venue.id)}>
+                <Text
+                  style={[
+                    styles.tabButtonText,
+                    selectedVenue === venue.id && styles.tabButtonTextActive,
+                  ]}>
+                  {venue.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
 
         <View style={styles.cardRow}>
           <Card style={styles.card}>
@@ -142,26 +186,30 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
-  touchOverlay: {
-    position: 'absolute',
-    top: 50,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 16,
-  },
-  touchableZone: {
-    width: 30,
-    textAlign: 'center',
-    color: '#000',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
   container: {
     padding: 16,
     backgroundColor: '#f5f5f5',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  tabButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#ddd',
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: '#2196f3',
+  },
+  tabButtonText: {
+    color: '#000',
+    fontWeight: '500',
+  },
+  tabButtonTextActive: {
+    color: '#fff',
   },
   heading: {
     marginBottom: 16,
@@ -182,10 +230,6 @@ const styles = StyleSheet.create({
     marginTop: 24,
     marginBottom: 8,
     fontSize: 18,
-  },
-  chart: {
-    borderRadius: 8,
-    marginBottom: 30,
   },
 });
 

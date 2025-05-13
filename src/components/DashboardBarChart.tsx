@@ -10,13 +10,13 @@ const DashboardBarChart = ({data}: {data: any}) => {
     datasets: [
       {
         data: [
-          data.Sunday,
-          data.Monday,
-          data.Tuesday,
-          data.Wednesday,
-          data.Thursday,
-          data.Friday,
-          data.Saturday,
+          data?.Sunday,
+          data?.Monday,
+          data?.Tuesday,
+          data?.Wednesday,
+          data?.Thursday,
+          data?.Friday,
+          data?.Saturday,
         ],
       },
     ],
