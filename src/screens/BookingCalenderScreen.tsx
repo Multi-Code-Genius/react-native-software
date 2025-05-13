@@ -14,7 +14,7 @@ import BottomSheet, {
   BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import {Button, Portal, Text, TextInput} from 'react-native-paper';
+import {Button, Portal, Text, TextInput, useTheme} from 'react-native-paper';
 
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
@@ -28,6 +28,7 @@ import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 
 const BookingCalenderScreen = ({navigation}) => {
+  const theme = useTheme();
   const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
   const route = useRoute();
   const {venueId, price} = route?.params || {};
@@ -166,20 +167,23 @@ const BookingCalenderScreen = ({navigation}) => {
             </View>
 
             <BottomSheetTextInput
-              placeholder="Enter Name"
+              placeholderTextColor="#888"
+              placeholder="Full Name (e.g., John Doe)"
               value={name}
               onChangeText={setName}
               style={styles.input}
             />
             <BottomSheetTextInput
-              placeholder="Enter Number"
+              placeholderTextColor="#888"
+              placeholder="Phone Number (e.g., +1 234 567 890)"
               value={number}
               onChangeText={setNumber}
               keyboardType="phone-pad"
               style={styles.input}
             />
             <BottomSheetTextInput
-              placeholder="Enter Amount"
+              placeholderTextColor="#888"
+              placeholder="Amount (e.g., 250.00)"
               value={amount}
               onChangeText={setAmount}
               keyboardType="numeric"
@@ -231,5 +235,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
+    color: '#000',
   },
 });
