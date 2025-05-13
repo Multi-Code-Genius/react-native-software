@@ -4,6 +4,8 @@ import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
 import {VenueFormDetails} from '../types/venue';
 import {createGame} from '../services/gameService';
+import {useToast} from '../context/ToastContext';
+import {useNavigation} from '@react-navigation/native';
 
 export const getVanues = async () => {
   try {
@@ -75,6 +77,8 @@ export const useEditVenueDetails = (
   _onSuccess?: (data: any) => void,
   onError?: (error: any) => void,
 ) => {
+  const {showToast} = useToast();
+
   return useMutation({
     mutationFn: ({
       data,
@@ -89,21 +93,49 @@ export const useEditVenueDetails = (
       queryClient.invalidateQueries({queryKey: ['vanues']});
       queryClient.invalidateQueries({queryKey: ['venueId']});
       _onSuccess?.(data);
+      showToast({
+        message: 'Updated Venue successfully!',
+        type: 'success',
+        actionLabel: 'Continue',
+        // onActionPress: () => {
+        //   navigation.navigate('Account');
+        // },
+      });
     },
     onError: error => {
       console.error('Failed to update venue:', error);
       onError?.(error);
+      showToast({
+        message: error.message,
+        type: 'error',
+      });
     },
   });
 };
 
 export const useCreateGame = (
-  onSuccess?: (data: any) => void,
-  onError?: (error: Error) => void,
+  _onSuccess?: (data: any) => void,
+  _onError?: (error: Error) => void,
 ) => {
+  const {showToast} = useToast();
+  const navigation = useNavigation();
   return useMutation({
     mutationFn: createGame,
-    onSuccess,
-    onError,
+    onSuccess: () => {
+      showToast({
+        message: 'Venue created successfully!',
+        type: 'success',
+        actionLabel: 'Continue',
+        // onActionPress: () => {
+        //   navigation.navigate('Bookings');
+        // },
+      });
+    },
+    onError: error => {
+      showToast({
+        message: error.message,
+        type: 'error',
+      });
+    },
   });
 };

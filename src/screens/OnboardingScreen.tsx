@@ -21,10 +21,6 @@ const OnboardingScreen = () => {
   const {mutate: requestOtp, isPending} = useRequestOtp();
   const {mutate: verifyOtp} = useVerifyOtp();
 
-  setTimeout(() => {
-    Toast.hide();
-  }, 2000); // hides after 2 seconds
-
   const sendOtp = () => {
     if (!email.includes('@')) {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');

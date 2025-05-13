@@ -1,6 +1,7 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 import queryClient from '../config/queryClient';
+import {useToast} from '../context/ToastContext';
 
 const fetchBooking = async (data: any) => {
   try {
@@ -59,13 +60,26 @@ const createBooking = async (data: any) => {
 };
 
 export const useCreateBooking = (
-  onSuccess?: () => void,
-  onError?: () => void,
+  _onSuccess?: () => void,
+  _onError?: () => void,
 ) => {
+  const {showToast} = useToast();
+
   return useMutation({
     mutationFn: (data: any) => createBooking(data),
-    onSuccess,
-    onError,
+    onSuccess: () => {
+      showToast({
+        message: 'Booking Done!',
+        type: 'success',
+        actionLabel: 'Continue',
+      });
+    },
+    onError: (err: any) => {
+      showToast({
+        message: err.message,
+        type: 'error',
+      });
+    },
   });
 };
 
@@ -85,14 +99,26 @@ const cancelBooking = async (id: string) => {
 };
 
 export const useCancelBooking = (
-  onSuccess?: () => void,
-  onError?: () => void,
+  _onSuccess?: () => void,
+  _onError?: () => void,
 ) => {
+  const {showToast} = useToast();
+
   return useMutation({
     mutationFn: (id: string) => cancelBooking(id),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['booking']});
+      showToast({
+        message: 'Cancel Booking!',
+        type: 'success',
+        actionLabel: 'Continue',
+      });
     },
-    onError,
+    onError: (err: any) => {
+      showToast({
+        message: err.message,
+        type: 'error',
+      });
+    },
   });
 };

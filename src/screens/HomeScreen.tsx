@@ -91,7 +91,7 @@ const HomeScreen = () => {
               // onPress={() => navigation.navigate('Account')}
               onPress={() => {
                 showToast({
-                  message: 'Venue added successfully',
+                  message: 'Click on continue for Profile -->>',
                   type: 'success',
                   actionLabel: 'Continue',
                   onActionPress: () => {
