@@ -1,4 +1,4 @@
-import {useMutation, useQuery, useQueryClient} from '@tanstack/react-query';
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 import {useAuthStore} from '../store/authStore';
 import queryClient from '../config/queryClient';
@@ -76,8 +76,6 @@ export const useUploadImage = (
   onSuccess?: (response: any) => void,
   onError?: (error: any) => void,
 ) => {
-  const queryClient = useQueryClient();
-
   return useMutation({
     mutationFn: ({id, payload}: {id: string; payload: FormData}) =>
       imageuploading(id, payload),

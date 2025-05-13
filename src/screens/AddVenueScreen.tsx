@@ -2,21 +2,38 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useCreateGame} from '../api/vanue';
+import {useCreateGame, useVanueImageUploading} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
 import {useAuthStore} from '../store/authStore';
 import {useVenueStore} from '../store/useVenueStore';
-import {useNavigation} from '@react-navigation/native';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
-  const navigation = useNavigation();
+  const {mutate: uploadImageMutate} = useVanueImageUploading(
+    data => console.log('Success:', data),
+    error => console.log('Error:', error.message),
+  );
 
   const {mutate: createGameMutate, isPending} = useCreateGame(
-    data => console.log('Success:', data),
+    data => {
+      console.log('Success:', data);
+      const images = formData.images ?? [];
+      const formDataObj = new FormData();
+
+      formDataObj.append('game', {
+        uri: images[0].uri,
+        name: images[0].fileName || `image_0.jpg`,
+        type: images[0].type || 'image/jpeg',
+      });
+
+      uploadImageMutate({
+        id: data.game.id,
+        payload: formDataObj,
+      });
+    },
     error => console.log('Error:', error.message),
   );
 
@@ -154,6 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     backgroundColor: 'white',
     margin: 'auto',
+    marginBottom: 10,
     width: '95%',
     borderRadius: 10,
     elevation: 10,

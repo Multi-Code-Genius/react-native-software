@@ -1,11 +1,12 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import queryClient from '../config/queryClient';
 import {api} from '../hooks/api';
-import {useVenueStore, VenueFormData} from '../store/useVenueStore';
-import {VenueFormDetails} from '../types/venue';
 import {createGame} from '../services/gameService';
 import {useToast} from '../context/ToastContext';
 import {useNavigation} from '@react-navigation/native';
+import {VenueFormDetails} from '../types/venue';
+import {useAuthStore} from '../store/authStore';
+import {BASE_URL} from '@env';
 
 export const getVanues = async () => {
   try {
@@ -138,5 +139,44 @@ export const useCreateGame = (
         type: 'error',
       });
     },
+  });
+};
+
+const vanueImageuploading = async (id: string, payload: any) => {
+  console.log('payload', payload);
+
+  const response = await fetch(`${BASE_URL}/api/game/add-images/${id}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${useAuthStore.getState().token}`,
+    },
+    body: payload,
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Upload failed: ${errorText}`);
+  }
+
+  return await response.json();
+};
+
+export const useVanueImageUploading = (
+  onSuccess?: (response: any) => void,
+  onError?: (error: any) => void,
+) => {
+  return useMutation({
+    mutationFn: ({id, payload}: {id: string; payload: FormData}) =>
+      vanueImageuploading(id, payload),
+
+    onSuccess: data => {
+      queryClient.invalidateQueries({queryKey: ['vanues']});
+
+      if (onSuccess) {
+        onSuccess(data);
+      }
+    },
+
+    onError,
   });
 };

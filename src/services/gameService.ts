@@ -48,13 +48,13 @@ export const createGame = async (data: GameFormData) => {
     data.gameInfo.equipmentProvided.toString(),
   );
 
-  data.images.forEach(image => {
-    formData.append('game', {
-      uri: image.uri,
-      name: image.name,
-      type: image.type,
-    } as any);
-  });
+  // data.images.forEach(image => {
+  //   formData.append('game', {
+  //     uri: image.uri,
+  //     name: image.name,
+  //     type: image.type,
+  //   } as any);
+  // });
 
   const response = await fetch(`${BASE_URL}/api/game/create`, {
     method: 'POST',
