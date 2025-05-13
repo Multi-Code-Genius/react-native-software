@@ -25,7 +25,6 @@ export const VenueByIdDetailsScreen = () => {
   const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
     setShowCancelConfirm(false);
   });
-
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const theme = useTheme();
 
@@ -64,7 +63,6 @@ export const VenueByIdDetailsScreen = () => {
         <View style={styles.iconContainer}>
           <View style={styles.editRow}>
             <View style={{flex: 1}} />
-
             <IconButton
               icon={'pencil'}
               size={22}

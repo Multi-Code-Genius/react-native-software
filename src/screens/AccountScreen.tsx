@@ -57,6 +57,8 @@ const AccountScreen = () => {
     const onPress = () => {
       if (item.title === 'Logout') {
         showDialog();
+      } else if (item.title === 'Venue Manage') {
+        (navigation as any).navigate('VenueManage');
       } else {
         console.log(`${item.title} clicked`);
       }
