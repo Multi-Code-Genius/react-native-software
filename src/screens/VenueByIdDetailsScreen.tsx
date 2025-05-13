@@ -1,15 +1,19 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ActivityIndicator,
   Button,
+  Dialog,
   Divider,
   Icon,
+  IconButton,
+  Portal,
   Text,
+  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useGetVenueById} from '../api/vanue';
+import {useDeleteVenue, useGetVenueById} from '../api/vanue';
 
 type GameInfoKeys = 'indoor' | 'outdoor' | 'roof';
 
@@ -18,6 +22,12 @@ export const VenueByIdDetailsScreen = () => {
   const navigation = useNavigation();
   const venueById = route.params as {id?: string};
   const {data, isLoading} = useGetVenueById(venueById?.id);
+  const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
+    setShowCancelConfirm(false);
+  });
+
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const theme = useTheme();
 
   if (isLoading) {
     return (
@@ -44,21 +54,33 @@ export const VenueByIdDetailsScreen = () => {
     key => gameInfo[key] === 'true',
   );
 
+  const handleDeleteVenue = (VenueId: any) => {
+    deleteVenueMutation(VenueId);
+  };
+
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.iconContainer}>
           <View style={styles.editRow}>
             <View style={{flex: 1}} />
-            <Button
-              mode="contained"
+
+            <IconButton
+              icon={'pencil'}
+              size={22}
+              iconColor="#306ef2"
               onPress={() =>
                 navigation.navigate('EditVenueDetails', {id: venueById?.id})
               }
-              style={styles.editButton}
-              labelStyle={{fontSize: 12}}>
-              Edit
-            </Button>
+            />
+            <IconButton
+              icon={'trash'}
+              size={22}
+              iconColor="#f53333"
+              onPress={() => {
+                setShowCancelConfirm(true);
+              }}
+            />
           </View>
           <Divider className="mb-2" />
           {game.images?.[0] && (
@@ -162,6 +184,30 @@ export const VenueByIdDetailsScreen = () => {
             </View>
           </View>
         </View>
+        <Portal>
+          <Dialog
+            style={{backgroundColor: theme.colors.onPrimary}}
+            visible={showCancelConfirm}
+            onDismiss={() => setShowCancelConfirm(false)}>
+            <Dialog.Title>Delete Confirmation</Dialog.Title>
+            <Dialog.Content>
+              <Text>Are you sure you want to delete this venue?</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <Button onPress={() => setShowCancelConfirm(false)}>No</Button>
+              <Button
+                loading={isPending}
+                onPress={() => {
+                  if (venueById?.id) {
+                    handleDeleteVenue(venueById?.id);
+                    setShowCancelConfirm(false);
+                  }
+                }}>
+                Yes
+              </Button>
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
       </ScrollView>
     </SafeAreaView>
   );

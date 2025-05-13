@@ -180,3 +180,31 @@ export const useVanueImageUploading = (
     onError,
   });
 };
+
+export const deleteVenueDetails = async (venueId: any) => {
+  try {
+    const response = await api(`/api/game/delete-venue/${venueId}`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    console.log('Something is not working', error);
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useDeleteVenue = (
+  _onSuccess?: () => void,
+  onError?: () => void,
+) => {
+  return useMutation({
+    mutationFn: (id: string) => deleteVenueDetails(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['vanues']});
+    },
+    onError,
+  });
+};
