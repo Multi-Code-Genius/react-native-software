@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -8,25 +8,48 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Divider, Icon, Text, useTheme} from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  Divider,
+  Icon,
+  IconButton,
+  Portal,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useGetVenue} from '../api/vanue';
+import {useDeleteVenue, useGetVenue} from '../api/vanue';
 import {useToast} from '../context/ToastContext';
 
 const VenueManageScreen = () => {
+  const route = useRoute();
   const navigation = useNavigation();
   const {colors} = useTheme();
-
   const {data, isLoading} = useGetVenue();
+  console.log('data,', data);
+  const venueById = route.params as {id?: string};
   const {showToast} = useToast();
+  const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
+    setShowCancelConfirm(false);
+  });
+
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(null);
+  const theme = useTheme();
+  const handleDeleteVenue = () => {
+    if (selectedVenueId) {
+      deleteVenueMutation(selectedVenueId);
+    }
+  };
 
   const renderItem = ({item}: any) => {
     return (
       <TouchableOpacity
-        activeOpacity={1}
+        activeOpacity={0.9}
         onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
         <View style={styles.card}>
-          <Image source={{uri: item?.images?.[0]}} style={styles.image} />
+          {/* <Image source={{uri: item?.images?.[0]}} style={styles.image} /> */}
           <View style={styles.info}>
             <Text style={styles.title}>{item.name}</Text>
             <Text>{item.category}</Text>
@@ -38,6 +61,17 @@ const VenueManageScreen = () => {
             <Text style={styles.location}>
               {item.location?.area} - {item.location?.city}
             </Text>
+          </View>
+          <View style={{alignItems: 'flex-start'}}>
+            <IconButton
+              icon={'trash'}
+              size={22}
+              iconColor="#f53333"
+              onPress={() => {
+                setSelectedVenueId(item.id);
+                setShowCancelConfirm(true);
+              }}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -64,9 +98,7 @@ const VenueManageScreen = () => {
             <FlatList
               data={data.games}
               renderItem={renderItem}
-              keyExtractor={(item: any) =>
-                item.id?.toString() ?? Math.random().toString()
-              }
+              keyExtractor={(item: any) => item.id?.toString()}
               showsVerticalScrollIndicator={false}
             />
           </View>
@@ -85,7 +117,6 @@ const VenueManageScreen = () => {
             </Text>
             <Button
               mode="contained"
-              // onPress={() => navigation.navigate('Account')}
               onPress={() => {
                 showToast({
                   message: 'Click on continue for Profile -->',
@@ -116,6 +147,30 @@ const VenueManageScreen = () => {
           </View>
         )}
       </View>
+
+      {/* Delete Confirmation Dialog */}
+      <Portal>
+        <Dialog
+          style={{backgroundColor: theme.colors.onPrimary}}
+          visible={showCancelConfirm}
+          onDismiss={() => setShowCancelConfirm(false)}>
+          <Dialog.Title>Delete Confirmation</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to delete this venue?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setShowCancelConfirm(false)}>No</Button>
+            <Button
+              loading={isPending}
+              onPress={() => {
+                setShowCancelConfirm(false);
+                handleDeleteVenue();
+              }}>
+              Yes
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </SafeAreaView>
   );
 };
@@ -167,10 +222,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: '600',
   },
   button: {
     alignSelf: 'flex-start',

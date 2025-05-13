@@ -22,10 +22,7 @@ export const VenueByIdDetailsScreen = () => {
   const navigation = useNavigation();
   const venueById = route.params as {id?: string};
   const {data, isLoading} = useGetVenueById(venueById?.id);
-  const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
-    setShowCancelConfirm(false);
-  });
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+
   const theme = useTheme();
 
   if (isLoading) {
@@ -53,38 +50,21 @@ export const VenueByIdDetailsScreen = () => {
     key => gameInfo[key] === 'true',
   );
 
-  const handleDeleteVenue = (VenueId: any) => {
-    deleteVenueMutation(VenueId);
-  };
-
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.iconContainer}>
-          <View style={styles.editRow}>
-            <View style={{flex: 1}} />
-            <IconButton
-              icon={'pencil'}
-              size={22}
-              iconColor="#306ef2"
-              onPress={() =>
-                navigation.navigate('EditVenueDetails', {id: venueById?.id})
-              }
-            />
-            <IconButton
-              icon={'trash'}
-              size={22}
-              iconColor="#f53333"
-              onPress={() => {
-                setShowCancelConfirm(true);
-              }}
-            />
-          </View>
-          <Divider className="mb-2" />
-          {game.images?.[0] && (
-            <Image source={{uri: game.images[0]}} style={styles.image} />
-          )}
+        <View style={styles.editRow}>
+          <View style={{flex: 1}} />
+          <IconButton
+            icon={'pencil'}
+            size={22}
+            iconColor="#306ef2"
+            onPress={() =>
+              navigation.navigate('EditVenueDetails', {id: venueById?.id})
+            }
+          />
         </View>
+        <Divider className="mb-2" />
         <View style={styles.card}>
           <View style={styles.cardContainer}>
             <View style={styles.columnContainer}>
@@ -182,30 +162,6 @@ export const VenueByIdDetailsScreen = () => {
             </View>
           </View>
         </View>
-        <Portal>
-          <Dialog
-            style={{backgroundColor: theme.colors.onPrimary}}
-            visible={showCancelConfirm}
-            onDismiss={() => setShowCancelConfirm(false)}>
-            <Dialog.Title>Delete Confirmation</Dialog.Title>
-            <Dialog.Content>
-              <Text>Are you sure you want to delete this venue?</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => setShowCancelConfirm(false)}>No</Button>
-              <Button
-                loading={isPending}
-                onPress={() => {
-                  if (venueById?.id) {
-                    handleDeleteVenue(venueById?.id);
-                    setShowCancelConfirm(false);
-                  }
-                }}>
-                Yes
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -228,22 +184,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 100,
   },
-  iconContainer: {
-    borderColor: '#000',
-    borderWidth: 1.5,
-    borderRadius: 10,
-    padding: 10,
-    borderStyle: 'solid',
-    marginBottom: 16,
-  },
-
   editRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 8,
   },
-
   editButton: {
     paddingHorizontal: 12,
     paddingVertical: 4,

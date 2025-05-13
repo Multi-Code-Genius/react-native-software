@@ -73,11 +73,6 @@ const EditVenueDetailsScreen = () => {
       formData={formData}
       setFormData={setFormData}
     />,
-    <EditImageUploadComponent
-      key="step3"
-      formData={formData}
-      setFormData={setFormData}
-    />,
   ];
 
   const goNext = () => {
