@@ -62,41 +62,41 @@ export default function ModalForm({
   const watchStartTime = useWatch({control, name: 'startTime'});
   const watchEndTime = useWatch({control, name: 'endTime'});
 
-  useEffect(() => {
-    if (!watchStartTime || !watchEndTime || !price) return;
+  // useEffect(() => {
+  //   if (!watchStartTime || !watchEndTime || !price) return;
 
-    const convertTo24Hour = (timeStr: any) => {
-      const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
-      const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
-      const [hourStr, minuteStr] = time.split(':');
+  //   const convertTo24Hour = (timeStr: any) => {
+  //     const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
+  //     const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
+  //     const [hourStr, minuteStr] = time.split(':');
 
-      let hour = parseInt(hourStr, 10);
-      const minute = parseInt(minuteStr, 10);
+  //     let hour = parseInt(hourStr, 10);
+  //     const minute = parseInt(minuteStr, 10);
 
-      if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
-      if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
+  //     if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+  //     if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
 
-      return {hour, minute};
-    };
+  //     return {hour, minute};
+  //   };
 
-    try {
-      const start = convertTo24Hour(watchStartTime);
-      const end = convertTo24Hour(watchEndTime);
+  //   try {
+  //     const start = convertTo24Hour(watchStartTime);
+  //     const end = convertTo24Hour(watchEndTime);
 
-      const startMs = start.hour * 60 + start.minute;
-      const endMs = end.hour * 60 + end.minute;
+  //     const startMs = start.hour * 60 + start.minute;
+  //     const endMs = end.hour * 60 + end.minute;
 
-      const diffMinutes = endMs - startMs;
-      if (diffMinutes <= 0) return;
+  //     const diffMinutes = endMs - startMs;
+  //     if (diffMinutes <= 0) return;
 
-      const durationHours = diffMinutes / 60;
-      const total = Math.round(durationHours * Number(price));
+  //     const durationHours = diffMinutes / 60;
+  //     const total = Math.round(durationHours * Number(price));
 
-      setValue('totalAmount', total);
-    } catch (e: any) {
-      console.warn('Invalid time format:', e.message);
-    }
-  }, [watchStartTime, watchEndTime, price, setValue]);
+  //     setValue('totalAmount', total);
+  //   } catch (e: any) {
+  //     console.warn('Invalid time format:', e.message);
+  //   }
+  // }, [watchStartTime, watchEndTime, price, setValue]);
 
   const handleFormSubmit = (data: any) => {
     onSubmit(data);

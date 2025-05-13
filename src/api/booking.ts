@@ -52,6 +52,7 @@ const createBooking = async (data: any) => {
       body: JSON.stringify(data),
     });
     const resp = await response;
+    console.log('ressss', resp);
     return resp;
   } catch (error) {
     console.error('Booking Response:', error);
