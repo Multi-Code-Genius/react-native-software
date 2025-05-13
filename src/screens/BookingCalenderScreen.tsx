@@ -1,5 +1,6 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -10,6 +11,7 @@ import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import {Button, Portal, Text, TextInput} from 'react-native-paper';
@@ -87,7 +89,7 @@ const BookingCalenderScreen = ({navigation}) => {
       console.warn('Please fill in all fields and select a time slot.');
       return;
     }
-
+    Keyboard.dismiss();
     mutate(
       {
         name,
@@ -103,7 +105,7 @@ const BookingCalenderScreen = ({navigation}) => {
         onSuccess: () => {
           refetch();
           resetForm();
-          bottomSheetRef.current?.close();
+          bottomSheetRef.current?.forceClose();
         },
       },
     );
@@ -150,42 +152,41 @@ const BookingCalenderScreen = ({navigation}) => {
       <BottomSheet
         ref={bottomSheetRef}
         index={-1}
-        enableDynamicSizing={true}
+        snapPoints={snapPoints}
         keyboardBehavior="fillParent"
-        backdropComponent={renderBackdrop}
-        enablePanDownToClose>
+        enableDynamicSizing={false}
+        backdropComponent={renderBackdrop}>
         <BottomSheetView style={styles.sheetContent}>
           <View style={styles.formContainer}>
-            <View
-              style={{
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
-              }}>
+            <View style={styles.headerRow}>
               <Text>
                 Booking for slot: {startTime} - {endTime}
               </Text>
               <Text>Date: {initialDate}</Text>
             </View>
-            <TextInput
-              label="Name"
+
+            <BottomSheetTextInput
+              placeholder="Enter Name"
               value={name}
               onChangeText={setName}
-              mode="outlined"
+              style={styles.input}
             />
-            <TextInput
-              label="Contact"
+            <BottomSheetTextInput
+              placeholder="Enter Number"
               value={number}
               onChangeText={setNumber}
-              mode="outlined"
+              keyboardType="phone-pad"
+              style={styles.input}
             />
-            <TextInput
-              label="Amount"
+            <BottomSheetTextInput
+              placeholder="Enter Amount"
               value={amount}
               onChangeText={setAmount}
-              mode="outlined"
+              keyboardType="numeric"
+              style={styles.input}
             />
           </View>
+
           <View style={styles.buttonContainer}>
             <Button
               mode="contained"
@@ -217,5 +218,18 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     padding: 20,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 10,
+  },
+  input: {
+    marginVertical: 8,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
   },
 });
