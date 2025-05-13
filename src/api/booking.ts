@@ -122,3 +122,65 @@ export const useCancelBooking = (
     },
   });
 };
+
+const updateBooking = async (id: string, data: any) => {
+  try {
+    const response = await api(`/api/booking/update/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data),
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    console.log('Booking Response', error);
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useUpdateBooking = (
+  onSuccess?: () => void,
+  onError?: () => void,
+) => {
+  return useMutation({
+    mutationFn: ({id, data}: {id: string; data: any}) =>
+      updateBooking(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['booking']});
+      onSuccess?.();
+    },
+    onError,
+  });
+};
+
+export const updateBookingStatus = async (id: string, status: string) => {
+  try {
+    const response = await api(`/api/booking/status/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({status}),
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    console.log('Booking response', error);
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useUpdateBokkingStatus = (
+  onSuccess?: () => void,
+  onError?: () => void,
+) => {
+  return useMutation({
+    mutationFn: ({id, status}: {id: string; status: string}) =>
+      updateBookingStatus(id, status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['booking']});
+      onSuccess?.();
+    },
+    onError,
+  });
+};
