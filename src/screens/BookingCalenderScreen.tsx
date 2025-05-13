@@ -1,8 +1,17 @@
-import React, {useCallback, useRef} from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useCallback, useRef, useState} from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
-import BottomSheet, {BottomSheetView} from '@gorhom/bottom-sheet';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
 import {Button, Portal, Text, TextInput} from 'react-native-paper';
 
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
@@ -17,6 +26,7 @@ import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 
 const BookingCalenderScreen = ({navigation}) => {
+  const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
   const route = useRoute();
   const {venueId, price} = route?.params || {};
 
@@ -39,7 +49,7 @@ const BookingCalenderScreen = ({navigation}) => {
 
   const {data, refetch, isLoading} = useBookingInfo({
     gameId: venueId,
-    date: '16-05-2025',
+    date: initialDate,
   });
 
   const {mutate, isPending} = useCreateBooking();
@@ -87,7 +97,7 @@ const BookingCalenderScreen = ({navigation}) => {
         totalAmount: parseFloat(amount),
         gameId: venueId,
         nets: 2,
-        date: '2025-05-16',
+        date: moment(initialDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
       },
       {
         onSuccess: () => {
@@ -99,6 +109,18 @@ const BookingCalenderScreen = ({navigation}) => {
     );
   };
 
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        {...props}
+        disappearsOnIndex={-1}
+        appearsOnIndex={0}
+        pressBehavior="close"
+      />
+    ),
+    [],
+  );
+
   return (
     <View style={styles.container}>
       <BookingScreenAppBar navigation={navigation} />
@@ -108,59 +130,72 @@ const BookingCalenderScreen = ({navigation}) => {
         numberOfDays={1}
         events={formattedEvents}
         allowDragToCreate
+        scrollByDay
+        initialDate={initialDate}
+        onDateChanged={date =>
+          setInitialDate(moment(date).format('DD-MM-YYYY'))
+        }
         dragStep={30}
         allowDragToEdit
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}>
         <CalendarHeader />
-        <ScrollView style={{flex: 1}}>
-          <CalendarBody hourFormat="h:mm a" renderHour={renderHour} />
-        </ScrollView>
+        <CalendarBody
+          hourFormat="h:mm a"
+          renderHour={renderHour}
+          showNowIndicator={false}
+        />
       </CalendarContainer>
 
-      <Portal>
-        <BottomSheet
-          ref={bottomSheetRef}
-          index={-1}
-          snapPoints={snapPoints}
-          keyboardBlurBehavior="restore"
-          keyboardBehavior="interactive"
-          enablePanDownToClose>
-          <BottomSheetView style={styles.sheetContent}>
-            <View style={styles.formContainer}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        enableDynamicSizing={true}
+        keyboardBehavior="fillParent"
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose>
+        <BottomSheetView style={styles.sheetContent}>
+          <View style={styles.formContainer}>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+              }}>
               <Text>
                 Booking for slot: {startTime} - {endTime}
               </Text>
-              <TextInput
-                label="Name"
-                value={name}
-                onChangeText={setName}
-                mode="outlined"
-              />
-              <TextInput
-                label="Contact"
-                value={number}
-                onChangeText={setNumber}
-                mode="outlined"
-              />
-              <TextInput
-                label="Amount"
-                value={amount}
-                onChangeText={setAmount}
-                mode="outlined"
-              />
+              <Text>Date: {initialDate}</Text>
             </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                mode="contained"
-                onPress={handleBookingSubmit}
-                loading={isPending}>
-                Book Slot
-              </Button>
-            </View>
-          </BottomSheetView>
-        </BottomSheet>
-      </Portal>
+            <TextInput
+              label="Name"
+              value={name}
+              onChangeText={setName}
+              mode="outlined"
+            />
+            <TextInput
+              label="Contact"
+              value={number}
+              onChangeText={setNumber}
+              mode="outlined"
+            />
+            <TextInput
+              label="Amount"
+              value={amount}
+              onChangeText={setAmount}
+              mode="outlined"
+            />
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              onPress={handleBookingSubmit}
+              loading={isPending}>
+              Book Slot
+            </Button>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
     </View>
   );
 };
