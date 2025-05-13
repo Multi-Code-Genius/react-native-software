@@ -11,12 +11,14 @@ import {
 import {Button, Divider, Icon, Text, useTheme} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenue} from '../api/vanue';
+import {useToast} from '../context/ToastContext';
 
 const HomeScreen = () => {
   const navigation = useNavigation();
   const {colors} = useTheme();
 
   const {data, isLoading} = useGetVenue();
+  const {showToast} = useToast();
 
   const renderItem = ({item}: any) => {
     return (
@@ -86,7 +88,17 @@ const HomeScreen = () => {
             </Text>
             <Button
               mode="contained"
-              onPress={() => navigation.navigate('Account')}
+              // onPress={() => navigation.navigate('Account')}
+              onPress={() => {
+                showToast({
+                  message: 'Venue added successfully',
+                  type: 'success',
+                  actionLabel: 'Continue',
+                  onActionPress: () => {
+                    navigation.navigate('Account');
+                  },
+                });
+              }}
               style={styles.button}
               labelStyle={{fontWeight: 'bold'}}>
               Complete Profile

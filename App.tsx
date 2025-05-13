@@ -9,7 +9,8 @@ import {StatusBar, StyleSheet, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Toast from 'react-native-toast-message';
+import {CustomToastRenderer} from './src/utils/CustomToastRenderer';
+import {ToastProvider} from './src/context/ToastContext';
 
 export default function App() {
   const theme = {
@@ -57,8 +58,10 @@ export default function App() {
               <View>
                 <StatusBar barStyle={'light-content'} translucent={false} />
               </View>
-              <AppNavigator />
-              <Toast />
+              <ToastProvider>
+                <AppNavigator />
+                <CustomToastRenderer />
+              </ToastProvider>
             </SafeAreaView>
           </PaperProvider>
         </SafeAreaProvider>
