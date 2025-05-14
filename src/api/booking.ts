@@ -123,12 +123,12 @@ export const useCancelBooking = (
   });
 };
 
-const updateBooking = async (id: string, data: any) => {
+const updateBooking = async (data: any) => {
   try {
-    const response = await api(`/api/booking/update/${id}`, {
+    const response = await api(`/api/booking/update/${data.id}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
+      body: JSON.stringify(data.data),
       cache: 'no-store',
     });
     const resp = await response;
@@ -145,7 +145,7 @@ export const useUpdateBooking = (
 ) => {
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
-      updateBooking(id, data),
+      updateBooking({id, data}),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['booking']});
       onSuccess?.();
