@@ -13,7 +13,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useDeleteVenue, useGetVenueById} from '../api/vanue';
+import {useGetVenueById} from '../api/vanue';
 
 type GameInfoKeys = 'indoor' | 'outdoor' | 'roof';
 
@@ -64,7 +64,6 @@ export const VenueByIdDetailsScreen = () => {
             }
           />
         </View>
-        <Divider className="mb-2" />
         <View style={styles.card}>
           <View style={styles.cardContainer}>
             <View style={styles.columnContainer}>

@@ -49,30 +49,37 @@ const VenueManageScreen = () => {
         activeOpacity={0.9}
         onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
         <View style={styles.card}>
-          {/* <Image source={{uri: item?.images?.[0]}} style={styles.image} /> */}
-          <View style={styles.info}>
+          <View style={{flex: 1}}>
             <Text style={styles.title}>{item.name}</Text>
-            <Text>{item.category}</Text>
-            <Text>{item.address}</Text>
-            <Text style={{marginTop: 4}}>
-              ₹{item.hourlyPrice} /
-              <Icon source={'person'} size={10} />
-            </Text>
-            <Text style={styles.location}>
-              {item.location?.area} - {item.location?.city}
-            </Text>
+            <Text style={styles.category}>{item.category}</Text>
+
+            <View style={styles.infoRow}>
+              <Icon source="location" size={16} color="#d85a5a" />
+              <Text style={styles.infoText}>{item.address}</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Icon source="cash" size={16} color="#4CAF50" />
+              <Text style={styles.infoText}>₹{item.hourlyPrice} / person</Text>
+            </View>
+
+            <View style={styles.infoRow}>
+              <Icon source="map" size={16} color="#607D8B" />
+              <Text style={styles.infoText}>
+                {item.location?.area} - {item.location?.city}
+              </Text>
+            </View>
           </View>
-          <View style={{alignItems: 'flex-start'}}>
-            <IconButton
-              icon={'trash'}
-              size={22}
-              iconColor="#f53333"
-              onPress={() => {
-                setSelectedVenueId(item.id);
-                setShowCancelConfirm(true);
-              }}
-            />
-          </View>
+
+          <IconButton
+            icon="trash"
+            iconColor="#fd6b6b"
+            size={24}
+            onPress={() => {
+              setSelectedVenueId(item.id);
+              setShowCancelConfirm(true);
+            }}
+          />
         </View>
       </TouchableOpacity>
     );
@@ -186,19 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
   },
-  card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
-    marginBottom: 12,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+
   image: {
     width: 150,
     height: 150,
@@ -208,14 +203,15 @@ const styles = StyleSheet.create({
   info: {
     flex: 1,
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
   },
-  location: {
-    marginTop: 4,
-    color: 'gray',
-    fontSize: 12,
+  infoText: {
+    fontSize: 13,
+    color: '#555',
   },
   header: {
     flexDirection: 'row',
@@ -244,5 +240,64 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: 'gray',
     marginVertical: 8,
+  },
+  card: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.05,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  cardLeft: {
+    marginRight: 12,
+    marginTop: 'auto',
+    gap: 5,
+  },
+  cardContent: {
+    flex: 1,
+    gap: 5,
+  },
+
+  cardRight: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  title: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 2,
+  },
+
+  category: {
+    fontSize: 14,
+    color: '#6b72b4',
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+
+  address: {
+    fontSize: 13,
+    color: '#3b3939',
+    marginBottom: 2,
+  },
+
+  price: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#2D3748',
+    marginTop: 4,
+  },
+
+  location: {
+    fontSize: 12,
+    color: '#838282',
+    marginTop: 4,
   },
 });
