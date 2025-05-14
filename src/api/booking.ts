@@ -187,7 +187,7 @@ export const useUpdateBokkingStatus = (
 
 const bookingById = async (id: string) => {
   try {
-    const response = await api(`/api/one-booking/${id}`, {
+    const response = await api(`/api/booking/one-booking/${id}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',

@@ -8,16 +8,15 @@ import moment from 'moment';
 import React, {useCallback, useRef, useState} from 'react';
 import {ImageBackground, Keyboard, View} from 'react-native';
 import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
-
 import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
   PackedEvent,
   SelectedEventType,
+  DraggableEvent,
 } from '@howljs/calendar-kit';
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
-
 import {
   useBookingInfo,
   useCreateBooking,
@@ -211,6 +210,13 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
     });
   };
 
+  const renderDraggableEvent = useCallback(
+    (props: DraggableEventProps) => (
+      <DraggableEvent {...props} renderEvent={renderEvent} />
+    ),
+    [],
+  );
+
   return (
     <View style={styles.container}>
       <BookingScreenAppBar navigation={navigation} />
@@ -230,6 +236,11 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}
         allowDragToEdit
+        onPressEvent={event =>
+          navigation.navigate('bookingDataById', {
+            bookingId: event.id,
+          })
+        }
         onLongPressEvent={(event: any) => setSelectedEvent(event)}
         selectedEvent={selectedEvent}
         onDragSelectedEventStart={handleDragStart}
@@ -240,6 +251,7 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
           renderHour={renderHour}
           showNowIndicator={false}
           renderEvent={renderEvent}
+          renderDraggableEvent={renderDraggableEvent}
         />
       </CalendarContainer>
 
@@ -253,10 +265,12 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
         <BottomSheetView style={styles.sheetContent}>
           <View style={styles.formContainer}>
             <View style={styles.headerRow}>
-              <Text>
+              <Text variant="bodyLarge">
+                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MM YYYY')}
+              </Text>
+              <Text variant="bodyLarge">
                 Booking for slot: {startTime} - {endTime}
               </Text>
-              <Text>Date: {initialDate}</Text>
             </View>
 
             <BottomSheetTextInput
