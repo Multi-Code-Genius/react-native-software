@@ -143,6 +143,7 @@ export const useUpdateBooking = (
   onSuccess?: () => void,
   onError?: () => void,
 ) => {
+  const {showToast} = useToast();
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
       updateBooking({id, data}),
@@ -150,7 +151,12 @@ export const useUpdateBooking = (
       queryClient.invalidateQueries({queryKey: ['booking']});
       onSuccess?.();
     },
-    onError,
+    onError: (err: any) => {
+      showToast({
+        message: err.message,
+        type: 'error',
+      });
+    },
   });
 };
 

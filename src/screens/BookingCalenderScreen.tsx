@@ -207,6 +207,9 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
         refetch();
         setSelectedEvent(null);
       },
+      onError: () => {
+        setSelectedEvent(null);
+      },
     });
   };
 
