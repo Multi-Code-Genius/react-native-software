@@ -52,9 +52,9 @@ const createBooking = async (data: any) => {
       body: JSON.stringify(data),
     });
     const resp = await response;
+
     return resp;
   } catch (error) {
-    console.error('Booking Response:', error);
     throw new Error(error instanceof Error ? error.message : 'Data Not Found');
   }
 };
@@ -123,12 +123,12 @@ export const useCancelBooking = (
   });
 };
 
-const updateBooking = async (id: string, data: any) => {
+const updateBooking = async (data: any) => {
   try {
-    const response = await api(`/api/booking/update/${id}`, {
+    const response = await api(`/api/booking/update/${data.id}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
+      body: JSON.stringify(data.data),
       cache: 'no-store',
     });
     const resp = await response;
@@ -145,7 +145,7 @@ export const useUpdateBooking = (
 ) => {
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
-      updateBooking(id, data),
+      updateBooking({id, data}),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['booking']});
       onSuccess?.();
@@ -182,5 +182,31 @@ export const useUpdateBokkingStatus = (
       onSuccess?.();
     },
     onError,
+  });
+};
+
+const bookingById = async (id: string) => {
+  try {
+    const response = await api(`/api/booking/one-booking/${id}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useBookingById = (id: string) => {
+  return useQuery({
+    queryKey: ['booking', id],
+    queryFn: () => bookingById(id),
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    retry: 0,
+    enabled: !!id,
   });
 };

@@ -1,157 +1,127 @@
 import BottomSheet, {
   BottomSheetBackdrop,
+  BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
+import React, {useCallback, useRef, useState} from 'react';
+import {ImageBackground, Keyboard, View} from 'react-native';
+import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
   PackedEvent,
-  RenderHourProps,
+  SelectedEventType,
+  DraggableEvent,
 } from '@howljs/calendar-kit';
-import {useRoute} from '@react-navigation/native';
-import debounce from 'lodash.debounce';
-import moment from 'moment';
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {RefreshControl, ScrollView, StyleSheet, View} from 'react-native';
-import DatePicker from 'react-native-date-picker';
-import {
-  ActivityIndicator,
-  Appbar,
-  Badge,
-  Button,
-  Chip,
-  Dialog,
-  FAB,
-  Icon,
-  IconButton,
-  Portal,
-  Text,
-  useTheme,
-} from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   useBookingInfo,
-  useCancelBooking,
   useCreateBooking,
+  useUpdateBooking,
 } from '../api/booking';
-import ModalForm from '../components/ModalForm';
+import {styles} from '../components/BookingScreen/BookingScreenStyles';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import {Easing} from 'react-native-reanimated';
+import {useAuthStore} from '../store/authStore';
+import {useBookingFormStore} from '../store/useBookingFormStore';
 
-const BookingCalenderScreen = ({navigation}) => {
+const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
+  const theme = useTheme();
+  const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
+  const [selectedEvent, setSelectedEvent] = useState<SelectedEventType | null>(
+    null,
+  );
   const route = useRoute();
-  const {venueId, price} = route?.params;
+  const {venueId} = route?.params || {};
+
+  console.log('us', useAuthStore.getState().token);
+
+  const {
+    name,
+    number,
+    amount,
+    startTime,
+    endTime,
+    setName,
+    setNumber,
+    setAmount,
+    setStartTime,
+    setEndTime,
+    resetForm,
+  } = useBookingFormStore();
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const calendarRef = useRef(null);
+  const snapPoints = ['50%'];
 
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [date, setDate] = useState(moment().format('DD-MM-YYYY'));
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [datePickerVisible, setDatePickerVisible] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [forceCalendarReset, setForceCalendarReset] = useState(false);
-  const [modalMode, setModalMode] = useState<'add' | 'edit'>('add');
-  const [formDefaults, setFormDefaults] = useState<any>(null);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-
-  const {data, refetch, isRefetching, isLoading} = useBookingInfo({
+  const {data, refetch, isLoading} = useBookingInfo({
     gameId: venueId,
-    date,
+    date: initialDate,
   });
 
-  const {mutate} = useCreateBooking();
-  const {mutate: cancelBookingMutation, isPending} = useCancelBooking();
-  const theme = useTheme();
+  const {mutate, isPending} = useCreateBooking();
+  const {mutate: updateBookingMutate, isPending: updateBookingAPIStatus} =
+    useUpdateBooking();
 
-  const debouncedRefetch = useMemo(
-    () =>
-      debounce(() => {
-        if (!isRefetching) {
-          refetch();
-        }
-      }, 500),
-    [refetch],
-  );
+  const formattedEvents = data?.booking.map((booking: any) => ({
+    id: booking.id,
+    title: booking.user.name,
+    start: {dateTime: booking.startTime},
+    end: {dateTime: booking.endTime},
+    nets: booking.nets,
+    status: booking.status,
+    totalAmount: booking.totalAmount,
+    contact: booking.userMobile,
+  }));
 
-  useEffect(() => {
-    debouncedRefetch();
-    return () => {
-      debouncedRefetch.cancel();
-    };
-  }, [date, debouncedRefetch]);
-
-  const handleCreateBooking = (formData: any) => {
-    formData.gameId = venueId;
-    formData.nets = 1;
-
-    mutate(formData, {
-      onSuccess: res => {
-        if (res?.booking) {
-          const formattedDate = moment(res.booking.date).format('DD-MM-YYYY');
-          setDate(formattedDate);
-
-          refetch();
-        }
-      },
-      onError: err => {
-        console.error('Booking creation failed', err);
-      },
-    });
+  const handleDragToCreateEvent = (event: any) => {
+    setStartTime(moment(event.start.dateTime).format('hh:mm A'));
+    setEndTime(moment(event.end.dateTime).format('hh:mm A'));
+    bottomSheetRef.current?.expand();
   };
 
-  const handleModalSubmit = (data: any) => {
-    if (modalMode === 'edit') {
-      console.log('Edited booking data:', data);
-    } else {
-      console.log('triggger');
-      handleCreateBooking(data);
-    }
-  };
-
-  const handleCancelBooking = (bookingId: any) => {
-    cancelBookingMutation(bookingId, {
-      onSuccess: () => {
-        bottomSheetRef.current?.close();
-      },
-      onError: err => {
-        console.error('Cancel booking failed', err);
-      },
-    });
-  };
-
-  const mappedEvents =
-    data?.booking?.map((item: any) => ({
-      id: item?.id,
-      title: `${item?.nets > 1 ? 'Turf' : 'Soccer'} - ${item?.user?.name}`,
-      status: item?.status,
-      start: {dateTime: item?.startTime},
-      end: {dateTime: item?.endTime},
-      totalAmount: item?.totalAmount,
-      net: item?.nets,
-      contact: item?.userMobile,
-    })) || [];
-
-  const onRefresh = useCallback(() => {
-    refetch();
-  }, [refetch]);
-
-  const renderHour = useCallback(({hourStr}: RenderHourProps) => {
+  const renderHour = useCallback(({hourStr}: {hourStr: string}) => {
     const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
-    const iconName = timeSlot?.icon;
-
     return (
       <View style={{flexDirection: 'column'}}>
         <Text style={{textAlign: 'right'}} variant="bodySmall">
           {hourStr}
         </Text>
         <Text style={{textAlign: 'right'}} variant="bodyLarge">
-          {iconName}
+          {timeSlot?.icon}
         </Text>
       </View>
     );
   }, []);
+
+  const handleBookingSubmit = () => {
+    if (!name || !number || !amount || !startTime || !endTime) {
+      console.warn('Please fill in all fields and select a time slot.');
+      return;
+    }
+
+    Keyboard.dismiss();
+    mutate(
+      {
+        name,
+        number,
+        startTime,
+        endTime,
+        totalAmount: parseFloat(amount),
+        gameId: venueId,
+        nets: 2,
+        date: moment(initialDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+      },
+      {
+        onSuccess: () => {
+          refetch();
+          resetForm();
+          bottomSheetRef.current?.close();
+        },
+      },
+    );
+  };
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -165,440 +135,193 @@ const BookingCalenderScreen = ({navigation}) => {
     [],
   );
 
-  const handleOpenSheet = (event: any) => {
-    setSelectedEvent(event);
-    bottomSheetRef.current?.snapToIndex(0);
-  };
-
-  const handleDateChange = (newDate: Date) => {
-    setSelectedDate(newDate);
-    setDate(moment(newDate).format('DD-MM-YYYY'));
-    setForceCalendarReset(true);
-    // calendarRef.current?.goToDate(newDate);
-  };
-
-  const handleOpenDatePicker = () => {
-    setDatePickerVisible(true);
-  };
-
-  const renderEvent = useCallback((event: PackedEvent) => {
-    const startTime = moment(event.start.dateTime);
-    const endTime = moment(event.end.dateTime);
-    const duration = moment.duration(endTime.diff(startTime)).asHours();
-
-    const isOneHour = duration === 1;
-
-    if (isOneHour) {
-      return (
+  const renderEvent = useCallback(
+    (event: PackedEvent) => (
+      <ImageBackground
+        source={require('../assets/eventBG.jpg')}
+        style={{
+          width: '100%',
+          height: '100%',
+          justifyContent: 'center',
+          backgroundColor: '#000',
+          flexDirection: 'row',
+          borderRadius: 10,
+          position: 'relative',
+          overflow: 'hidden',
+        }}
+        imageStyle={{
+          opacity: 0.6,
+        }}
+        resizeMode="cover">
         <View
           style={{
-            backgroundColor: '#EFFDF4',
-            flex: 1,
             width: '100%',
-            height: '100%',
-            padding: 12,
-            borderRadius: 20,
-            borderWidth: 1,
-            borderColor: '#BAF7D0',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            gap: 8,
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            padding: 10,
           }}>
-          <Text variant="titleMedium">{event.title}</Text>
-          <View style={{flexDirection: 'row', alignItems: 'center', gap: 4}}>
-            <Icon source="time-outline" size={20} />
-            <Text>
-              {startTime.format('h:mm A')} - {endTime.format('h:mm A')}
+          <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+            <Icon source="person" size={20} color={theme.colors.onPrimary} />
+            <Text variant="bodyMedium" style={{color: theme.colors.onPrimary}}>
+              {event.title}
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+            <Icon source="time" size={20} color={theme.colors.onPrimary} />
+            <Text variant="bodyMedium" style={{color: theme.colors.onPrimary}}>
+              {moment(event.start.dateTime).format('h:mm a')} -{' '}
+              {moment(event.end.dateTime).format('h:mm a')}
             </Text>
           </View>
         </View>
-      );
-    }
+      </ImageBackground>
+    ),
+    [],
+  );
 
-    return (
-      <View
-        style={{
-          backgroundColor: '#EFFDF4',
-          flex: 1,
-          width: '100%',
-          height: '100%',
-          padding: 12,
-          borderRadius: 20,
-          borderWidth: 1,
-          borderColor: '#BAF7D0',
-          flexDirection: 'column',
-          gap: 8,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            gap: 8,
-          }}>
-          <Text variant="titleMedium" style={{flexShrink: 1}}>
-            {event.title}
-          </Text>
-          <Chip
-            icon="wallet-outline"
-            mode="outlined"
-            style={{backgroundColor: '#DCFCE7', borderColor: '#EFFDF4'}}>
-            {event.status}
-          </Chip>
-        </View>
+  const handleDragStart = (event: any) => {
+    console.log('Started editing selected event:', event);
+  };
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            gap: 8,
-          }}>
-          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-            <Icon source="basketball-outline" size={20} />
-            <Text>{event.net}</Text>
-          </View>
-          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-            <Icon source="cash-outline" size={20} />
-            <Text>{event.totalAmount}</Text>
-          </View>
-          <View style={{flexDirection: 'row', gap: 4, alignItems: 'center'}}>
-            <Icon source="call-outline" size={20} />
-            <Text>{event.contact}</Text>
-          </View>
-        </View>
+  const handleDragEnd = (event: any) => {
+    if (!selectedEvent) return;
 
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 4,
-            marginTop: 4,
-          }}>
-          <Icon source="time-outline" size={20} />
-          <Text>
-            {startTime.format('h:mm A')} - {endTime.format('h:mm A')}
-          </Text>
-        </View>
-      </View>
+    console.log(
+      'Selected event edited:',
+      moment(event.start.dateTime).format('hh:mm A'),
+      selectedEvent.id,
     );
-  }, []);
+
+    const datas = {
+      id: event.id,
+      data: {
+        startTime: moment(event.start.dateTime).format('hh:mm A'),
+        endTime: moment(event.end.dateTime).format('hh:mm A'),
+        date: moment(initialDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
+      },
+    };
+
+    updateBookingMutate(datas, {
+      onSuccess: () => {
+        refetch();
+        setSelectedEvent(null);
+      },
+    });
+  };
+
+  const renderDraggableEvent = useCallback(
+    (props: DraggableEventProps) => (
+      <DraggableEvent {...props} renderEvent={renderEvent} />
+    ),
+    [],
+  );
 
   return (
-    <SafeAreaView style={styles.safeArea} edges={[]}>
-      <View style={{flex: 1}}>
-        <View>
-          <Appbar.Header
-            style={{
-              backgroundColor: 'white',
-              borderBottomColor: '#e0e0e0',
-              borderBottomWidth: 2,
-            }}
-            statusBarHeight={0}>
-            <IconButton
-              icon="arrow-back"
-              iconColor={'black'}
-              onPress={() => navigation.goBack()}
-            />
-            <Appbar.Content title="Bookings" titleStyle={{color: 'black'}} />
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <IconButton
-                icon="calendar"
-                iconColor="black"
-                onPress={handleOpenDatePicker}
-              />
-              <Appbar.Action
-                icon="add-circle"
-                color="black"
-                onPress={() => {
-                  setModalMode('add');
-                  setFormDefaults(null);
-                  setVisible(true);
-                  // setFormDefaults({
-                  //   name: '',
-                  //   number: '',
-                  //   date: '',
-                  //   startTime: '',
-                  //   endTime: '',
-                  //   nets: '',
-                  //   totalAmount: '',
-                  // });
-                }}
-              />
-            </View>
-          </Appbar.Header>
-        </View>
-        <CalendarContainer
-          key={forceCalendarReset ? selectedDate.toISOString() : undefined}
-          ref={calendarRef}
-          isLoading={isLoading}
-          allowPinchToZoom
-          onChange={x => {
-            setDate(moment(x).format('DD-MM-YYYY'));
-            setSelectedDate(new Date(x));
-            setForceCalendarReset(false);
-          }}
-          initialDate={selectedDate}
-          hourWidth={100}
-          scrollToNow={false}
-          numberOfDays={1}
-          scrollByDay={true}
-          events={mappedEvents}
-          onPressEvent={handleOpenSheet}
-          animateColumnWidth>
-          <CalendarHeader />
-          <FAB
-            style={[styles.fab, {backgroundColor: '#DCFCE7'}]}
-            mode="flat"
-            variant="surface"
-            animated
-            label={`${data?.booking.length || 0} Total Bookings`}
-            loading={isLoading}
-          />
-          <ScrollView
-            style={{flex: 1}}
-            showsVerticalScrollIndicator={false}
-            refreshControl={
-              <RefreshControl refreshing={isRefetching} onRefresh={onRefresh} />
-            }>
-            <CalendarBody
-              showNowIndicator={false}
-              renderHour={renderHour}
-              hourFormat="h:mm a"
-              renderEvent={renderEvent}
-            />
-          </ScrollView>
-        </CalendarContainer>
+    <View style={styles.container}>
+      <BookingScreenAppBar navigation={navigation} />
 
-        {/* Date Picker Modal */}
-        <Portal>
-          <DatePicker
-            modal
-            open={datePickerVisible}
-            date={selectedDate}
-            mode="date"
-            onConfirm={date => {
-              setDatePickerVisible(false);
-              handleDateChange(date);
-            }}
-            onCancel={() => {
-              setDatePickerVisible(false);
-            }}
-          />
-        </Portal>
-
-        <Portal>
-          <BottomSheet
-            ref={bottomSheetRef}
-            backdropComponent={renderBackdrop}
-            index={-1}
-            snapPoints={['40%']}
-            handleStyle={{
-              backgroundColor: '#F8F8F8',
-            }}
-            enablePanDownToClose={true}
-            animationConfigs={{
-              duration: 1000,
-              stiffness: 0,
-              easing: Easing.out(Easing.exp),
-            }}
-            enableDynamicSizing={true}>
-            <BottomSheetView style={styles.sheetContent}>
-              {selectedEvent ? (
-                <View style={styles.sheetCard}>
-                  <Text variant="titleLarge" style={styles.sheetTitle}>
-                    {selectedEvent?.title}
-                  </Text>
-
-                  <View style={styles.sheetRow}>
-                    <Icon source="wallet-outline" size={20} />
-                    <Text style={styles.sheetText}>
-                      Status: {selectedEvent?.status}
-                    </Text>
-                  </View>
-
-                  <View style={styles.sheetRow}>
-                    <Icon source="calendar-outline" size={20} />
-                    <Text style={styles.sheetText}>
-                      {moment(selectedEvent.start.dateTime).format(
-                        'DD MMM YYYY',
-                      )}
-                    </Text>
-                  </View>
-
-                  <View style={styles.sheetRow}>
-                    <Icon source="time-outline" size={20} />
-                    <Text style={styles.sheetText}>
-                      {moment(selectedEvent?.start.dateTime).format('h:mm A')} -{' '}
-                      {moment(selectedEvent.end.dateTime).format('h:mm A')}
-                    </Text>
-                  </View>
-
-                  <View style={styles.sheetRow}>
-                    <Icon source="cash-outline" size={20} />
-                    <Text style={styles.sheetText}>
-                      Amount: ₹{selectedEvent?.totalAmount}
-                    </Text>
-                  </View>
-
-                  <View style={styles.sheetRow}>
-                    <Icon source="call-outline" size={20} />
-                    <Text style={styles.sheetText}>
-                      Contact: {selectedEvent?.contact}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      gap: 5,
-                      marginTop: 20,
-                    }}>
-                    <Button
-                      style={{
-                        width: '50%',
-                        borderRadius: 8,
-                      }}
-                      icon="ban"
-                      mode="text"
-                      loading={isPending}
-                      onPress={() => setShowCancelConfirm(true)}>
-                      Cancel Booking
-                    </Button>
-
-                    <Button
-                      style={{width: '50%', borderRadius: 8}}
-                      icon="pencil"
-                      mode="contained"
-                      onPress={() => {
-                        setModalMode('edit');
-                        setFormDefaults({
-                          name: selectedEvent?.title?.split(' - ')[1] || '',
-                          number: selectedEvent?.contact || '',
-                          date: moment(selectedEvent?.start.dateTime).format(
-                            'YYYY-MM-DD',
-                          ),
-                          startTime: moment(
-                            selectedEvent?.start.dateTime,
-                          ).format('hh:mm A'),
-                          endTime: moment(selectedEvent?.end.dateTime).format(
-                            'hh:mm A',
-                          ),
-                          nets: selectedEvent?.net,
-                          totalAmount: selectedEvent?.totalAmount,
-                        });
-                        setVisible(true);
-                        bottomSheetRef.current?.close();
-                      }}>
-                      Edit booking info
-                    </Button>
-                  </View>
-                </View>
-              ) : (
-                <ActivityIndicator animating />
-              )}
-            </BottomSheetView>
-          </BottomSheet>
-        </Portal>
-
-        <ModalForm
-          visible={visible}
-          onDismiss={() => setVisible(false)}
-          onSubmit={handleModalSubmit}
-          mode={modalMode}
-          defaultValues={formDefaults}
-          price={price}
+      <CalendarContainer
+        isLoading={isPending || isLoading || updateBookingAPIStatus}
+        numberOfDays={1}
+        events={formattedEvents}
+        allowDragToCreate
+        scrollByDay
+        allowPinchToZoom
+        initialDate={initialDate}
+        onDateChanged={date =>
+          setInitialDate(moment(date).format('DD-MM-YYYY'))
+        }
+        dragStep={30}
+        hourWidth={100}
+        onDragCreateEventEnd={handleDragToCreateEvent}
+        allowDragToEdit
+        onPressEvent={event =>
+          navigation.navigate('bookingDataById', {
+            bookingId: event.id,
+          })
+        }
+        onLongPressEvent={(event: any) => setSelectedEvent(event)}
+        selectedEvent={selectedEvent}
+        onDragSelectedEventStart={handleDragStart}
+        onDragSelectedEventEnd={handleDragEnd}>
+        <CalendarHeader />
+        <CalendarBody
+          hourFormat="h:mm a"
+          renderHour={renderHour}
+          showNowIndicator={false}
+          renderEvent={renderEvent}
+          renderDraggableEvent={renderDraggableEvent}
         />
-        <Portal>
-          <Dialog
-            style={{backgroundColor: theme.colors.onPrimary}}
-            visible={showCancelConfirm}
-            onDismiss={() => setShowCancelConfirm(false)}>
-            <Dialog.Title>Confirm Cancellation</Dialog.Title>
-            <Dialog.Content>
-              <Text>Are you sure you want to cancel this booking?</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <Button onPress={() => setShowCancelConfirm(false)}>No</Button>
-              <Button
-                loading={isPending}
-                onPress={() => {
-                  if (selectedEvent?.id) {
-                    handleCancelBooking(selectedEvent.id);
-                    setShowCancelConfirm(false);
-                  }
-                }}>
-                Yes
-              </Button>
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
-      </View>
-    </SafeAreaView>
+      </CalendarContainer>
+
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={snapPoints}
+        keyboardBehavior="fillParent"
+        enableDynamicSizing={false}
+        backdropComponent={renderBackdrop}>
+        <BottomSheetView style={styles.sheetContent}>
+          <View style={styles.formContainer}>
+            <View style={styles.headerRow}>
+              <Text variant="bodyLarge">
+                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MM YYYY')}
+              </Text>
+              <Text variant="bodyLarge">
+                Booking for slot: {startTime} - {endTime}
+              </Text>
+            </View>
+
+            <BottomSheetTextInput
+              placeholderTextColor="#888"
+              placeholder="Full Name (e.g., John Doe)"
+              value={name}
+              onChangeText={setName}
+              style={styles.input}
+            />
+            <BottomSheetTextInput
+              placeholderTextColor="#888"
+              placeholder="Phone Number (e.g., +1 234 567 890)"
+              value={number}
+              onChangeText={setNumber}
+              keyboardType="phone-pad"
+              style={styles.input}
+            />
+            <BottomSheetTextInput
+              placeholderTextColor="#888"
+              placeholder="Amount (e.g., 250.00)"
+              value={amount}
+              onChangeText={setAmount}
+              keyboardType="numeric"
+              style={styles.input}
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="contained"
+              onPress={handleBookingSubmit}
+              loading={isPending}>
+              Book Slot
+            </Button>
+          </View>
+        </BottomSheetView>
+      </BottomSheet>
+      {selectedEvent && (
+        <FAB
+          icon="close"
+          style={{
+            position: 'absolute',
+            margin: 16,
+            right: 0,
+            bottom: 0,
+          }}
+          onPress={() => setSelectedEvent(null)}
+        />
+      )}
+    </View>
   );
 };
 
 export default BookingCalenderScreen;
-
-const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: 'white',
-    flex: 1,
-  },
-
-  loadingContainer: {
-    // flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  contentContainer: {
-    flex: 1,
-    padding: 36,
-    alignItems: 'center',
-  },
-  modalOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 999,
-  },
-  fab: {
-    position: 'absolute',
-    marginHorizontal: 10,
-    marginVertical: 1,
-    right: 0,
-    top: 0,
-    zIndex: 999999999,
-  },
-
-  sheetContent: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#F8F8F8',
-  },
-
-  sheetCard: {
-    // backgroundColor: '#ffffff',
-    borderRadius: 16,
-
-    width: '100%',
-    gap: 12,
-  },
-
-  sheetTitle: {
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-
-  sheetRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-
-  sheetText: {
-    fontSize: 14,
-    color: '#333',
-  },
-});
