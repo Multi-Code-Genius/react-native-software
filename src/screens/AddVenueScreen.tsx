@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useCreateGame, useVanueImageUploading} from '../api/vanue';
+import {useAddVenue, useVanueImageUploading} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
@@ -12,30 +12,7 @@ import {useVenueStore} from '../store/useVenueStore';
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const formData = useVenueStore(state => state.formData);
-  const {mutate: uploadImageMutate} = useVanueImageUploading(
-    data => console.log('Success:', data),
-    error => console.log('Error:', error.message),
-  );
-
-  const {mutate: createGameMutate, isPending} = useCreateGame(
-    data => {
-      console.log('Success:', data);
-      const images = formData.images ?? [];
-      const formDataObj = new FormData();
-
-      formDataObj.append('game', {
-        uri: images[0].uri,
-        name: images[0].fileName || `image_0.jpg`,
-        type: images[0].type || 'image/jpeg',
-      });
-
-      uploadImageMutate({
-        id: data.game.id,
-        payload: formDataObj,
-      });
-    },
-    error => console.log('Error:', error.message),
-  );
+  const {mutate, isPending} = useAddVenue();
 
   const validateStep = () => {
     if (currentStep === 0) {
@@ -79,7 +56,6 @@ const AddVenueScreen = () => {
   const steps = [
     <BasicDetailsComponent key="step1" />,
     <VenueDetails key="step2" />,
-    <ImageUpload key="step3" />,
   ];
 
   const goNext = () => {
@@ -91,35 +67,7 @@ const AddVenueScreen = () => {
       setCurrentStep(currentStep + 1);
     } else {
       console.log('All steps completed');
-
-      const images = formData.images?.filter(img => img?.uri) || [];
-
-      createGameMutate({
-        name: formData?.name!,
-        category: formData.category!,
-        description: formData.description!,
-        hourlyPrice: 23,
-        capacity: 45,
-        net: 1,
-        token: useAuthStore.getState().token || '',
-        location: {
-          city: formData.location?.city!,
-          area: formData.location?.area!,
-          address: formData.address!,
-        },
-        gameInfo: {
-          surface: formData.gameInfo?.surface!,
-          indoor: !!formData.gameInfo?.indoor!,
-          outdoor: !!formData.gameInfo?.indoor!,
-          roof: !!formData.gameInfo?.roof!,
-          equipmentProvided: false,
-        },
-        images: images.map((img, index) => ({
-          uri: img.uri,
-          name: img.fileName || `image_${index}.jpg`,
-          type: img.type || 'image/jpeg',
-        })),
-      });
+      mutate(formData);
     }
   };
 

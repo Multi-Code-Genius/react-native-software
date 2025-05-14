@@ -10,6 +10,7 @@ import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
 import {useAuthStore} from '../store/authStore';
 import BookingByIdScreen from '../screens/BookingByIdScreen';
+import VenueManageScreen from '../screens/VenueManageScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -55,6 +56,7 @@ export default function AppNavigator() {
           <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
 
           {/* <Stack.Screen name="VenueManage" component={VenueManageScreen} /> */}
+          <Stack.Screen name="VenueManage" component={VenueManageScreen} />
           {/* <Stack.Screen name="bookingData" component={BookingCalenderScreen} /> */}
           <Stack.Screen
             name="EditVenueDetails"

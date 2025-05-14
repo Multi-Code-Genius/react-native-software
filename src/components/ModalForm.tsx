@@ -10,7 +10,7 @@ import {
 import DatePicker from 'react-native-date-picker';
 import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {parseTimeTo24Hour} from '../utils/helper';
+import {parseTimeTo24Hour} from '../helper/helper';
 
 interface Props {
   visible: boolean;

@@ -1,5 +1,5 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useCallback} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {Card, Icon, Text} from 'react-native-paper';
 import {useGetVenue} from '../api/vanue';
@@ -8,8 +8,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
-  const {data} = useGetVenue();
+  const {data, refetch} = useGetVenue();
 
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, [refetch]),
+  );
   const renderItem = ({item}: any) => (
     <Card
       style={[styles.card, styles.shadow]}

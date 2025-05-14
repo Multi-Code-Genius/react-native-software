@@ -1,12 +1,16 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, View} from 'react-native';
 import {
   ActivityIndicator,
   Button,
+  Dialog,
   Divider,
   Icon,
+  IconButton,
+  Portal,
   Text,
+  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenueById} from '../api/vanue';
@@ -18,6 +22,8 @@ export const VenueByIdDetailsScreen = () => {
   const navigation = useNavigation();
   const venueById = route.params as {id?: string};
   const {data, isLoading} = useGetVenueById(venueById?.id);
+
+  const theme = useTheme();
 
   if (isLoading) {
     return (
@@ -47,23 +53,16 @@ export const VenueByIdDetailsScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.iconContainer}>
-          <View style={styles.editRow}>
-            <View style={{flex: 1}} />
-            <Button
-              mode="contained"
-              onPress={() =>
-                navigation.navigate('EditVenueDetails', {id: venueById?.id})
-              }
-              style={styles.editButton}
-              labelStyle={{fontSize: 12}}>
-              Edit
-            </Button>
-          </View>
-          <Divider className="mb-2" />
-          {game.images?.[0] && (
-            <Image source={{uri: game.images[0]}} style={styles.image} />
-          )}
+        <View style={styles.editRow}>
+          <View style={{flex: 1}} />
+          <IconButton
+            icon={'pencil'}
+            size={22}
+            iconColor="#306ef2"
+            onPress={() =>
+              navigation.navigate('EditVenueDetails', {id: venueById?.id})
+            }
+          />
         </View>
         <View style={styles.card}>
           <View style={styles.cardContainer}>
@@ -184,22 +183,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 100,
   },
-  iconContainer: {
-    borderColor: '#000',
-    borderWidth: 1.5,
-    borderRadius: 10,
-    padding: 10,
-    borderStyle: 'solid',
-    marginBottom: 16,
-  },
-
   editRow: {
     flexDirection: 'row',
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 8,
   },
-
   editButton: {
     paddingHorizontal: 12,
     paddingVertical: 4,

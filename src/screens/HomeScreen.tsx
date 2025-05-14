@@ -1,129 +1,191 @@
-import {useNavigation} from '@react-navigation/native';
-import React from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
-  ActivityIndicator,
-  FlatList,
-  Image,
+  Dimensions,
+  RefreshControl,
+  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Button, Divider, Icon, Text, useTheme} from 'react-native-paper';
+import {PieChart} from 'react-native-chart-kit';
+import {ActivityIndicator, Card, Text, Title} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useGetVenue} from '../api/vanue';
-import {useToast} from '../context/ToastContext';
+import {useDashboardData} from '../api/dashboard';
+import DashboardBarChart from '../components/DashboardBarChart';
+import {useAccountLogic} from '../hooks/useAccountLogic';
+
+const screenWidth = Dimensions.get('window').width;
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
-  const {colors} = useTheme();
+  const {account, isLoading: accountLoading} = useAccountLogic();
 
-  const {data, isLoading} = useGetVenue();
-  const {showToast} = useToast();
+  const [selectedVenue, setSelectedVenue] = useState<string>('');
 
-  const renderItem = ({item}: any) => {
-    return (
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={() => navigation.navigate('VenueByID', {id: item?.id})}>
-        <View style={styles.card}>
-          <Image source={{uri: item?.images?.[0]}} style={styles.image} />
-          <View style={styles.info}>
-            <Text style={styles.title}>{item.name}</Text>
-            <Text>{item.category}</Text>
-            <Text>{item.address}</Text>
-            <Text style={{marginTop: 4}}>
-              ₹{item.hourlyPrice} /
-              <Icon source={'person'} size={10} />
-            </Text>
-            <Text style={styles.location}>
-              {item.location?.area} - {item.location?.city}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
+  useEffect(() => {
+    if (account?.games?.length > 0) {
+      setSelectedVenue(account.games[0].id);
+    }
+  }, [account]);
+  const {data, refetch, isLoading} = useDashboardData(
+    selectedVenue,
+    account?.user?.id || '',
+  );
+
+  useEffect(() => {
+    if (selectedVenue) {
+      refetch();
+    }
+  }, [selectedVenue, refetch]);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    (await !isLoading) && refetch();
+    setRefreshing(false);
   };
 
-  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
+  useFocusEffect(
+    useCallback(() => {
+      !isLoading && refetch();
+    }, [refetch]),
+  );
+
+  const todayEarnings = data?.todaysBookingsAmount ?? 0;
+  const weeklyEarnings = data?.thisWeekBookingsTotalAmount ?? 0;
+  const monthlyEarnings = data?.thisMonthBookingsTotalAmount ?? 0;
+  const bookingsToday = data?.todaysBookingsCount ?? 0;
+
+  const statusData = [
+    {
+      name: 'Confirmed',
+      population: data?.statusCounts?.CONFIRMED ?? 0,
+      color: '#4caf50',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Cancelled',
+      population: data?.statusCounts?.CANCELLED ?? 0,
+      color: '#f44336',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Pending',
+      population: data?.statusCounts?.PENDING ?? 0,
+      color: '#ff9800',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+  ];
+
+  if (accountLoading) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <View style={[styles.container, {backgroundColor: colors.background}]}>
-        {isLoading ? (
-          <ActivityIndicator color="#000000" />
-        ) : hasVenues ? (
-          <View style={styles.venueListContainer}>
-            <View style={styles.header}>
-              <Text variant="headlineLarge" style={styles.headerText}>
-                Venue Details
-              </Text>
-              <Button
-                mode="contained"
-                onPress={() => navigation.navigate('Addvenue')}
-                style={styles.button}>
-                + Add venue
-              </Button>
-            </View>
-            <FlatList
-              data={data.games}
-              renderItem={renderItem}
-              keyExtractor={(item: any) =>
-                item.id?.toString() ?? Math.random().toString()
-              }
-              showsVerticalScrollIndicator={false}
-            />
-          </View>
-        ) : (
-          <View style={styles.welcomeContainer}>
-            <Text variant="headlineLarge" style={styles.welcomeText}>
-              Congratulations!
-            </Text>
-            <Text variant="titleMedium" style={styles.welcomeText}>
-              Your account has been created successfully.
-            </Text>
-            <Divider style={styles.divider} />
-            <Text variant="bodyMedium" style={{color: colors.onBackground}}>
-              Please complete your profile to add venues, manage all your
-              bookings, and access all features.
-            </Text>
-            <Button
-              mode="contained"
-              // onPress={() => navigation.navigate('Account')}
-              onPress={() => {
-                showToast({
-                  message: 'Click on continue for Profile -->',
-                  type: 'success',
-                  actionLabel: 'Continue',
-                  onActionPress: () => {
-                    navigation.navigate('Account');
-                  },
-                });
-              }}
-              style={styles.button}
-              labelStyle={{fontWeight: 'bold'}}>
-              Complete Profile
-            </Button>
-            <Text style={styles.separator}>──── or ────</Text>
-            <Text
-              variant="titleMedium"
-              style={[styles.welcomeText, {marginBottom: 8}]}>
-              Are you a sports turf owner?
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate('Addvenue')}
-              style={styles.button}
-              labelStyle={{fontWeight: 'bold'}}>
-              Add venue
-            </Button>
-          </View>
-        )}
-      </View>
+      <ScrollView
+        style={styles.container}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
+        <Title style={styles.heading}>Dashboard</Title>
+        {/* Venue Switch Tabs */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabContainer}>
+          {account &&
+            (account?.games || []).map((venue: any) => (
+              <TouchableOpacity
+                key={venue.id}
+                style={[
+                  styles.tabButton,
+                  selectedVenue === venue.id && styles.tabButtonActive,
+                ]}
+                onPress={() => setSelectedVenue(venue.id)}>
+                <Text
+                  style={[
+                    styles.tabButtonText,
+                    selectedVenue === venue.id && styles.tabButtonTextActive,
+                  ]}>
+                  {venue.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
+
+        <View style={styles.cardRow}>
+          <Card style={styles.card}>
+            <Card.Content>
+              <Title>₹{todayEarnings}</Title>
+              <Text>Today's Earnings</Text>
+            </Card.Content>
+          </Card>
+
+          <Card style={styles.card}>
+            <Card.Content>
+              <Title>₹{weeklyEarnings}</Title>
+              <Text>This Week</Text>
+            </Card.Content>
+          </Card>
+
+          <Card style={styles.card}>
+            <Card.Content>
+              <Title>₹{monthlyEarnings}</Title>
+              <Text>This Month</Text>
+            </Card.Content>
+          </Card>
+        </View>
+
+        <Card style={styles.card}>
+          <Card.Content>
+            <Title>{bookingsToday} Bookings</Title>
+            <Text>Today</Text>
+          </Card.Content>
+        </Card>
+
+        <Title style={styles.sectionTitle}>Booking Status</Title>
+        <PieChart
+          data={statusData}
+          width={screenWidth - 32}
+          height={200}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          chartConfig={chartConfig}
+          hasLegend
+        />
+
+        <Title style={styles.sectionTitle}>Bookings This Week</Title>
+        <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default HomeScreen;
+const chartConfig = {
+  backgroundGradientFrom: '#ffffff',
+  backgroundGradientTo: '#ffffff',
+  decimalPlaces: 0,
+  color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
+  labelColor: () => '#000',
+  style: {
+    borderRadius: 16,
+  },
+  propsForDots: {
+    r: '6',
+    strokeWidth: '2',
+    stroke: '#2196f3',
+  },
+};
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -131,70 +193,50 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   container: {
-    flex: 1,
     padding: 16,
+    backgroundColor: '#f5f5f5',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+  },
+  tabButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#ddd',
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: '#2196f3',
+  },
+  tabButtonText: {
+    color: '#000',
+    fontWeight: '500',
+  },
+  tabButtonTextActive: {
+    color: '#fff',
+  },
+  heading: {
+    marginBottom: 16,
+    fontSize: 22,
+  },
+  cardRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 16,
+    justifyContent: 'space-between',
   },
   card: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 12,
+    width: '48%',
     marginBottom: 12,
-    backgroundColor: 'white',
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
-  image: {
-    width: 150,
-    height: 150,
-    borderRadius: 10,
-    marginRight: 12,
-  },
-  info: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  location: {
-    marginTop: 4,
-    color: 'gray',
-    fontSize: 12,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: '600',
-  },
-  button: {
-    alignSelf: 'flex-start',
-  },
-  venueListContainer: {
-    flex: 1,
-  },
-  welcomeContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    gap: 16,
-  },
-  welcomeText: {
-    color: '#000',
-  },
-  divider: {
-    marginVertical: 16,
-  },
-  separator: {
-    textAlign: 'left',
-    color: 'gray',
-    marginVertical: 8,
+  sectionTitle: {
+    marginTop: 24,
+    marginBottom: 8,
+    fontSize: 18,
   },
 });
+
+export default HomeScreen;

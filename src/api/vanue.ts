@@ -1,12 +1,11 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import queryClient from '../config/queryClient';
 import {api} from '../hooks/api';
-import {createGame} from '../services/gameService';
 import {useToast} from '../context/ToastContext';
-import {useNavigation} from '@react-navigation/native';
 import {VenueFormDetails} from '../types/venue';
 import {useAuthStore} from '../store/authStore';
 import {BASE_URL} from '@env';
+import {useVenueStore, VenueFormData} from '../store/useVenueStore';
 
 export const getVanues = async () => {
   try {
@@ -114,31 +113,33 @@ export const useEditVenueDetails = (
   });
 };
 
-export const useCreateGame = (
+export const addVenue = async (data: Partial<VenueFormData>) => {
+  try {
+    const response = await api('/api/game/create', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+      body: JSON.stringify(data),
+    });
+
+    return response;
+  } catch (error) {
+    console.error('message Error:', error);
+    throw new Error(error instanceof Error ? error.message : 'message failed');
+  }
+};
+
+export const useAddVenue = (
   _onSuccess?: (data: any) => void,
-  _onError?: (error: Error) => void,
+  onError?: (error: any) => void,
 ) => {
-  const {showToast} = useToast();
-  const navigation = useNavigation();
-  return useMutation({
-    mutationFn: createGame,
+  return useMutation<any, Error, Partial<VenueFormData>>({
+    mutationFn: data => addVenue(data),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['vanues']});
-      showToast({
-        message: 'Venue created successfully!',
-        type: 'success',
-        actionLabel: 'Continue',
-        // onActionPress: () => {
-        //   navigation.navigate('Bookings');
-        // },
-      });
+      useVenueStore.getState().resetForm();
     },
-    onError: error => {
-      showToast({
-        message: error.message,
-        type: 'error',
-      });
-    },
+    onError,
   });
 };
 
@@ -177,6 +178,34 @@ export const useVanueImageUploading = (
       }
     },
 
+    onError,
+  });
+};
+
+export const deleteVenueDetails = async (venueId: any) => {
+  try {
+    const response = await api(`/api/game/delete-venue/${venueId}`, {
+      method: 'DELETE',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    console.log('Something is not working', error);
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useDeleteVenue = (
+  _onSuccess?: () => void,
+  onError?: () => void,
+) => {
+  return useMutation({
+    mutationFn: (id: string) => deleteVenueDetails(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['vanues']});
+    },
     onError,
   });
 };
