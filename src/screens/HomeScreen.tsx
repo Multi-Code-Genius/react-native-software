@@ -32,6 +32,12 @@ const HomeScreen = () => {
     account?.user?.id || '',
   );
 
+  useEffect(() => {
+    if (selectedVenue) {
+      refetch();
+    }
+  }, [selectedVenue, refetch]);
+
   const [refreshing, setRefreshing] = useState(false);
 
   const handleRefresh = async () => {
@@ -43,7 +49,7 @@ const HomeScreen = () => {
   useFocusEffect(
     useCallback(() => {
       !isLoading && refetch();
-    }, [refetch, isLoading]),
+    }, [refetch]),
   );
 
   const todayEarnings = data?.todaysBookingsAmount ?? 0;
@@ -97,7 +103,7 @@ const HomeScreen = () => {
           showsHorizontalScrollIndicator={false}
           style={styles.tabContainer}>
           {account &&
-            account?.games.map((venue: any) => (
+            (account?.games || []).map((venue: any) => (
               <TouchableOpacity
                 key={venue.id}
                 style={[
