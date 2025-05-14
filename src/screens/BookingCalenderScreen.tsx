@@ -1,57 +1,41 @@
-import React, {useCallback, useMemo, useRef, useState} from 'react';
-import {
-  Image,
-  ImageBackground,
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {useRoute} from '@react-navigation/native';
-import moment from 'moment';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetTextInput,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import {
-  Button,
-  FAB,
-  Icon,
-  Portal,
-  Text,
-  TextInput,
-  useTheme,
-} from 'react-native-paper';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
+import React, {useCallback, useRef, useState} from 'react';
+import {ImageBackground, Keyboard, View} from 'react-native';
+import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 
-import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
+  PackedEvent,
+  SelectedEventType,
 } from '@howljs/calendar-kit';
+import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 
 import {
   useBookingInfo,
   useCreateBooking,
   useUpdateBooking,
 } from '../api/booking';
-import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import {useBookingFormStore} from '../store/useBookingFormStore';
-import {unavailableHours} from '../utils/disabledHours';
 import {styles} from '../components/BookingScreen/BookingScreenStyles';
-import {useAccountStore} from '../store/accountStore';
+import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useAuthStore} from '../store/authStore';
+import {useBookingFormStore} from '../store/useBookingFormStore';
 
-const BookingCalenderScreen = ({navigation}) => {
+const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<SelectedEventType | null>(
+    null,
+  );
   const route = useRoute();
-  const {venueId, price} = route?.params || {};
+  const {venueId} = route?.params || {};
 
   console.log('us', useAuthStore.getState().token);
 
@@ -81,7 +65,7 @@ const BookingCalenderScreen = ({navigation}) => {
   const {mutate: updateBookingMutate, isPending: updateBookingAPIStatus} =
     useUpdateBooking();
 
-  const formattedEvents = data?.booking.map(booking => ({
+  const formattedEvents = data?.booking.map((booking: any) => ({
     id: booking.id,
     title: booking.user.name,
     start: {dateTime: booking.startTime},
@@ -92,13 +76,13 @@ const BookingCalenderScreen = ({navigation}) => {
     contact: booking.userMobile,
   }));
 
-  const handleDragToCreateEvent = event => {
+  const handleDragToCreateEvent = (event: any) => {
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
     setEndTime(moment(event.end.dateTime).format('hh:mm A'));
     bottomSheetRef.current?.expand();
   };
 
-  const renderHour = useCallback(({hourStr}) => {
+  const renderHour = useCallback(({hourStr}: {hourStr: string}) => {
     const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
     return (
       <View style={{flexDirection: 'column'}}>
@@ -197,11 +181,11 @@ const BookingCalenderScreen = ({navigation}) => {
     [],
   );
 
-  const handleDragStart = event => {
+  const handleDragStart = (event: any) => {
     console.log('Started editing selected event:', event);
   };
 
-  const handleDragEnd = event => {
+  const handleDragEnd = (event: any) => {
     if (!selectedEvent) return;
 
     console.log(
@@ -210,7 +194,7 @@ const BookingCalenderScreen = ({navigation}) => {
       selectedEvent.id,
     );
 
-    const data = {
+    const datas = {
       id: event.id,
       data: {
         startTime: moment(event.start.dateTime).format('hh:mm A'),
@@ -219,9 +203,8 @@ const BookingCalenderScreen = ({navigation}) => {
       },
     };
 
-    updateBookingMutate(data, {
-      onSuccess: triggger => {
-        console.log('triggger', triggger);
+    updateBookingMutate(datas, {
+      onSuccess: () => {
         refetch();
         setSelectedEvent(null);
       },
@@ -247,7 +230,7 @@ const BookingCalenderScreen = ({navigation}) => {
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}
         allowDragToEdit
-        onLongPressEvent={event => setSelectedEvent(event)}
+        onLongPressEvent={(event: any) => setSelectedEvent(event)}
         selectedEvent={selectedEvent}
         onDragSelectedEventStart={handleDragStart}
         onDragSelectedEventEnd={handleDragEnd}>
