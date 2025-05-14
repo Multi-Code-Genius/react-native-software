@@ -184,3 +184,29 @@ export const useUpdateBokkingStatus = (
     onError,
   });
 };
+
+const bookingById = async (id: string) => {
+  try {
+    const response = await api(`/api/one-booking/${id}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useBookingById = (id: string) => {
+  return useQuery({
+    queryKey: ['booking', id],
+    queryFn: () => bookingById(id),
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    retry: 0,
+    enabled: !!id,
+  });
+};
