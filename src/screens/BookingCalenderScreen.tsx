@@ -1,3 +1,6 @@
+import React, {useCallback, useRef, useState} from 'react';
+import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetTextInput,
@@ -5,9 +8,8 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useCallback, useRef, useState} from 'react';
-import {ImageBackground, Keyboard, View} from 'react-native';
-import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
+import Tooltip from 'react-native-walkthrough-tooltip';
+
 import {
   CalendarBody,
   CalendarContainer,
@@ -15,7 +17,9 @@ import {
   PackedEvent,
   SelectedEventType,
   DraggableEvent,
+  DraggableEventProps,
 } from '@howljs/calendar-kit';
+
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   useBookingInfo,
@@ -24,19 +28,22 @@ import {
 } from '../api/booking';
 import {styles} from '../components/BookingScreen/BookingScreenStyles';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import {useAuthStore} from '../store/authStore';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 
-const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
+interface BookingCalenderScreenProps {
+  navigation: any;
+}
+
+const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const theme = useTheme();
   const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
   const [selectedEvent, setSelectedEvent] = useState<SelectedEventType | null>(
     null,
   );
-  const route = useRoute();
-  const {venueId} = route?.params || {};
+  const [visibleTooltipId, setVisibleTooltipId] = useState<string | null>(null);
 
-  console.log('us', useAuthStore.getState().token);
+  const route = useRoute();
+  const {venueId} = route.params as {venueId: string};
 
   const {
     name,
@@ -64,16 +71,17 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
   const {mutate: updateBookingMutate, isPending: updateBookingAPIStatus} =
     useUpdateBooking();
 
-  const formattedEvents = data?.booking.map((booking: any) => ({
-    id: booking.id,
-    title: booking.user.name,
-    start: {dateTime: booking.startTime},
-    end: {dateTime: booking.endTime},
-    nets: booking.nets,
-    status: booking.status,
-    totalAmount: booking.totalAmount,
-    contact: booking.userMobile,
-  }));
+  const formattedEvents =
+    data?.booking?.map((booking: any) => ({
+      id: booking.id,
+      title: booking.user.name,
+      start: {dateTime: booking.startTime},
+      end: {dateTime: booking.endTime},
+      nets: booking.nets,
+      status: booking.status,
+      totalAmount: booking.totalAmount,
+      contact: booking.userMobile,
+    })) || [];
 
   const handleDragToCreateEvent = (event: any) => {
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
@@ -119,6 +127,9 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
           resetForm();
           bottomSheetRef.current?.close();
         },
+        onError: error => {
+          console.error('Booking failed:', error);
+        },
       },
     );
   };
@@ -136,48 +147,76 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
   );
 
   const renderEvent = useCallback(
-    (event: PackedEvent) => (
-      <ImageBackground
-        source={require('../assets/eventBG.jpg')}
-        style={{
-          width: '100%',
-          height: '100%',
-          justifyContent: 'center',
-          backgroundColor: '#000',
-          flexDirection: 'row',
-          borderRadius: 10,
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-        imageStyle={{
-          opacity: 0.6,
-        }}
-        resizeMode="cover">
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            padding: 10,
-          }}>
-          <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-            <Icon source="person" size={20} color={theme.colors.onPrimary} />
-            <Text variant="bodyMedium" style={{color: theme.colors.onPrimary}}>
-              {event.title}
-            </Text>
-          </View>
-          <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-            <Icon source="time" size={20} color={theme.colors.onPrimary} />
-            <Text variant="bodyMedium" style={{color: theme.colors.onPrimary}}>
-              {moment(event.start.dateTime).format('h:mm a')} -{' '}
-              {moment(event.end.dateTime).format('h:mm a')}
-            </Text>
-          </View>
-        </View>
-      </ImageBackground>
-    ),
-    [],
+    (event: PackedEvent) => {
+      const isTooltipVisible = visibleTooltipId === event.id;
+      return (
+        <Tooltip
+          disableShadow
+          isVisible={isTooltipVisible}
+          content={
+            <Button
+              mode="text"
+              onPress={() => {
+                setSelectedEvent(event);
+                setVisibleTooltipId(null);
+              }}>
+              Edit
+            </Button>
+          }
+          placement="top"
+          onClose={() => setVisibleTooltipId(null)}>
+          <ImageBackground
+            source={require('../assets/eventBG.jpg')}
+            style={{
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
+              backgroundColor: '#000',
+              flexDirection: 'row',
+              borderRadius: 10,
+              position: 'relative',
+              overflow: 'hidden',
+            }}
+            imageStyle={{opacity: 0.6}}
+            resizeMode="cover">
+            <View
+              style={{
+                width: '100%',
+                flexDirection: 'column',
+                gap: 5,
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                padding: 10,
+              }}>
+              <View
+                style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+                <Icon
+                  source="person"
+                  size={20}
+                  color={theme.colors.onPrimary}
+                />
+                <Text
+                  variant="bodyMedium"
+                  style={{color: theme.colors.onPrimary}}>
+                  {event.title}
+                </Text>
+              </View>
+              <View
+                style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+                <Icon source="time" size={20} color={theme.colors.onPrimary} />
+                <Text
+                  variant="bodyMedium"
+                  style={{color: theme.colors.onPrimary}}>
+                  {moment(event.start.dateTime).format('h:mm a')} -{' '}
+                  {moment(event.end.dateTime).format('h:mm a')}
+                </Text>
+              </View>
+            </View>
+          </ImageBackground>
+        </Tooltip>
+      );
+    },
+    [visibleTooltipId, theme.colors.onPrimary],
   );
 
   const handleDragStart = (event: any) => {
@@ -186,12 +225,6 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
 
   const handleDragEnd = (event: any) => {
     if (!selectedEvent) return;
-
-    console.log(
-      'Selected event edited:',
-      moment(event.start.dateTime).format('hh:mm A'),
-      selectedEvent.id,
-    );
 
     const datas = {
       id: event.id,
@@ -207,7 +240,8 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
         refetch();
         setSelectedEvent(null);
       },
-      onError: () => {
+      onError: error => {
+        console.error('Update failed:', error);
         setSelectedEvent(null);
       },
     });
@@ -217,7 +251,7 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
     (props: DraggableEventProps) => (
       <DraggableEvent {...props} renderEvent={renderEvent} />
     ),
-    [],
+    [renderEvent],
   );
 
   return (
@@ -236,26 +270,28 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
           setInitialDate(moment(date).format('DD-MM-YYYY'))
         }
         dragStep={30}
+        allowDragToEdit={!!selectedEvent}
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}
-        allowDragToEdit
         onPressEvent={event =>
           navigation.navigate('bookingDataById', {
             bookingId: event.id,
           })
         }
-        onLongPressEvent={(event: any) => setSelectedEvent(event)}
+        onLongPressEvent={event => setVisibleTooltipId(event.id)}
         selectedEvent={selectedEvent}
         onDragSelectedEventStart={handleDragStart}
         onDragSelectedEventEnd={handleDragEnd}>
         <CalendarHeader />
-        <CalendarBody
-          hourFormat="h:mm a"
-          renderHour={renderHour}
-          showNowIndicator={false}
-          renderEvent={renderEvent}
-          renderDraggableEvent={renderDraggableEvent}
-        />
+        <ScrollView style={{flex: 1}}>
+          <CalendarBody
+            hourFormat="h:mm a"
+            renderHour={renderHour}
+            showNowIndicator={true}
+            renderEvent={renderEvent}
+            renderDraggableEvent={renderDraggableEvent}
+          />
+        </ScrollView>
       </CalendarContainer>
 
       <BottomSheet
@@ -311,6 +347,7 @@ const BookingCalenderScreen = ({navigation}: {navigation: any}) => {
           </View>
         </BottomSheetView>
       </BottomSheet>
+
       {selectedEvent && (
         <FAB
           icon="close"
