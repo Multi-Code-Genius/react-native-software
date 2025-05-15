@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 import BottomSheet, {
@@ -44,6 +44,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
   const route = useRoute();
   const {venueId} = route.params as {venueId: string};
+  const {price} = route.params as {price: string};
 
   const {
     name,
@@ -58,6 +59,42 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     setEndTime,
     resetForm,
   } = useBookingFormStore();
+
+  useEffect(() => {
+    if (!startTime || !endTime || !price) return;
+
+    const convertTo24Hour = (timeStr: any) => {
+      const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
+      const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
+      const [hourStr, minuteStr] = time.split(':');
+
+      let hour = parseInt(hourStr, 10);
+      const minute = parseInt(minuteStr, 10);
+
+      if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+      if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
+
+      return {hour, minute};
+    };
+
+    try {
+      const start = convertTo24Hour(startTime);
+      const end = convertTo24Hour(endTime);
+
+      const startMs = start.hour * 60 + start.minute;
+      const endMs = end.hour * 60 + end.minute;
+
+      const diffMinutes = endMs - startMs;
+      if (diffMinutes <= 0) return;
+
+      const durationHours = diffMinutes / 60;
+      const total = Math.round(durationHours * Number(price));
+
+      setAmount(String(total));
+    } catch (e: any) {
+      console.warn('Invalid time format:', e.message);
+    }
+  }, [startTime, endTime, price, setAmount]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = ['50%'];
@@ -86,6 +123,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const handleDragToCreateEvent = (event: any) => {
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
     setEndTime(moment(event.end.dateTime).format('hh:mm A'));
+    setAmount(String(price));
     bottomSheetRef.current?.expand();
   };
 
@@ -331,7 +369,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
               placeholderTextColor="#888"
               placeholder="Amount (e.g., 250.00)"
               value={amount}
-              onChangeText={setAmount}
+              onChangeText={text => setAmount(text)}
               keyboardType="numeric"
               style={styles.input}
             />
@@ -341,7 +379,12 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             <Button
               mode="contained"
               onPress={handleBookingSubmit}
-              loading={isPending}>
+              loading={isPending}
+              disabled={isPending}
+              style={{
+                backgroundColor: isPending ? '#ccc' : 'black',
+              }}
+              textColor={isPending ? 'black' : undefined}>
               Book Slot
             </Button>
           </View>
