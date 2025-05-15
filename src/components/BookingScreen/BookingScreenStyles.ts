@@ -30,4 +30,12 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     color: '#000',
   },
+  newcontainer: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 10,
+    backgroundColor: 'white',
+    borderRadius: 6,
+  },
 });

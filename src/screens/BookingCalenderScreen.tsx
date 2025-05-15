@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {Alert, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -23,6 +23,7 @@ import {
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   useBookingInfo,
+  useCancelBooking,
   useCreateBooking,
   useUpdateBooking,
 } from '../api/booking';
@@ -107,6 +108,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const {mutate, isPending} = useCreateBooking();
   const {mutate: updateBookingMutate, isPending: updateBookingAPIStatus} =
     useUpdateBooking();
+  const {mutate: cancelBooking} = useCancelBooking();
 
   const formattedEvents =
     data?.booking?.map((booking: any) => ({
@@ -192,14 +194,37 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           disableShadow
           isVisible={isTooltipVisible}
           content={
-            <Button
-              mode="text"
-              onPress={() => {
-                setSelectedEvent(event);
-                setVisibleTooltipId(null);
-              }}>
-              Edit
-            </Button>
+            <View style={styles.newcontainer}>
+              <Button
+                mode="text"
+                onPress={() => {
+                  setSelectedEvent(event);
+                  setVisibleTooltipId(null);
+                }}>
+                Edit
+              </Button>
+              <Button
+                mode="text"
+                onPress={() => {
+                  Alert.alert(
+                    'Confirm',
+                    'Are you sure you want to delete this booking?',
+                    [
+                      {text: 'Cancel', style: 'cancel'},
+                      {
+                        text: 'Delete',
+                        style: 'destructive',
+                        onPress: () => {
+                          cancelBooking(event.id);
+                          setVisibleTooltipId(null);
+                        },
+                      },
+                    ],
+                  );
+                }}>
+                Delete
+              </Button>
+            </View>
           }
           placement="top"
           onClose={() => setVisibleTooltipId(null)}>
