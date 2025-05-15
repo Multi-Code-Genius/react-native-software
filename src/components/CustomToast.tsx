@@ -45,7 +45,7 @@ const CustomToast: React.FC<CustomToastProps> = ({
         }),
       ]).start();
     }
-  }, [visible]);
+  }, [visible, fadeAnim]);
 
   const iconName = type === 'error' ? 'x' : 'check';
   const iconColor = '#fff';

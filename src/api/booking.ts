@@ -71,7 +71,7 @@ export const useCreateBooking = (
       showToast({
         message: 'Booking Done!',
         type: 'success',
-        actionLabel: 'Continue',
+        // actionLabel: 'Continue',
       });
     },
     onError: (err: any) => {
@@ -111,7 +111,7 @@ export const useCancelBooking = (
       showToast({
         message: 'Cancel Booking!',
         type: 'success',
-        actionLabel: 'Continue',
+        // actionLabel: 'Continue',
       });
     },
     onError: (err: any) => {

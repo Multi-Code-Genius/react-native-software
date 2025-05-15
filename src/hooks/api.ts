@@ -55,9 +55,9 @@ export const api = async (endpoint: string, config: any = {}) => {
   }
 
   try {
-    const apiUrl = BASE_URL;
+    // const apiUrl = BASE_URL;
 
-    // const apiUrl = 'http://192.168.1.13:5001';
+    const apiUrl = 'http://192.168.1.3:5001';
 
     const response = await fetch(`${apiUrl}${endpoint}`, requestConfig);
     if (!response.ok) {
