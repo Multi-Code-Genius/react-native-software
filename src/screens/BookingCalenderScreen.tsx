@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {Alert, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
 import BottomSheet, {
   BottomSheetBackdrop,
@@ -92,21 +92,24 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     bottomSheetRef.current?.expand();
   };
 
-  const renderHour = useCallback(({hourStr}: {hourStr: string}) => {
-    const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
-    return (
-      <View style={{flexDirection: 'column'}}>
-        <Text
-          style={{textAlign: 'right', color: theme.colors.onPrimary}}
-          variant="bodySmall">
-          {hourStr}
-        </Text>
-        <Text style={{textAlign: 'right'}} variant="bodyLarge">
-          {timeSlot?.icon}
-        </Text>
-      </View>
-    );
-  }, []);
+  const renderHour = useCallback(
+    ({hourStr}: {hourStr: string}) => {
+      const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
+      return (
+        <View style={{flexDirection: 'column'}}>
+          <Text
+            style={{textAlign: 'right', color: theme.colors.onPrimary}}
+            variant="bodySmall">
+            {hourStr}
+          </Text>
+          <Text style={{textAlign: 'right'}} variant="bodyLarge">
+            {timeSlot?.icon}
+          </Text>
+        </View>
+      );
+    },
+    [theme.colors.onPrimary],
+  );
 
   const handleBookingSubmit = () => {
     if (!name || !number || !amount || !startTime || !endTime) {
@@ -244,7 +247,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         </Tooltip>
       );
     },
-    [visibleTooltipId, theme.colors.onPrimary],
+    [visibleTooltipId, cancelBooking, theme.colors.onPrimary],
   );
 
   const handleDragStart = (event: any) => {
@@ -252,7 +255,9 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   };
 
   const handleDragEnd = (event: any) => {
-    if (!selectedEvent) return;
+    if (!selectedEvent) {
+      return;
+    }
 
     const datas = {
       id: event.id,
