@@ -31,8 +31,8 @@ export default function App() {
       onSurfaceVariant: '#000000',
       outline: '#000000',
       shadow: '#000000',
-      primaryContainer: '#000000',
-      onPrimaryContainer: '#FFFFFF',
+      primaryContainer: '#FFFFFF',
+      onPrimaryContainer: '#000000',
       elevation: {
         level0: 'transparent',
         level1: '#F0F0F0',

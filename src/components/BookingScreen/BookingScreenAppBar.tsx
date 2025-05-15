@@ -1,21 +1,25 @@
 import React from 'react';
-import {Appbar, IconButton} from 'react-native-paper';
+import {Appbar, IconButton, useTheme} from 'react-native-paper';
 
 const BookingScreenAppBar = ({navigation}: {navigation: any}) => {
+  const theme = useTheme();
   return (
     <Appbar.Header
       style={{
-        backgroundColor: 'white',
-        borderBottomColor: '#e0e0e0',
-        borderBottomWidth: 2,
+        backgroundColor: theme.colors.primary,
+        borderBottomColor: theme.colors.surface,
+        borderBottomWidth: 1,
       }}
       statusBarHeight={0}>
       <IconButton
         icon="arrow-back"
-        iconColor={'black'}
+        iconColor={theme.colors.onPrimary}
         onPress={() => navigation.goBack()}
       />
-      <Appbar.Content title="Bookings" titleStyle={{color: 'black'}} />
+      <Appbar.Content
+        title="Bookings"
+        titleStyle={{color: theme.colors.onPrimary}}
+      />
     </Appbar.Header>
   );
 };
