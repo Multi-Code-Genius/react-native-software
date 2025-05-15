@@ -29,7 +29,7 @@ export default function EmailLoginSlide({
           </Text>
 
           <TextInput
-            label="Email"
+            label="Number"
             mode="outlined"
             keyboardType="email-address"
             style={{textTransform: 'none'}}

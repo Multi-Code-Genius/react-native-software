@@ -2,7 +2,7 @@ import {useMutation} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 import {useToast} from '../context/ToastContext';
 
-export const requestOtp = async (email: {email: string}) => {
+export const requestOtp = async (email: {number: string}) => {
   try {
     const response = await api('/api/auth/send-otp', {
       method: 'POST',
@@ -22,7 +22,7 @@ export const useRequestOtp = (
 ) => {
   const {showToast} = useToast();
   return useMutation({
-    mutationFn: (email: {email: string}) => requestOtp(email),
+    mutationFn: (email: {number: string}) => requestOtp(email),
     onSuccess: () => {
       showToast({
         message: 'OTP Sent!',
@@ -63,8 +63,10 @@ export const useReSendOtp = (
   });
 };
 
-export const verifyOtp = async (data: {email: string; otp: string}) => {
+export const verifyOtp = async (data: {number: string; otp: string}) => {
   try {
+    console.log('data', data);
+
     const response = await api('/api/auth/verify-otp', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -83,7 +85,7 @@ export const useVerifyOtp = (
 ) => {
   const {showToast} = useToast();
   return useMutation({
-    mutationFn: (data: {email: string; otp: string}) => verifyOtp(data),
+    mutationFn: (data: {number: string; otp: string}) => verifyOtp(data),
     onSuccess: () => {
       showToast({
         message: 'OTP verified successfully',

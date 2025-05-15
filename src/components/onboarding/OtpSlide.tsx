@@ -33,7 +33,7 @@ export default function OtpSlide({
             setOtp(text);
             if (text.length === 6) {
               verifyOtp(
-                {email, otp: text},
+                {number: email, otp: text},
                 {
                   onSuccess: async ({token}: {token: string}) => {
                     if (!token) return;

@@ -22,11 +22,11 @@ const OnboardingScreen = () => {
   const {mutate: verifyOtp} = useVerifyOtp();
 
   const sendOtp = () => {
-    if (!email.includes('@')) {
-      Alert.alert('Invalid Email', 'Please enter a valid email address.');
-      return;
-    }
-    requestOtp({email});
+    // if (!email.includes('@')) {
+    //   Alert.alert('Invalid Email', 'Please enter a valid email address.');
+    //   return;
+    // }
+    requestOtp({number: email});
 
     onboardingRef.current?.goNext();
     setPageIndex(2);
