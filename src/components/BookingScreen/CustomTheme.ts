@@ -30,4 +30,8 @@ export const customTheme = {
   todayNumber: {
     color: '#000000',
   },
+
+  eventContainerStyle: {
+    padding: 5,
+  },
 };

@@ -41,14 +41,6 @@ const BookingByIdScreen = ({navigation}: any) => {
     return `${hours}:${formattedMinutes} ${ampm}`;
   };
 
-  if (isLoading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator animating={true} size="large" />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={{flex: 1}} edges={['left', 'right']}>
       <View style={{flex: 1}}>
@@ -65,63 +57,70 @@ const BookingByIdScreen = ({navigation}: any) => {
             onPress={() => navigation.goBack()}
           />
           <Appbar.Content
-            title={data?.booking?.user?.name}
+            title={data?.booking?.user?.name || "Customer's Name"}
             titleStyle={{color: 'black'}}
           />
         </Appbar.Header>
-        <View style={styles.container}>
-          <View style={styles.form}>
-            <TextInput
-              label="Name"
-              mode="outlined"
-              style={styles.input}
-              value={name}
-              onChangeText={setName}
-              placeholder="Enter your name"
-              left={<TextInput.Icon icon="person" size={20} />}
-            />
-
-            <TextInput
-              label="Phone Number"
-              mode="outlined"
-              keyboardType="phone-pad"
-              style={styles.input}
-              value={phone}
-              onChangeText={setPhone}
-              placeholder="Enter your phone number"
-              left={<TextInput.Icon icon="call" size={20} />}
-            />
-
-            <TextInput
-              label="Total amount"
-              mode="outlined"
-              style={styles.input}
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType="numeric"
-              placeholder="Enter your total amount"
-              left={<TextInput.Icon icon="cash" size={20} />}
-            />
-
-            <TextInput
-              label="Start Time"
-              mode="outlined"
-              style={styles.input}
-              value={formatTimeToAMPM(data?.booking?.startTime)}
-              left={<TextInput.Icon icon="time" size={20} />}
-              editable={false}
-            />
-
-            <TextInput
-              label="End Time"
-              mode="outlined"
-              style={styles.input}
-              value={formatTimeToAMPM(data?.booking?.endTime)}
-              left={<TextInput.Icon icon="time" size={20} />}
-              editable={false}
-            />
+        {isLoading ? (
+          <View
+            style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <ActivityIndicator animating={true} size="small" />
           </View>
-        </View>
+        ) : (
+          <View style={styles.container}>
+            <View style={styles.form}>
+              <TextInput
+                label="Name"
+                mode="outlined"
+                style={styles.input}
+                value={name}
+                onChangeText={setName}
+                placeholder="Enter your name"
+                left={<TextInput.Icon icon="person" size={20} />}
+              />
+
+              <TextInput
+                label="Phone Number"
+                mode="outlined"
+                keyboardType="phone-pad"
+                style={styles.input}
+                value={phone}
+                onChangeText={setPhone}
+                placeholder="Enter your phone number"
+                left={<TextInput.Icon icon="call" size={20} />}
+              />
+
+              <TextInput
+                label="Total amount"
+                mode="outlined"
+                style={styles.input}
+                value={amount}
+                onChangeText={setAmount}
+                keyboardType="numeric"
+                placeholder="Enter your total amount"
+                left={<TextInput.Icon icon="cash" size={20} />}
+              />
+
+              <TextInput
+                label="Start Time"
+                mode="outlined"
+                style={styles.input}
+                value={formatTimeToAMPM(data?.booking?.startTime)}
+                left={<TextInput.Icon icon="time" size={20} />}
+                editable={false}
+              />
+
+              <TextInput
+                label="End Time"
+                mode="outlined"
+                style={styles.input}
+                value={formatTimeToAMPM(data?.booking?.endTime)}
+                left={<TextInput.Icon icon="time" size={20} />}
+                editable={false}
+              />
+            </View>
+          </View>
+        )}
       </View>
     </SafeAreaView>
   );

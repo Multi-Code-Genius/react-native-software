@@ -13,9 +13,7 @@ export const styles = StyleSheet.create({
   formContainer: {
     gap: 10,
   },
-  buttonContainer: {
-    padding: 20,
-  },
+
   headerRow: {
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -31,12 +29,8 @@ export const styles = StyleSheet.create({
     color: '#000',
   },
   newcontainer: {
-    width: '100%',
     flexDirection: 'row',
-    justifyContent: 'center',
-    gap: 10,
-    backgroundColor: 'white',
-    borderRadius: 6,
+    justifyContent: 'space-evenly',
   },
   dialog: {
     backgroundColor: 'white',

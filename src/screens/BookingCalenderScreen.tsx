@@ -355,6 +355,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           setInitialDate(moment(date).format('DD-MM-YYYY'))
         }
         dragStep={30}
+        defaultDuration={60}
         allowDragToEdit={!!selectedEvent}
         hourWidth={100}
         onDragCreateEventEnd={handleDragToCreateEvent}
@@ -405,18 +406,21 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
               placeholderTextColor="#888"
               placeholder="Full Name (e.g., John Doe)"
               value={name}
+              onSubmitEditing={Keyboard.dismiss}
               onChangeText={setName}
               style={styles.input}
             />
             <BottomSheetTextInput
               placeholderTextColor="#888"
               placeholder="Phone Number (e.g., +1 234 567 890)"
+              onSubmitEditing={Keyboard.dismiss}
               value={number}
               onChangeText={setNumber}
               keyboardType="phone-pad"
               style={styles.input}
             />
             <BottomSheetTextInput
+              onSubmitEditing={Keyboard.dismiss}
               placeholderTextColor="#888"
               placeholder="Amount (e.g., 250.00)"
               value={amount}
@@ -426,19 +430,17 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             />
           </View>
 
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="contained"
-              onPress={handleBookingSubmit}
-              loading={isPending}
-              disabled={isPending}
-              style={{
-                backgroundColor: isPending ? '#ccc' : 'black',
-              }}
-              textColor={isPending ? 'black' : undefined}>
-              Book Slot
-            </Button>
-          </View>
+          <Button
+            mode="contained"
+            onPress={handleBookingSubmit}
+            loading={isPending}
+            disabled={isPending}
+            style={{
+              backgroundColor: isPending ? '#ccc' : 'black',
+            }}
+            textColor={isPending ? 'black' : undefined}>
+            Book Slot
+          </Button>
         </BottomSheetView>
       </BottomSheet>
 
