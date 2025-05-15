@@ -1,7 +1,7 @@
 import React from 'react';
 import {Appbar, IconButton} from 'react-native-paper';
 
-const BookingScreenAppBar = ({navigation}) => {
+const BookingScreenAppBar = ({navigation}: {navigation: any}) => {
   return (
     <Appbar.Header
       style={{

@@ -1,4 +1,4 @@
-import {useFocusEffect} from '@react-navigation/native';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
@@ -21,6 +21,7 @@ const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
 
   const [selectedVenue, setSelectedVenue] = useState<string>('');
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (account?.games?.length > 0) {
@@ -143,12 +144,32 @@ const HomeScreen = () => {
               <Text>This Month</Text>
             </Card.Content>
           </Card>
+
+          <Card style={styles.card}>
+            <Card.Content>
+              <Title>{bookingsToday} Bookings</Title>
+              <Text>Today</Text>
+            </Card.Content>
+          </Card>
         </View>
 
-        <Card style={styles.card}>
+        <Card
+          style={{
+            width: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'green',
+          }}
+          onPress={() =>
+            (navigation as any).navigate('bookingData', {
+              venueId: selectedVenue,
+              price: 2500,
+            })
+          }>
           <Card.Content>
-            <Title>{bookingsToday} Bookings</Title>
-            <Text>Today</Text>
+            <Title>Bookings</Title>
+            {/* <Text>Today</Text> */}
           </Card.Content>
         </Card>
 
