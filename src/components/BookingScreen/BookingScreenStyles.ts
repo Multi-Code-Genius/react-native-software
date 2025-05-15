@@ -38,4 +38,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 6,
   },
+  dialog: {
+    backgroundColor: 'white',
+  },
 });

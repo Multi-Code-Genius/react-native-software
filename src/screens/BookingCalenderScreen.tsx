@@ -1,6 +1,14 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Alert, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
-import {Button, FAB, Icon, Text, useTheme} from 'react-native-paper';
+import {
+  Button,
+  Dialog,
+  FAB,
+  Icon,
+  Portal,
+  Text,
+  useTheme,
+} from 'react-native-paper';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetTextInput,
@@ -113,7 +121,8 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     gameId: venueId,
     date: initialDate,
   });
-
+  const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
+  const [eventToDelete, setEventToDelete] = useState<string | null>(null);
   const {mutate, isPending} = useCreateBooking();
   const {mutate: updateBookingMutate, isPending: updateBookingAPIStatus} =
     useUpdateBooking();
@@ -219,21 +228,9 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
               <Button
                 mode="text"
                 onPress={() => {
-                  Alert.alert(
-                    'Confirm',
-                    'Are you sure you want to delete this booking?',
-                    [
-                      {text: 'Cancel', style: 'cancel'},
-                      {
-                        text: 'Delete',
-                        style: 'destructive',
-                        onPress: () => {
-                          cancelBooking(event.id);
-                          setVisibleTooltipId(null);
-                        },
-                      },
-                    ],
-                  );
+                  setEventToDelete(event.id);
+                  setDeleteDialogVisible(true);
+                  setVisibleTooltipId(null);
                 }}>
                 Delete
               </Button>
@@ -457,6 +454,33 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           onPress={() => setSelectedEvent(null)}
         />
       )}
+
+      <Portal>
+        <Dialog
+          visible={deleteDialogVisible}
+          onDismiss={() => setDeleteDialogVisible(false)}
+          style={styles.dialog}>
+          <Dialog.Title>Confirm Delete</Dialog.Title>
+          <Dialog.Content>
+            <Text>Are you sure you want to delete this booking?</Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => setDeleteDialogVisible(false)}>
+              Cancel
+            </Button>
+            <Button
+              onPress={() => {
+                if (eventToDelete) {
+                  cancelBooking(eventToDelete);
+                }
+                setDeleteDialogVisible(false);
+              }}
+              textColor="red">
+              Delete
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </View>
   );
 };
