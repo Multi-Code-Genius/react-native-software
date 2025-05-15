@@ -341,7 +341,12 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             <Button
               mode="contained"
               onPress={handleBookingSubmit}
-              loading={isPending}>
+              loading={isPending}
+              disabled={isPending}
+              style={{
+                backgroundColor: isPending ? '#ccc' : 'black',
+              }}
+              textColor={isPending ? 'black' : undefined}>
               Book Slot
             </Button>
           </View>
