@@ -1,6 +1,14 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {Alert, Image, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {
   ActivityIndicator,
@@ -105,75 +113,80 @@ const ProfileInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.card}>
-          <View style={styles.profileImageWrapper}>
-            <Image
-              source={{uri: profilePicUri}}
-              style={styles.profileImage}
-              resizeMode="cover"
-            />
-            <IconButton
-              icon="pencil"
-              size={16}
-              onPress={handleMediaPick}
-              iconColor="#fff"
-              style={styles.iconOverlay}
-            />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{flex: 1}}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
+        <ScrollView contentContainerStyle={styles.container}>
+          <View style={styles.card}>
+            <View style={styles.profileImageWrapper}>
+              <Image
+                source={{uri: profilePicUri}}
+                style={styles.profileImage}
+                resizeMode="cover"
+              />
+              <IconButton
+                icon="pencil"
+                size={16}
+                onPress={handleMediaPick}
+                iconColor="#fff"
+                style={styles.iconOverlay}
+              />
+            </View>
+
+            <Text style={styles.title}>Profile Information</Text>
+
+            <View style={styles.form}>
+              <TextInput
+                label="Email"
+                mode="outlined"
+                keyboardType="email-address"
+                style={styles.input}
+                value={formData?.email}
+                placeholder="Enter your email"
+                onChangeText={text => handleChange('email', text)}
+                left={<TextInput.Icon icon="mail" size={20} />}
+              />
+
+              <TextInput
+                label="Name"
+                mode="outlined"
+                style={styles.input}
+                value={formData?.name}
+                placeholder="Enter your name"
+                onChangeText={text => handleChange('name', text)}
+                left={<TextInput.Icon icon="person" size={20} />}
+              />
+
+              <TextInput
+                label="Phone Number"
+                mode="outlined"
+                keyboardType="phone-pad"
+                style={styles.input}
+                value={formData?.mobileNumber}
+                placeholder="Enter your phone number"
+                onChangeText={text => handleChange('mobileNumber', text)}
+                left={<TextInput.Icon icon="call" size={20} />}
+              />
+              <Button
+                mode="contained"
+                onPressIn={() => setPressed(true)}
+                onPressOut={() => setPressed(false)}
+                style={[styles.button, pressed && styles.buttonPressed]}
+                labelStyle={styles.buttonLabel}
+                onPress={handleSubmit}
+                disabled={isPending}
+                rippleColor="rgba(255, 255, 255, 0.3)">
+                {isPending ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.text}>Submit Info</Text>
+                )}
+              </Button>
+            </View>
           </View>
-
-          <Text style={styles.title}>Profile Information</Text>
-
-          <View style={styles.form}>
-            <TextInput
-              label="Email"
-              mode="outlined"
-              keyboardType="email-address"
-              style={styles.input}
-              value={formData?.email}
-              placeholder="Enter your email"
-              onChangeText={text => handleChange('email', text)}
-              left={<TextInput.Icon icon="mail" size={20} />}
-            />
-
-            <TextInput
-              label="Name"
-              mode="outlined"
-              style={styles.input}
-              value={formData?.name}
-              placeholder="Enter your name"
-              onChangeText={text => handleChange('name', text)}
-              left={<TextInput.Icon icon="person" size={20} />}
-            />
-
-            <TextInput
-              label="Phone Number"
-              mode="outlined"
-              keyboardType="phone-pad"
-              style={styles.input}
-              value={formData?.mobileNumber}
-              placeholder="Enter your phone number"
-              onChangeText={text => handleChange('mobileNumber', text)}
-              left={<TextInput.Icon icon="call" size={20} />}
-            />
-            <Button
-              mode="contained"
-              onPressIn={() => setPressed(true)}
-              onPressOut={() => setPressed(false)}
-              style={[styles.button, pressed && styles.buttonPressed]}
-              labelStyle={styles.buttonLabel}
-              onPress={handleSubmit}
-              disabled={isPending}
-              rippleColor="rgba(255, 255, 255, 0.3)">
-              {isPending ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.text}>Submit Info</Text>
-              )}
-            </Button>
-          </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
