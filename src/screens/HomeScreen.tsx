@@ -149,6 +149,7 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <ScrollView
         style={styles.container}
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
@@ -169,7 +170,6 @@ const HomeScreen = () => {
           </View>
         </View>
 
-        
         <Card style={styles.performanceCard}>
           <Card.Content>
             <View style={styles.cardHeader}>
