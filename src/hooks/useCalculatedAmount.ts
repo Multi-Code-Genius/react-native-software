@@ -22,7 +22,9 @@ export const calculatedAmount = (
     const end = convertTo24Hour(endTime);
 
     const startMs = start.hour * 60 + start.minute;
-    const endMs = end.hour * 60 + end.minute;
+
+    const endMs =
+      end.minute === 59 ? (end.hour + 1) * 60 : end.hour * 60 + end.minute;
 
     const diffMinutes = endMs - startMs;
     if (diffMinutes <= 0) {
