@@ -103,6 +103,15 @@ const AccountScreen = () => {
               ) : (
                 <View style={styles.profileImageWrapper}>
                   <View style={styles.profileImage} />
+                  <IconButton
+                    icon="pencil"
+                    size={20}
+                    iconColor="white"
+                    onPress={() =>
+                      (navigation as any).navigate('Profile', {data})
+                    }
+                    style={styles.iconOverlay}
+                  />
                 </View>
               )}
             </>
