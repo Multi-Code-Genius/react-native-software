@@ -9,7 +9,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
+import {BarChart, PieChart} from 'react-native-chart-kit';
 import {
   ActivityIndicator,
   Button,
@@ -114,6 +114,53 @@ const HomeScreen = () => {
     ],
   );
 
+  const statusData = [
+    {
+      name: 'Confirmed',
+      population: data?.statusCounts?.CONFIRMED ?? 0,
+      color: '#f3f04d',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Cancelled',
+      population: data?.statusCounts?.CANCELLED ?? 0,
+      color: '#f36b62',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Pending',
+      population: data?.statusCounts?.PENDING ?? 0,
+      color: '#f5b556',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+    {
+      name: 'Completed',
+      population: data?.statusCounts?.COMPLETED ?? 0,
+      color: '#69b86c',
+      legendFontColor: '#000',
+      legendFontSize: 12,
+    },
+  ];
+
+  const chartConfig = {
+    backgroundGradientFrom: '#ffffff',
+    backgroundGradientTo: '#ffffff',
+    decimalPlaces: 0,
+    color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
+    labelColor: () => '#000',
+    style: {
+      borderRadius: 16,
+    },
+    propsForDots: {
+      r: '6',
+      strokeWidth: '2',
+      stroke: '#2196f3',
+    },
+  };
+
   const renderMetricCard = ({item}: any) => (
     <Card style={styles.metricCard}>
       <Card.Content>
@@ -214,6 +261,18 @@ const HomeScreen = () => {
           contentContainerStyle={styles.flatListContainer}
         />
 
+        <Title style={styles.sectionTitle}>Booking Status</Title>
+        <PieChart
+          data={statusData}
+          width={screenWidth - 32}
+          height={200}
+          accessor="population"
+          backgroundColor="transparent"
+          paddingLeft="15"
+          chartConfig={chartConfig}
+          hasLegend
+        />
+
         <Text style={styles.title}>Working Hours Statistics</Text>
         <View style={styles.header}>
           <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
@@ -231,6 +290,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: '#f5f5f5',
+  },
+  sectionTitle: {
+    marginTop: 24,
+    marginBottom: 8,
+    fontSize: 18,
   },
   heading: {
     marginBottom: 16,
@@ -378,6 +442,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: '600',
+    marginBottom: 10,
   },
   tabs: {
     flexDirection: 'row',
