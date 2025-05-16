@@ -5,7 +5,7 @@ import BottomSheet, {
 } from '@gorhom/bottom-sheet';
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {
   Button,
@@ -17,6 +17,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import Tooltip from 'react-native-walkthrough-tooltip';
+import debounce from 'lodash/debounce';
 
 import {
   CalendarBody,
@@ -32,6 +33,7 @@ import {
   useBookingInfo,
   useCancelBooking,
   useCreateBooking,
+  useSuggestedCustomer,
   useUpdateBooking,
 } from '../api/booking';
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
@@ -40,49 +42,12 @@ import {customTheme} from '../components/BookingScreen/CustomTheme';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useToast} from '../context/ToastContext';
 import {useBookingFormStore} from '../store/useBookingFormStore';
+import {calculatedAmount} from '../hooks/useCalculatedAmount';
 
 interface BookingCalenderScreenProps {
   navigation: any;
 }
 
-const calculatedAmount = (
-  startTime: string,
-  endTime: string,
-  price: string,
-): string | null => {
-  const convertTo24Hour = (timeStr: any) => {
-    const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
-    const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
-    const [hourStr, minuteStr] = time.split(':');
-
-    let hour = parseInt(hourStr, 10);
-    const minute = parseInt(minuteStr, 10);
-
-    if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
-    if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
-
-    return {hour, minute};
-  };
-
-  try {
-    const start = convertTo24Hour(startTime);
-    const end = convertTo24Hour(endTime);
-
-    const startMs = start.hour * 60 + start.minute;
-    const endMs = end.hour * 60 + end.minute;
-
-    const diffMinutes = endMs - startMs;
-    if (diffMinutes <= 0) return null;
-
-    const durationHours = diffMinutes / 60;
-    return String(Math.round(durationHours * Number(price)));
-  } catch (e: any) {
-    console.warn('Invalid time format:', e.message);
-    return null;
-  }
-};
-
-// Helper to fix endTime if it equals 12:00 AM -> set to 11:59 PM
 const fixEndTime = (timeStr: string): string => {
   if (timeStr.trim().toLowerCase() === '12:00 am') {
     return '11:59 PM';
@@ -118,10 +83,14 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   } = useBookingFormStore();
 
   useEffect(() => {
-    if (!startTime || !endTime || !price) return;
+    if (!startTime || !endTime || !price) {
+      return;
+    }
 
     const result = calculatedAmount(startTime, endTime, price);
-    if (result) setAmount(result);
+    if (result) {
+      setAmount(result);
+    }
   }, [startTime, endTime, price, setAmount]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -141,13 +110,13 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const formattedEvents =
     data?.booking?.map((booking: any) => ({
       id: booking.id,
-      title: booking.user.name,
+      title: booking?.customer?.name,
       start: {dateTime: booking.startTime},
       end: {dateTime: booking.endTime},
       nets: booking.nets,
       status: booking.status,
       totalAmount: booking.totalAmount,
-      contact: booking.user.id,
+      contact: booking?.customer?.id,
     })) || [];
 
   const handleDragToCreateEvent = (event: any) => {
@@ -373,6 +342,26 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       },
     });
   };
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setNumber(value);
+      }, 500),
+    [setNumber],
+  );
+
+  const handleChange = (e: any) => {
+    const value = e.target?.value;
+
+    setNumber(value);
+    debouncedSearch(value);
+  };
+
+  const {data: customerData, isLoading: customerLoading} =
+    useSuggestedCustomer(number);
+
+  console.log('customerData', customerData);
 
   const renderDraggableEvent = useCallback(
     (props: DraggableEventProps) => (
