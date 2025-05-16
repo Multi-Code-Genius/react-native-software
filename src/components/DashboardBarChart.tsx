@@ -38,6 +38,7 @@ const DashboardBarChart = ({data}: {data: any}) => {
         verticalLabelRotation={0}
         showValuesOnTopOfBars={true}
         fromZero
+        yLabelsOffset={30}
         withInnerLines={false}
         withHorizontalLabels
         style={styles.chart}
@@ -67,6 +68,11 @@ const chartConfig = {
   propsForLabels: {
     fontSize: 10,
   },
+  propsForBackgroundLines: {
+    strokeWidth: 0,
+  },
+  barPercentage: 0.6,
+  paddingLeft: 0,
 };
 
 const styles = StyleSheet.create({

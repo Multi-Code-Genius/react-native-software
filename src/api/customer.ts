@@ -8,6 +8,7 @@ export const getCustomerDetails = async () => {
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
     });
+
     return response;
   } catch (error) {
     console.error('message Error:', error);
@@ -21,7 +22,6 @@ export const useGetCustomer = (
 ) => {
   return useQuery({
     queryKey: ['customer'],
-
     queryFn: getCustomerDetails,
   });
 };
