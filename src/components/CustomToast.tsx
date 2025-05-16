@@ -1,12 +1,11 @@
-// components/CustomToast.tsx
 import React, {useEffect} from 'react';
 import {
-  Text,
-  View,
-  StyleSheet,
   Animated,
   Dimensions,
+  StyleSheet,
+  Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
@@ -17,6 +16,7 @@ interface CustomToastProps {
   message: string;
   type?: 'success' | 'error';
   actionLabel?: string;
+  showIcon?: boolean;
   onActionPress?: () => void;
 }
 
@@ -26,6 +26,7 @@ const CustomToast: React.FC<CustomToastProps> = ({
   type = 'success',
   actionLabel = type === 'error' ? 'Retry' : 'View',
   onActionPress,
+  showIcon = false,
 }) => {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -69,12 +70,14 @@ const CustomToast: React.FC<CustomToastProps> = ({
       ]}>
       <View style={styles.toastBox}>
         <View style={styles.left}>
-          <Icon
-            name={iconName}
-            size={18}
-            color={iconColor}
-            style={styles.icon}
-          />
+          {showIcon && (
+            <Icon
+              name={iconName}
+              size={18}
+              color={iconColor}
+              style={styles.icon}
+            />
+          )}
           <Text style={styles.text}>{message}</Text>
         </View>
         {actionLabel && (

@@ -1,5 +1,12 @@
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetTextInput,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {
   Button,
   Dialog,
@@ -9,37 +16,30 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetTextInput,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
-import {useRoute} from '@react-navigation/native';
-import moment from 'moment';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
 import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
-  PackedEvent,
-  SelectedEventType,
   DraggableEvent,
   DraggableEventProps,
+  PackedEvent,
+  SelectedEventType,
 } from '@howljs/calendar-kit';
 
-import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   useBookingInfo,
   useCancelBooking,
   useCreateBooking,
   useUpdateBooking,
 } from '../api/booking';
+import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {styles} from '../components/BookingScreen/BookingScreenStyles';
-import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import {useBookingFormStore} from '../store/useBookingFormStore';
 import {customTheme} from '../components/BookingScreen/CustomTheme';
+import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useToast} from '../context/ToastContext';
+import {useBookingFormStore} from '../store/useBookingFormStore';
 
 interface BookingCalenderScreenProps {
   navigation: any;

@@ -1,4 +1,4 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useContext, useState} from 'react';
 
 type ToastType = 'success' | 'error';
 
@@ -8,6 +8,7 @@ interface ToastState {
   type: ToastType;
   actionLabel?: string;
   onActionPress?: () => void;
+  showIcon?: boolean;
 }
 
 interface ToastContextType {
@@ -25,6 +26,7 @@ export const ToastProvider: React.FC<{children: React.ReactNode}> = ({
     visible: false,
     message: '',
     type: 'success',
+    showIcon: false,
   });
 
   const showToast = (toastData: Partial<ToastState>) => {
@@ -33,6 +35,7 @@ export const ToastProvider: React.FC<{children: React.ReactNode}> = ({
       message: toastData.message || '',
       type: toastData.type || 'success',
       actionLabel: toastData.actionLabel,
+      showIcon: toastData.showIcon,
       onActionPress: toastData.onActionPress,
     });
 

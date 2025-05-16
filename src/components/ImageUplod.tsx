@@ -1,14 +1,14 @@
 import React, {useState} from 'react';
 import {
-  View,
-  Image,
-  Pressable,
-  ScrollView,
-  Text,
-  StyleSheet,
   Alert,
+  Image,
   PermissionsAndroid,
   Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import {Asset, launchImageLibrary} from 'react-native-image-picker';
 import {useVenueStore} from '../store/useVenueStore';

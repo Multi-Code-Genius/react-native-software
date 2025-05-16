@@ -1,7 +1,7 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {api} from '../hooks/api';
 import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
+import {api} from '../hooks/api';
 
 const fetchBooking = async (data: any) => {
   try {
@@ -141,13 +141,17 @@ const updateBooking = async (data: any) => {
 
 export const useUpdateBooking = (
   onSuccess?: () => void,
-  onError?: () => void,
+  _onError?: () => void,
 ) => {
   const {showToast} = useToast();
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
       updateBooking({id, data}),
     onSuccess: () => {
+      showToast({
+        message: 'Booking Updated!',
+        type: 'success',
+      });
       queryClient.invalidateQueries({queryKey: ['booking']});
       onSuccess?.();
     },

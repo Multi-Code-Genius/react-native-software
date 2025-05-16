@@ -1,16 +1,12 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useState} from 'react';
-import {Image, ScrollView, StyleSheet, View} from 'react-native';
+import React from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {
   ActivityIndicator,
-  Button,
-  Dialog,
   Divider,
   Icon,
   IconButton,
-  Portal,
   Text,
-  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenueById} from '../api/vanue';
@@ -22,8 +18,6 @@ export const VenueByIdDetailsScreen = () => {
   const navigation = useNavigation();
   const venueById = route.params as {id?: string};
   const {data, isLoading} = useGetVenueById(venueById?.id);
-
-  const theme = useTheme();
 
   if (isLoading) {
     return (

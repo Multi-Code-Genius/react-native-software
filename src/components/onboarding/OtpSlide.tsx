@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Alert, StyleSheet} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Alert, StyleSheet, View} from 'react-native';
 import {OtpInput} from 'react-native-otp-entry';
+import {Text} from 'react-native-paper';
 
 export default function OtpSlide({
   email,
@@ -36,7 +36,9 @@ export default function OtpSlide({
                 {number: email, otp: text},
                 {
                   onSuccess: async ({token}: {token: string}) => {
-                    if (!token) return;
+                    if (!token) {
+                      return;
+                    }
                     await saveToken(token);
                   },
                   onError: (error: any) => {

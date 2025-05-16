@@ -1,15 +1,15 @@
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState, useMemo} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {
   Dimensions,
+  FlatList,
   RefreshControl,
   ScrollView,
   StyleSheet,
-  View,
-  FlatList,
   TouchableOpacity,
+  View,
 } from 'react-native';
-import {BarChart, PieChart} from 'react-native-chart-kit';
+import {PieChart} from 'react-native-chart-kit';
 import {
   ActivityIndicator,
   Button,
@@ -20,9 +20,9 @@ import {
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
-import {useAccountLogic} from '../hooks/useAccountLogic';
 import DashboardBarChart from '../components/DashboardBarChart';
-const screenWidth = Dimensions.get('window').width;
+import {useAccountLogic} from '../hooks/useAccountLogic';
+
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
   const [selectedVenue, setSelectedVenue] = useState<string>('');
@@ -264,7 +264,7 @@ const HomeScreen = () => {
         <Title style={styles.sectionTitle}>Booking Status</Title>
         <PieChart
           data={statusData}
-          width={screenWidth - 32}
+          width={Dimensions.get('window').width - 32}
           height={200}
           accessor="population"
           backgroundColor="transparent"

@@ -1,16 +1,15 @@
-import {StyleSheet, TextInput, View, Text} from 'react-native';
-import React, {useState, useEffect} from 'react';
-import {ActivityIndicator, Appbar, Icon, IconButton} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
-import {useBookingById} from '../api/booking';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {ActivityIndicator, Appbar, Icon, IconButton} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {useBookingById} from '../api/booking';
 
 const BookingByIdScreen = ({navigation}: any) => {
   const route = useRoute();
-  const {bookingId} = route.params;
+  const {bookingId} = route.params as {bookingId: string};
   const {data, isLoading} = useBookingById(bookingId);
 
-  console.log('data>>>>', data);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [amount, setAmount] = useState('');

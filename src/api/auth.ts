@@ -1,6 +1,6 @@
 import {useMutation} from '@tanstack/react-query';
-import {api} from '../hooks/api';
 import {useToast} from '../context/ToastContext';
+import {api} from '../hooks/api';
 
 export const requestOtp = async (email: {number: string}) => {
   try {
@@ -26,6 +26,7 @@ export const useRequestOtp = (
     onSuccess: () => {
       showToast({
         message: 'OTP Sent!',
+        showIcon: true,
         type: 'success',
       });
     },
@@ -90,6 +91,7 @@ export const useVerifyOtp = (
       showToast({
         message: 'OTP verified successfully',
         type: 'success',
+        showIcon: true,
       });
     },
     onError: (err: any) => {
