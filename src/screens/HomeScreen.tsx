@@ -21,6 +21,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
 import {useAccountLogic} from '../hooks/useAccountLogic';
+import DashboardBarChart from '../components/DashboardBarChart';
 const screenWidth = Dimensions.get('window').width;
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
@@ -64,35 +65,6 @@ const HomeScreen = () => {
   const bookingsToday = data?.todaysBookingsCount ?? 0;
   const todaysTotalAmount = data?.todaysTotalAmount ?? 0;
   const newuserCount = data?.newUsersCount ?? 0;
-
-  const chartData = {
-    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-    datasets: [
-      {
-        data: [12, 8, 16, 4],
-        colors: [
-          (opacity = 1) => `rgba(75, 192, 192, ${opacity})`,
-          (opacity = 1) => `rgba(54, 162, 235, ${opacity})`,
-          (opacity = 1) => `rgba(255, 159, 64, ${opacity})`,
-          (opacity = 1) => `rgba(255, 99, 132, ${opacity})`,
-        ],
-      },
-    ],
-  };
-
-  const chartConfig = {
-    backgroundGradientFrom: '#fff',
-    backgroundGradientTo: '#fff',
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-    style: {borderRadius: 16},
-    barPercentage: 0.5,
-    propsForLabels: {fontSize: 12},
-    propsForVerticalLabels: {fontSize: 10},
-    fillShadowGradient: '#4bc0c0',
-    fillShadowGradientOpacity: 1,
-  };
 
   const metricCards = useMemo(
     () => [
@@ -241,30 +213,11 @@ const HomeScreen = () => {
           scrollEnabled={false}
           contentContainerStyle={styles.flatListContainer}
         />
-        <Card style={styles.card}>
-          <Card.Content>
-            <View style={styles.header}>
-              <Text style={styles.title}>Working Hours Statistics</Text>
-              <View style={styles.tabs}>
-                <Text style={[styles.tab, styles.activeTab]}>This Month</Text>
-              </View>
-            </View>
-            <BarChart
-              style={styles.chart}
-              data={chartData}
-              width={screenWidth - 60}
-              height={220}
-              yAxisLabel=""
-              yAxisSuffix="h"
-              chartConfig={chartConfig}
-              verticalLabelRotation={0}
-              fromZero
-              showBarTops={false}
-              withCustomBarColorFromData={true}
-              flatColor={true}
-            />
-          </Card.Content>
-        </Card>
+
+        <Text style={styles.title}>Working Hours Statistics</Text>
+        <View style={styles.header}>
+          <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

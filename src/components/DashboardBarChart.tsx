@@ -32,7 +32,7 @@ const DashboardBarChart = ({data}: {data: any}) => {
     <View>
       <BarChart
         data={bookingsPerDay}
-        width={screenWidth - 32}
+        width={screenWidth - 30}
         height={250}
         chartConfig={chartConfig}
         verticalLabelRotation={0}
