@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
   FlatList,
+  TouchableOpacity,
 } from 'react-native';
 import {BarChart} from 'react-native-chart-kit';
 import {
@@ -20,9 +21,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
 import {useAccountLogic} from '../hooks/useAccountLogic';
-
 const screenWidth = Dimensions.get('window').width;
-
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
   const [selectedVenue, setSelectedVenue] = useState<string>('');
@@ -38,6 +37,8 @@ const HomeScreen = () => {
     selectedVenue,
     account?.user?.id || '',
   );
+
+  console.log('data>>dashboard', data);
 
   useEffect(() => {
     if (selectedVenue) {
@@ -56,6 +57,13 @@ const HomeScreen = () => {
       !isLoading && refetch();
     }, [refetch]),
   );
+
+  const monthsBookingCount = data?.thisMonthBookingsCount ?? 0;
+  const monthTotalAmount = data?.thisMonthTotalAmount ?? 0;
+  const weekTotalAmount = data?.thisWeekTotalAmount ?? 0;
+  const bookingsToday = data?.todaysBookingsCount ?? 0;
+  const todaysTotalAmount = data?.todaysTotalAmount ?? 0;
+  const newuserCount = data?.newUsersCount ?? 0;
 
   const chartData = {
     labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
@@ -90,35 +98,48 @@ const HomeScreen = () => {
     () => [
       {
         id: '1',
-        title: 'Lesson Planning Score',
-        value: '86%',
+        title: 'This Months Booking Count',
+        value: `${monthsBookingCount}`,
         subtext: 'Increased by 25% from the last month',
         comment: 'Pretty good performance!',
         icon: 'pie-chart',
       },
       {
         id: '2',
-        title: 'New Students',
-        value: '2,543',
+        title: 'This Month Total amount',
+        value: `${monthTotalAmount}`,
         subtext: '80% Increase in 20 Days',
         icon: 'stats-chart',
       },
       {
         id: '3',
-        title: 'Total Students',
-        value: '12,543',
+        title: 'This Week Total amount',
+        value: `${weekTotalAmount}`,
         subtext: '80% Increase than before',
         icon: 'stats-chart-outline',
       },
       {
         id: '4',
-        title: 'Total Income',
-        value: '$10,245',
+        title: 'Todays booking Count',
+        value: `${bookingsToday}`,
+        subtext: '80% Increase in 20 days',
+        icon: 'pie-chart-outline',
+      },
+      {
+        id: '5',
+        title: 'Todays Total amount',
+        value: `${todaysTotalAmount}`,
         subtext: '80% Increase in 20 days',
         icon: 'pie-chart-outline',
       },
     ],
-    [],
+    [
+      monthsBookingCount,
+      monthTotalAmount,
+      weekTotalAmount,
+      bookingsToday,
+      todaysTotalAmount,
+    ],
   );
 
   const renderMetricCard = ({item}: any) => (
@@ -170,14 +191,37 @@ const HomeScreen = () => {
           </View>
         </View>
 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.tabContainer}>
+          {account &&
+            (account?.games || []).map((venue: any) => (
+              <TouchableOpacity
+                key={venue.id}
+                style={[
+                  styles.tabButton,
+                  selectedVenue === venue.id && styles.tabButtonActive,
+                ]}
+                onPress={() => setSelectedVenue(venue.id)}>
+                <Text
+                  style={[
+                    styles.tabButtonText,
+                    selectedVenue === venue.id && styles.tabButtonTextActive,
+                  ]}>
+                  {venue.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
+        </ScrollView>
         <Card style={styles.performanceCard}>
           <Card.Content>
             <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>Lecturer Performance</Text>
+              <Text style={styles.cardTitle}>New User Count</Text>
               <Icon source="bar-chart" size={24} color="#4CAF50" />
             </View>
             <View style={styles.performanceRow}>
-              <Text style={styles.performanceScore}>91.2%</Text>
+              <Text style={styles.performanceScore}>{newuserCount}</Text>
               <View style={styles.performanceBadge}>
                 <Text style={styles.badgeText}>Excellent</Text>
               </View>
@@ -197,7 +241,6 @@ const HomeScreen = () => {
           scrollEnabled={false}
           contentContainerStyle={styles.flatListContainer}
         />
-
         <Card style={styles.card}>
           <Card.Content>
             <View style={styles.header}>
@@ -239,6 +282,11 @@ const styles = StyleSheet.create({
   heading: {
     marginBottom: 16,
     fontSize: 22,
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    marginTop: 20,
   },
   headcontainer: {
     gap: 15,
@@ -324,6 +372,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 4,
+  },
+  tabButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    backgroundColor: '#ddd',
+    borderRadius: 20,
+    marginRight: 8,
+  },
+  tabButtonActive: {
+    backgroundColor: '#4CAF50',
+  },
+  tabButtonText: {
+    color: '#000',
+    fontWeight: '500',
+  },
+  tabButtonTextActive: {
+    color: '#fff',
   },
   metricTitle: {
     fontSize: 16,

@@ -71,7 +71,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                   </View>
 
                   <TextInput
-                    style={[styles.input, styles.disabledInput]}
+                    style={[styles.input]}
                     value={name}
                     onChangeText={setName}
                     editable={false}
@@ -87,7 +87,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                   </View>
 
                   <TextInput
-                    style={[styles.input, styles.disabledInput]}
+                    style={[styles.input]}
                     value={phone}
                     onChangeText={setPhone}
                     editable={false}
@@ -103,7 +103,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                   </View>
 
                   <TextInput
-                    style={[styles.input, styles.disabledInput]}
+                    style={[styles.input]}
                     value={amount}
                     onChangeText={setAmount}
                     editable={false}
@@ -118,7 +118,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                     <Icon source="time" size={20} color="#666" />
                   </View>
                   <TextInput
-                    style={[styles.input, styles.disabledInput]}
+                    style={[styles.input]}
                     value={formatTimeToAMPM(data?.booking?.startTime)}
                     editable={false}
                   />
@@ -133,7 +133,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                   </View>
 
                   <TextInput
-                    style={[styles.input, styles.disabledInput]}
+                    style={[styles.input]}
                     value={formatTimeToAMPM(data?.booking?.endTime)}
                     editable={false}
                   />
@@ -180,10 +180,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     paddingLeft: 40,
     flex: 1,
-  },
-  disabledInput: {
-    backgroundColor: '#f0f0f0',
-    color: '#555',
   },
   iconContainer: {
     position: 'absolute',
