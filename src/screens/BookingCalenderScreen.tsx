@@ -302,7 +302,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         </Tooltip>
       );
     },
-    [visibleTooltipId, cancelBooking, theme.colors.onPrimary],
+    [visibleTooltipId, theme.colors.onPrimary],
   );
 
   const handleDragStart = (event: any) => {
@@ -314,7 +314,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       return;
     }
 
-<<<<<<< Updated upstream
     const updatedStartMoment = moment(event.start.dateTime);
     const updatedEndMoment = moment(event.end.dateTime);
     const now = moment();
@@ -329,15 +328,11 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
     const updatedStart = updatedStartMoment.format('hh:mm A');
     const updatedEnd = updatedEndMoment.format('hh:mm A');
-=======
-    console.log('event', event);
-
-    const updatedStart = moment(event.start.dateTime).format('hh:mm A');
-    const updatedEnd = moment(event.end.dateTime).format('hh:mm A');
->>>>>>> Stashed changes
     const calculated = calculatedAmount(updatedStart, updatedEnd, price);
 
-    if (calculated) setAmount(calculated);
+    if (calculated) {
+      setAmount(calculated);
+    }
 
     const datas = {
       id: event.id,
