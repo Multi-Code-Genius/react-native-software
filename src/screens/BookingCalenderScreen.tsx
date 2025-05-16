@@ -245,7 +245,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
                   setDeleteDialogVisible(true);
                   setVisibleTooltipId(null);
                 }}>
-                Delete
+                Cancel Booking
               </Button>
             </View>
           }
@@ -487,13 +487,16 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           visible={deleteDialogVisible}
           onDismiss={() => setDeleteDialogVisible(false)}
           style={styles.dialog}>
-          <Dialog.Title>Confirm Delete</Dialog.Title>
+          <Dialog.Title>Cancel Booking Confirmation</Dialog.Title>
           <Dialog.Content>
-            <Text>Are you sure you want to delete this booking?</Text>
+            <Text>
+              Are you sure you want to cancel this booking? This action cannot
+              be undone.
+            </Text>
           </Dialog.Content>
           <Dialog.Actions>
             <Button onPress={() => setDeleteDialogVisible(false)}>
-              Cancel
+              Keep Booking
             </Button>
             <Button
               onPress={() => {
@@ -503,7 +506,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
                 setDeleteDialogVisible(false);
               }}
               textColor="red">
-              Delete
+              Confirm Cancellation
             </Button>
           </Dialog.Actions>
         </Dialog>
