@@ -39,6 +39,7 @@ import {styles} from '../components/BookingScreen/BookingScreenStyles';
 import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 import {customTheme} from '../components/BookingScreen/CustomTheme';
+import {useToast} from '../context/ToastContext';
 
 interface BookingCalenderScreenProps {
   navigation: any;
@@ -83,6 +84,7 @@ const calculatedAmount = (
 
 const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const theme = useTheme();
+  const {showToast} = useToast();
   const [initialDate, setInitialDate] = useState(moment().format('DD-MM-YYYY'));
   const [selectedEvent, setSelectedEvent] = useState<SelectedEventType | null>(
     null,
@@ -141,6 +143,17 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     })) || [];
 
   const handleDragToCreateEvent = (event: any) => {
+    const updatedStart = moment(event.start.dateTime);
+    const updatedEnd = moment(event.end.dateTime);
+    const now = moment();
+
+    if (updatedStart.isBefore(now) || updatedEnd.isBefore(now)) {
+      showToast({
+        message: 'Cannot create/edit event of past time.',
+        type: 'error',
+      });
+      return;
+    }
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
     setEndTime(moment(event.end.dateTime).format('hh:mm A'));
     bottomSheetRef.current?.expand();
@@ -301,8 +314,20 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       return;
     }
 
-    const updatedStart = moment(event.start.dateTime).format('hh:mm A');
-    const updatedEnd = moment(event.end.dateTime).format('hh:mm A');
+    const updatedStartMoment = moment(event.start.dateTime);
+    const updatedEndMoment = moment(event.end.dateTime);
+    const now = moment();
+
+    if (updatedStartMoment.isBefore(now) || updatedEndMoment.isBefore(now)) {
+      showToast({
+        message: 'Cannot create/edit event of past time.',
+        type: 'error',
+      });
+      return;
+    }
+
+    const updatedStart = updatedStartMoment.format('hh:mm A');
+    const updatedEnd = updatedEndMoment.format('hh:mm A');
     const calculated = calculatedAmount(updatedStart, updatedEnd, price);
 
     if (calculated) setAmount(calculated);

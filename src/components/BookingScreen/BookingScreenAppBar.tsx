@@ -7,7 +7,7 @@ const BookingScreenAppBar = ({navigation}: {navigation: any}) => {
     <Appbar.Header
       style={{
         backgroundColor: theme.colors.primary,
-        borderBottomColor: theme.colors.surface,
+        borderBottomColor: '#333333',
         borderBottomWidth: 1,
       }}
       statusBarHeight={0}>

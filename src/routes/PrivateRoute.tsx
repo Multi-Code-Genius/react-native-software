@@ -51,7 +51,7 @@ export function PrivateRoute() {
         tabBarHideOnKeyboard: true,
       })}>
       <Tab.Screen
-        name="Dashboard"
+        name="Home"
         component={HomeScreen}
         options={{
           tabBarIcon: ({color, size, focused}) => (
