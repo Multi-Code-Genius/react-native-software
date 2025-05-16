@@ -127,7 +127,6 @@ const AccountScreen = () => {
         data={menuItems}
         renderItem={renderItem}
         keyExtractor={item => item.id.toString()}
-        ItemSeparatorComponent={() => <Divider />}
         contentContainerStyle={styles.menuList}
       />
       <Portal>
@@ -195,6 +194,8 @@ const styles = StyleSheet.create({
     padding: 14,
     borderRadius: 12,
     marginBottom: 12,
+    borderBottomColor: '#999',
+    borderBottomWidth: 1,
   },
   menuRow: {
     flexDirection: 'row',

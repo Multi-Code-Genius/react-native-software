@@ -1,12 +1,6 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, TextInput, View, Text} from 'react-native';
 import React, {useState, useEffect} from 'react';
-import {
-  ActivityIndicator,
-  Appbar,
-  Button,
-  IconButton,
-  TextInput,
-} from 'react-native-paper';
+import {ActivityIndicator, Appbar, Icon, IconButton} from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
 import {useBookingById} from '../api/booking';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -69,55 +63,82 @@ const BookingByIdScreen = ({navigation}: any) => {
         ) : (
           <View style={styles.container}>
             <View style={styles.form}>
-              <TextInput
-                label="Name"
-                mode="outlined"
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Enter your name"
-                left={<TextInput.Icon icon="person" size={20} />}
-              />
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Name</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.iconContainer}>
+                    <Icon source="person" size={20} color="#666" />
+                  </View>
 
-              <TextInput
-                label="Phone Number"
-                mode="outlined"
-                keyboardType="phone-pad"
-                style={styles.input}
-                value={phone}
-                onChangeText={setPhone}
-                placeholder="Enter your phone number"
-                left={<TextInput.Icon icon="call" size={20} />}
-              />
+                  <TextInput
+                    style={[styles.input, styles.disabledInput]}
+                    value={name}
+                    onChangeText={setName}
+                    editable={false}
+                  />
+                </View>
+              </View>
 
-              <TextInput
-                label="Total amount"
-                mode="outlined"
-                style={styles.input}
-                value={amount}
-                onChangeText={setAmount}
-                keyboardType="numeric"
-                placeholder="Enter your total amount"
-                left={<TextInput.Icon icon="cash" size={20} />}
-              />
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Phone Number</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.iconContainer}>
+                    <Icon source="call" size={20} color="#666" />
+                  </View>
 
-              <TextInput
-                label="Start Time"
-                mode="outlined"
-                style={styles.input}
-                value={formatTimeToAMPM(data?.booking?.startTime)}
-                left={<TextInput.Icon icon="time" size={20} />}
-                editable={false}
-              />
+                  <TextInput
+                    style={[styles.input, styles.disabledInput]}
+                    value={phone}
+                    onChangeText={setPhone}
+                    editable={false}
+                  />
+                </View>
+              </View>
 
-              <TextInput
-                label="End Time"
-                mode="outlined"
-                style={styles.input}
-                value={formatTimeToAMPM(data?.booking?.endTime)}
-                left={<TextInput.Icon icon="time" size={20} />}
-                editable={false}
-              />
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Total amount</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.iconContainer}>
+                    <Icon source="cash" size={20} color="#666" />
+                  </View>
+
+                  <TextInput
+                    style={[styles.input, styles.disabledInput]}
+                    value={amount}
+                    onChangeText={setAmount}
+                    editable={false}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>Start Time</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.iconContainer}>
+                    <Icon source="time" size={20} color="#666" />
+                  </View>
+                  <TextInput
+                    style={[styles.input, styles.disabledInput]}
+                    value={formatTimeToAMPM(data?.booking?.startTime)}
+                    editable={false}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <Text style={styles.label}>End Time</Text>
+                <View style={styles.inputWrapper}>
+                  <View style={styles.iconContainer}>
+                    <Icon source="time" size={20} color="#666" />
+                  </View>
+
+                  <TextInput
+                    style={[styles.input, styles.disabledInput]}
+                    value={formatTimeToAMPM(data?.booking?.endTime)}
+                    editable={false}
+                  />
+                </View>
+              </View>
             </View>
           </View>
         )}
@@ -125,17 +146,48 @@ const BookingByIdScreen = ({navigation}: any) => {
     </SafeAreaView>
   );
 };
+
 export default BookingByIdScreen;
 
 const styles = StyleSheet.create({
   container: {
     padding: 24,
   },
-
   form: {
-    gap: 16,
+    gap: 7,
+  },
+  inputContainer: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 8,
+    fontWeight: '500',
+    color: '#333',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'relative',
+    gap: 10,
   },
   input: {
     backgroundColor: '#f9f9f9',
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    padding: 10,
+    fontSize: 13,
+    paddingLeft: 40,
+    flex: 1,
+  },
+  disabledInput: {
+    backgroundColor: '#f0f0f0',
+    color: '#555',
+  },
+  iconContainer: {
+    position: 'absolute',
+    left: 10,
+    zIndex: 1,
   },
 });
