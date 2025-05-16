@@ -46,7 +46,7 @@ const AccountScreen = () => {
         navigation.navigate('VenueManage');
         break;
       case 'Customers':
-        navigation.navigate('Customers');
+        navigation.navigate('CustomerDetails');
         break;
       case 'Logout':
         showDialog();
