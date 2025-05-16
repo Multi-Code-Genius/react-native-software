@@ -82,6 +82,14 @@ const calculatedAmount = (
   }
 };
 
+// Helper to fix endTime if it equals 12:00 AM -> set to 11:59 PM
+const fixEndTime = (timeStr: string): string => {
+  if (timeStr.trim().toLowerCase() === '12:00 am') {
+    return '11:59 PM';
+  }
+  return timeStr;
+};
+
 const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const theme = useTheme();
   const {showToast} = useToast();
@@ -144,7 +152,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
   const handleDragToCreateEvent = (event: any) => {
     const updatedStart = moment(event.start.dateTime);
-    const updatedEnd = moment(event.end.dateTime);
+    let updatedEnd = moment(event.end.dateTime);
     const now = moment();
 
     if (updatedStart.isBefore(now) || updatedEnd.isBefore(now)) {
@@ -155,7 +163,12 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       return;
     }
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
-    setEndTime(moment(event.end.dateTime).format('hh:mm A'));
+
+    // Fix end time if it is 12:00 AM
+    let formattedEnd = moment(event.end.dateTime).format('hh:mm A');
+    formattedEnd = fixEndTime(formattedEnd);
+
+    setEndTime(formattedEnd);
     bottomSheetRef.current?.expand();
   };
 
@@ -315,7 +328,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     }
 
     const updatedStartMoment = moment(event.start.dateTime);
-    const updatedEndMoment = moment(event.end.dateTime);
+    let updatedEndMoment = moment(event.end.dateTime);
     const now = moment();
 
     if (updatedStartMoment.isBefore(now) || updatedEndMoment.isBefore(now)) {
@@ -327,7 +340,11 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     }
 
     const updatedStart = updatedStartMoment.format('hh:mm A');
-    const updatedEnd = updatedEndMoment.format('hh:mm A');
+
+    let updatedEnd = updatedEndMoment.format('hh:mm A');
+    updatedEnd = fixEndTime(updatedEnd);
+
+    console.log('look at this=======>', updatedEnd);
     const calculated = calculatedAmount(updatedStart, updatedEnd, price);
 
     if (calculated) {
@@ -375,9 +392,11 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         allowDragToCreate
         scrollByDay
         allowPinchToZoom
-        useHaptic={true}
+        useHaptic
         rightEdgeSpacing={0}
         theme={customTheme}
+        start={0}
+        end={1439}
         initialDate={initialDate}
         onDateChanged={date =>
           setInitialDate(moment(date).format('DD-MM-YYYY'))
@@ -408,6 +427,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             showNowIndicator={true}
             renderEvent={renderEvent}
             renderDraggableEvent={renderDraggableEvent}
+            renderDraggingHour={customHourDragger}
           />
         </ScrollView>
       </CalendarContainer>
@@ -423,7 +443,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           <View style={styles.formContainer}>
             <View style={styles.headerRow}>
               <Text variant="bodyLarge">
-                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MM YYYY')}
+                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MMM YYYY')}
               </Text>
               <Text variant="bodyLarge">
                 Booking for slot: {startTime} - {endTime}
