@@ -139,7 +139,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       nets: booking.nets,
       status: booking.status,
       totalAmount: booking.totalAmount,
-      contact: booking.userMobile,
+      contact: booking.user.id,
     })) || [];
 
   const handleDragToCreateEvent = (event: any) => {
@@ -314,6 +314,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       return;
     }
 
+<<<<<<< Updated upstream
     const updatedStartMoment = moment(event.start.dateTime);
     const updatedEndMoment = moment(event.end.dateTime);
     const now = moment();
@@ -328,6 +329,12 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
     const updatedStart = updatedStartMoment.format('hh:mm A');
     const updatedEnd = updatedEndMoment.format('hh:mm A');
+=======
+    console.log('event', event);
+
+    const updatedStart = moment(event.start.dateTime).format('hh:mm A');
+    const updatedEnd = moment(event.end.dateTime).format('hh:mm A');
+>>>>>>> Stashed changes
     const calculated = calculatedAmount(updatedStart, updatedEnd, price);
 
     if (calculated) setAmount(calculated);
@@ -339,6 +346,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         endTime: updatedEnd,
         date: moment(initialDate, 'DD-MM-YYYY').format('YYYY-MM-DD'),
         totalAmount: calculated,
+        userId: event.contact,
       },
     };
 
