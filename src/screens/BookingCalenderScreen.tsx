@@ -427,7 +427,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             showNowIndicator={true}
             renderEvent={renderEvent}
             renderDraggableEvent={renderDraggableEvent}
-            renderDraggingHour={customHourDragger}
           />
         </ScrollView>
       </CalendarContainer>
