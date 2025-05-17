@@ -70,26 +70,27 @@ export const CustomerIdDetailsScreen = () => {
   );
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Card style={styles.customerCard}>
-        <Card.Title title={customer?.name} />
-        <Card.Content>
-          <Text style={styles.infoText}>Mobile: {customer?.mobile}</Text>
-          <Text style={styles.infoText}>
-            Total Spent: ₹{customer?.totalSpent}
-          </Text>
-        </Card.Content>
-      </Card>
-
-      <Text style={styles.sectionTitle}>Bookings</Text>
-
-      <FlatList
-        data={customer?.bookings || []}
-        renderItem={renderItem}
-        keyExtractor={item => item.id}
-        ItemSeparatorComponent={() => <View style={{height: 16}} />}
-      />
-    </ScrollView>
+    <FlatList
+      contentContainerStyle={styles.container}
+      data={customer?.bookings || []}
+      renderItem={renderItem}
+      keyExtractor={item => item.id}
+      ItemSeparatorComponent={() => <View style={{height: 16}} />}
+      ListHeaderComponent={() => (
+        <View>
+          <Card style={styles.customerCard}>
+            <Card.Title title={customer?.name} />
+            <Card.Content>
+              <Text style={styles.infoText}>Mobile: {customer?.mobile}</Text>
+              <Text style={styles.infoText}>
+                Total Spent: ₹{customer?.totalSpent}
+              </Text>
+            </Card.Content>
+          </Card>
+          <Text style={styles.sectionTitle}>Bookings</Text>
+        </View>
+      )}
+    />
   );
 };
 
