@@ -26,6 +26,7 @@ import {
   CalendarHeader,
   DraggableEvent,
   DraggableEventProps,
+  DraggingEvent,
   PackedEvent,
   SelectedEventType,
 } from '@howljs/calendar-kit';
@@ -146,12 +147,13 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     ({hourStr}: {hourStr: string}) => {
       const timeSlot = TIME_SLOT_ICONS.find(item => item.time === hourStr);
       return (
-        <View style={{flexDirection: 'column'}}>
+        <View style={{flexDirection: 'column', padding: 0}}>
           <Text
-            style={{textAlign: 'right', color: theme.colors.onPrimary}}
-            variant="bodySmall">
+            style={{color: '#666666', textAlign: 'right'}}
+            variant="labelSmall">
             {hourStr}
           </Text>
+
           <Text style={{textAlign: 'right'}} variant="bodyLarge">
             {timeSlot?.icon}
           </Text>
@@ -369,10 +371,32 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
   const renderDraggableEvent = useCallback(
     (props: DraggableEventProps) => (
-      <DraggableEvent {...props} renderEvent={renderEvent} />
+      <DraggableEvent
+        {...props}
+        renderEvent={renderEvent}
+        containerStyle={{
+          borderRadius: 10,
+          borderWidth: 1,
+          padding: 1,
+        }}
+      />
     ),
     [renderEvent],
   );
+
+  const renderDraggingEvent = useCallback((props: DraggingEventProps) => {
+    return (
+      <DraggingEvent
+        {...props}
+        renderEvent={renderEvent}
+        containerStyle={{
+          borderRadius: 10,
+          borderWidth: 1,
+          padding: 1,
+        }}
+      />
+    );
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -386,7 +410,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         scrollByDay
         allowPinchToZoom
         useHaptic
-        rightEdgeSpacing={0}
         theme={customTheme}
         start={0}
         end={1439}
@@ -394,6 +417,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         onDateChanged={date =>
           setInitialDate(moment(date).format('DD-MM-YYYY'))
         }
+        rightEdgeSpacing={0}
         dragStep={30}
         defaultDuration={60}
         allowDragToEdit={!!selectedEvent}
@@ -422,6 +446,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             showNowIndicator={true}
             renderEvent={renderEvent}
             renderDraggableEvent={renderDraggableEvent}
+            renderDraggingEvent={renderDraggingEvent}
           />
         </View>
         {selectedEvent && (

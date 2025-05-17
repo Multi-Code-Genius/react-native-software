@@ -1,6 +1,6 @@
 export const customTheme = {
   colors: {
-    primary: '#3498db',
+    primary: '#ffffff',
     onPrimary: '#ffffff',
     background: '#000000',
     onBackground: '#333333',
@@ -13,11 +13,11 @@ export const customTheme = {
     fontFamily: 'Roboto',
   },
   hourTextStyle: {
+    color: 'white',
     fontSize: 12,
-    fontWeight: 'bold',
+    marginTop: 5,
   },
   dayName: {
-    fontSize: 14,
     color: '#666666',
   },
   dayNumber: {
