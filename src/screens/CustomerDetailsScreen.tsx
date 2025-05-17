@@ -1,35 +1,41 @@
 import React from 'react';
-import {View, StyleSheet, FlatList} from 'react-native';
+import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
 import {Text, Card, Avatar} from 'react-native-paper';
 import {useGetCustomer} from '../api/customer';
+import {useNavigation} from '@react-navigation/native';
 
 const CustomerDetailsScreen = () => {
+  const navigation = useNavigation();
   const {data} = useGetCustomer();
   console.log('data==========>>>>', data);
 
   const renderItem = ({item}: any) => (
-    <Card style={styles.card}>
-      <Card.Title
-        title={item?.name}
-        subtitle={`Mobile: ${item?.mobile}`}
-        left={props => (
-          <Avatar.Text
-            {...props}
-            label={item?.name?.charAt(0)?.toUpperCase() || 'U'}
-            size={48}
-            style={styles.avatar}
-          />
-        )}
-      />
-      <Card.Content>
-        <Text variant="titleMedium">
-          Total Bookings: {item?.bookings?.length}
-        </Text>
-        <Text variant="titleMedium">
-          Total Spent Amount: ₹{item?.totalSpentAmount}
-        </Text>
-      </Card.Content>
-    </Card>
+    <TouchableOpacity
+      activeOpacity={0.9}
+      onPress={() => navigation.navigate('CustomerByID', {id: item?.id})}>
+      <Card style={styles.card}>
+        <Card.Title
+          title={item?.name}
+          subtitle={`Mobile: ${item?.mobile}`}
+          left={props => (
+            <Avatar.Text
+              {...props}
+              label={item?.name?.charAt(0)?.toUpperCase() || 'U'}
+              size={48}
+              style={styles.avatar}
+            />
+          )}
+        />
+        <Card.Content>
+          <Text variant="titleMedium">
+            Total Bookings: {item?.bookings?.length}
+          </Text>
+          <Text variant="titleMedium">
+            Total Spent Amount: ₹{item?.totalSpentAmount}
+          </Text>
+        </Card.Content>
+      </Card>
+    </TouchableOpacity>
   );
 
   return (

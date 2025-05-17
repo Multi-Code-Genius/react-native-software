@@ -12,6 +12,7 @@ import {useAuthStore} from '../store/authStore';
 import BookingByIdScreen from '../screens/BookingByIdScreen';
 import VenueManageScreen from '../screens/VenueManageScreen';
 import CustomerDetailsScreen from '../screens/CustomerDetailsScreen';
+import CustomerIdDetailsScreen from '../screens/CustomerIdDetailsScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -66,6 +67,10 @@ export default function AppNavigator() {
           <Stack.Screen
             name="CustomerDetails"
             component={CustomerDetailsScreen}
+          />
+          <Stack.Screen
+            name="CustomerByID"
+            component={CustomerIdDetailsScreen}
           />
         </Stack.Navigator>
       ) : (
