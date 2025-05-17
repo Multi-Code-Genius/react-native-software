@@ -195,38 +195,39 @@ const HomeScreen = () => {
             ))}
         </ScrollView>
         <Card style={styles.performanceCard}>
-          <Card.Content>
-            <Text style={styles.cardTitle}>📊 Analytics</Text>
-
-            <View style={styles.analyticsGrid}>
-              {analyticsData.map(item => (
-                <View key={item.id} style={styles.analyticsBox}>
-                  <View style={styles.iconWrap}>
-                    <Icon source={item.icon} size={22} color="#fff" />
-                  </View>
-                  <Text style={styles.analyticsValue}>{item.count}</Text>
-                  <Text style={styles.analyticsLabel}>{item.title}</Text>
+          <Text style={styles.cardTitle}>📊 Analytics</Text>
+          <View style={styles.analyticsGrid}>
+            {analyticsData.map(item => (
+              <View key={item.id} style={styles.analyticsBox}>
+                <View style={styles.iconWrap}>
+                  <Icon source={item.icon} size={22} color="#fff" />
                 </View>
-              ))}
-            </View>
-          </Card.Content>
+                <Text style={styles.analyticsValue}>{item.count}</Text>
+                <Text style={styles.analyticsLabel}>{item.title}</Text>
+              </View>
+            ))}
+          </View>
         </Card>
-
-        <Title style={styles.sectionTitle}>Booking Status</Title>
-        <PieChart
-          data={statusData}
-          width={Dimensions.get('window').width - 32}
-          height={200}
-          accessor="population"
-          backgroundColor="transparent"
-          paddingLeft="15"
-          chartConfig={chartConfig}
-          hasLegend
-        />
-
-        <Text style={styles.title}>Working Hours Statistics</Text>
-        <View style={styles.header}>
-          <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+        <View style={styles.chartCard}>
+          <View>
+            <Text style={styles.chartTitle}>📅 Booking Status</Text>
+            <PieChart
+              data={statusData}
+              width={Dimensions.get('window').width - 32}
+              height={200}
+              accessor="population"
+              backgroundColor="transparent"
+              paddingLeft="15"
+              chartConfig={chartConfig}
+              hasLegend
+            />
+          </View>
+        </View>
+        <View style={styles.barContainer}>
+          <Text style={styles.title}>⏱️ Working Hours Statistics</Text>
+          <View style={styles.header}>
+            <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -240,17 +241,17 @@ const styles = StyleSheet.create({
   },
   performanceCard: {
     borderRadius: 16,
-    marginHorizontal: 10,
-    marginTop: 20,
     backgroundColor: '#fff',
     elevation: 4,
-    paddingVertical: 20,
-    paddingHorizontal: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    marginTop: 16,
   },
   cardTitle: {
     fontSize: 18,
     fontWeight: '700',
     marginBottom: 16,
+    padding: 10,
     color: '#333',
   },
   analyticsGrid: {
@@ -348,8 +349,58 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: '600',
     marginBottom: 10,
+    padding: 10,
+    fontWeight: '700',
+    color: '#333',
+  },
+  chartCard: {
+    marginTop: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+  },
+  barContainer: {
+    marginTop: 20,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: {width: 0, height: 2},
+    elevation: 4,
+  },
+  chartTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 10,
+    color: '#333',
+  },
+  legendContainer: {
+    marginTop: 16,
+    flexDirection: 'column',
+    alignContent: 'center',
+    paddingHorizontal: 30,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  legendDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginRight: 8,
+  },
+  legendLabel: {
+    fontSize: 14,
+    color: '#555',
   },
 });
 
