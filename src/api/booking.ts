@@ -1,7 +1,7 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
-import {api} from '../hooks/api';
 import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
+import {api} from '../hooks/api';
 
 const fetchBooking = async (data: any) => {
   try {
@@ -141,13 +141,17 @@ const updateBooking = async (data: any) => {
 
 export const useUpdateBooking = (
   onSuccess?: () => void,
-  onError?: () => void,
+  _onError?: () => void,
 ) => {
   const {showToast} = useToast();
   return useMutation({
     mutationFn: ({id, data}: {id: string; data: any}) =>
       updateBooking({id, data}),
     onSuccess: () => {
+      showToast({
+        message: 'Booking Updated!',
+        type: 'success',
+      });
       queryClient.invalidateQueries({queryKey: ['booking']});
       onSuccess?.();
     },
@@ -214,5 +218,31 @@ export const useBookingById = (id: string) => {
     refetchOnWindowFocus: true,
     retry: 0,
     enabled: !!id,
+  });
+};
+
+const suggestedCustomer = async (number: string) => {
+  try {
+    const response = await api(`/api/booking/suggested-customer/${number}`, {
+      method: 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+    });
+    const resp = await response;
+    return resp;
+  } catch (error) {
+    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
+  }
+};
+
+export const useSuggestedCustomer = (number: string) => {
+  return useQuery({
+    queryKey: ['customer', number],
+    queryFn: () => suggestedCustomer(number),
+    staleTime: 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    retry: 0,
+    enabled: !!number,
   });
 };

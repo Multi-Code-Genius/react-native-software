@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react';
-import {Alert} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
 import {useTheme} from 'react-native-paper';
 import {useRequestOtp, useVerifyOtp} from '../api/auth';
@@ -7,7 +6,6 @@ import EmailLoginSlide from '../components/onboarding/EmailLoginSlide';
 import OtpSlide from '../components/onboarding/OtpSlide';
 import WelcomeSlide from '../components/onboarding/WelcomeSlide';
 import {useAuthStore} from '../store/authStore';
-import Toast from 'react-native-toast-message';
 
 const OnboardingScreen = () => {
   const [email, setEmail] = useState('');

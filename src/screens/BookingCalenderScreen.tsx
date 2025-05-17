@@ -1,5 +1,12 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetTextInput,
+  BottomSheetView,
+} from '@gorhom/bottom-sheet';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {
   Button,
   Dialog,
@@ -9,77 +16,43 @@ import {
   Text,
   useTheme,
 } from 'react-native-paper';
-import BottomSheet, {
-  BottomSheetBackdrop,
-  BottomSheetTextInput,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
-import {useRoute} from '@react-navigation/native';
-import moment from 'moment';
 import Tooltip from 'react-native-walkthrough-tooltip';
+import debounce from 'lodash/debounce';
 
 import {
   CalendarBody,
   CalendarContainer,
   CalendarHeader,
-  PackedEvent,
-  SelectedEventType,
   DraggableEvent,
   DraggableEventProps,
+  PackedEvent,
+  SelectedEventType,
 } from '@howljs/calendar-kit';
 
-import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {
   useBookingInfo,
   useCancelBooking,
   useCreateBooking,
+  useSuggestedCustomer,
   useUpdateBooking,
 } from '../api/booking';
+import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
 import {styles} from '../components/BookingScreen/BookingScreenStyles';
-import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
-import {useBookingFormStore} from '../store/useBookingFormStore';
 import {customTheme} from '../components/BookingScreen/CustomTheme';
+import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useToast} from '../context/ToastContext';
+import {useBookingFormStore} from '../store/useBookingFormStore';
+import {calculatedAmount} from '../hooks/useCalculatedAmount';
 
 interface BookingCalenderScreenProps {
   navigation: any;
 }
 
-const calculatedAmount = (
-  startTime: string,
-  endTime: string,
-  price: string,
-): string | null => {
-  const convertTo24Hour = (timeStr: any) => {
-    const clean = timeStr.replace(/[^\x00-\x7F]/g, '').trim();
-    const [time, meridiem] = clean.split(/ (AM|PM)/i).filter(Boolean);
-    const [hourStr, minuteStr] = time.split(':');
-
-    let hour = parseInt(hourStr, 10);
-    const minute = parseInt(minuteStr, 10);
-
-    if (meridiem?.toUpperCase() === 'PM' && hour !== 12) hour += 12;
-    if (meridiem?.toUpperCase() === 'AM' && hour === 12) hour = 0;
-
-    return {hour, minute};
-  };
-
-  try {
-    const start = convertTo24Hour(startTime);
-    const end = convertTo24Hour(endTime);
-
-    const startMs = start.hour * 60 + start.minute;
-    const endMs = end.hour * 60 + end.minute;
-
-    const diffMinutes = endMs - startMs;
-    if (diffMinutes <= 0) return null;
-
-    const durationHours = diffMinutes / 60;
-    return String(Math.round(durationHours * Number(price)));
-  } catch (e: any) {
-    console.warn('Invalid time format:', e.message);
-    return null;
+const fixEndTime = (timeStr: string): string => {
+  if (timeStr.trim().toLowerCase() === '12:00 am') {
+    return '11:59 PM';
   }
+  return timeStr;
 };
 
 const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
@@ -110,10 +83,14 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   } = useBookingFormStore();
 
   useEffect(() => {
-    if (!startTime || !endTime || !price) return;
+    if (!startTime || !endTime || !price) {
+      return;
+    }
 
     const result = calculatedAmount(startTime, endTime, price);
-    if (result) setAmount(result);
+    if (result) {
+      setAmount(result);
+    }
   }, [startTime, endTime, price, setAmount]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -133,18 +110,18 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const formattedEvents =
     data?.booking?.map((booking: any) => ({
       id: booking.id,
-      title: booking.user.name,
+      title: booking?.customer?.name,
       start: {dateTime: booking.startTime},
       end: {dateTime: booking.endTime},
       nets: booking.nets,
       status: booking.status,
       totalAmount: booking.totalAmount,
-      contact: booking.user.id,
+      contact: booking?.customer?.id,
     })) || [];
 
   const handleDragToCreateEvent = (event: any) => {
     const updatedStart = moment(event.start.dateTime);
-    const updatedEnd = moment(event.end.dateTime);
+    let updatedEnd = moment(event.end.dateTime);
     const now = moment();
 
     if (updatedStart.isBefore(now) || updatedEnd.isBefore(now)) {
@@ -155,7 +132,12 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       return;
     }
     setStartTime(moment(event.start.dateTime).format('hh:mm A'));
-    setEndTime(moment(event.end.dateTime).format('hh:mm A'));
+
+    // Fix end time if it is 12:00 AM
+    let formattedEnd = moment(event.end.dateTime).format('hh:mm A');
+    formattedEnd = fixEndTime(formattedEnd);
+
+    setEndTime(formattedEnd);
     bottomSheetRef.current?.expand();
   };
 
@@ -315,7 +297,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     }
 
     const updatedStartMoment = moment(event.start.dateTime);
-    const updatedEndMoment = moment(event.end.dateTime);
+    let updatedEndMoment = moment(event.end.dateTime);
     const now = moment();
 
     if (updatedStartMoment.isBefore(now) || updatedEndMoment.isBefore(now)) {
@@ -327,7 +309,11 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     }
 
     const updatedStart = updatedStartMoment.format('hh:mm A');
-    const updatedEnd = updatedEndMoment.format('hh:mm A');
+
+    let updatedEnd = updatedEndMoment.format('hh:mm A');
+    updatedEnd = fixEndTime(updatedEnd);
+
+    console.log('look at this=======>', updatedEnd);
     const calculated = calculatedAmount(updatedStart, updatedEnd, price);
 
     if (calculated) {
@@ -357,6 +343,26 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     });
   };
 
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setNumber(value);
+      }, 500),
+    [setNumber],
+  );
+
+  const handleChange = (e: any) => {
+    const value = e.target?.value;
+
+    setNumber(value);
+    debouncedSearch(value);
+  };
+
+  const {data: customerData, isLoading: customerLoading} =
+    useSuggestedCustomer(number);
+
+  console.log('customerData', customerData);
+
   const renderDraggableEvent = useCallback(
     (props: DraggableEventProps) => (
       <DraggableEvent {...props} renderEvent={renderEvent} />
@@ -375,9 +381,11 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         allowDragToCreate
         scrollByDay
         allowPinchToZoom
-        useHaptic={true}
+        useHaptic
         rightEdgeSpacing={0}
         theme={customTheme}
+        start={0}
+        end={1439}
         initialDate={initialDate}
         onDateChanged={date =>
           setInitialDate(moment(date).format('DD-MM-YYYY'))
@@ -423,7 +431,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           <View style={styles.formContainer}>
             <View style={styles.headerRow}>
               <Text variant="bodyLarge">
-                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MM YYYY')}
+                Date: {moment(initialDate, 'DD-MM-YYYY').format('Do MMM YYYY')}
               </Text>
               <Text variant="bodyLarge">
                 Booking for slot: {startTime} - {endTime}

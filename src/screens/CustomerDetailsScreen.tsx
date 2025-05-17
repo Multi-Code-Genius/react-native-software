@@ -11,7 +11,7 @@ const CustomerDetailsScreen = () => {
     <Card style={styles.card}>
       <Card.Title
         title={item?.name}
-        subtitle={`Mobile: ${item?.mobileNumber}`}
+        subtitle={`Mobile: ${item?.mobile}`}
         left={props => (
           <Avatar.Text
             {...props}
@@ -35,7 +35,7 @@ const CustomerDetailsScreen = () => {
   return (
     <FlatList
       contentContainerStyle={styles.container}
-      data={data?.clientsWithTotalAmount || []}
+      data={data?.customers || []}
       renderItem={renderItem}
       keyExtractor={item => item.id}
       ItemSeparatorComponent={() => <View style={{height: 16}} />}

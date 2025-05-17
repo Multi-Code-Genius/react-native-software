@@ -1,9 +1,8 @@
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   ActivityIndicator,
   FlatList,
-  Image,
   StyleSheet,
   TouchableOpacity,
   View,
@@ -23,12 +22,11 @@ import {useDeleteVenue, useGetVenue} from '../api/vanue';
 import {useToast} from '../context/ToastContext';
 
 const VenueManageScreen = () => {
-  const route = useRoute();
   const navigation = useNavigation();
   const {colors} = useTheme();
   const {data, isLoading} = useGetVenue();
   console.log('data,', data);
-  const venueById = route.params as {id?: string};
+
   const {showToast} = useToast();
   const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
     setShowCancelConfirm(false);

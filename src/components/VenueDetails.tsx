@@ -37,7 +37,7 @@ const VenueDetails = () => {
             keyboardType="numeric"
             placeholder="Enter Capacity"
             onChangeText={text => updateField('capacity', text.toString())}
-            value={formData.capacity || ''}
+            value={formData?.capacity || ''}
           />
         </View>
       </View>
