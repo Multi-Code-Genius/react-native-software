@@ -1,8 +1,7 @@
-import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
-  FlatList,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -15,8 +14,10 @@ import {
   Button,
   Card,
   Icon,
+  IconButton,
   Text,
   Title,
+  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
@@ -38,7 +39,7 @@ const HomeScreen = () => {
     selectedVenue,
     account?.user?.id || '',
   );
-
+  const navigation = useNavigation();
   console.log('data>>dashboard', data);
 
   useEffect(() => {
@@ -168,32 +169,49 @@ const HomeScreen = () => {
             <Button mode="contained" style={styles.button}>
               Create
             </Button>
+            <IconButton
+              icon="add-circle"
+              onPress={() => (navigation as any).navigate('Addvenue')}
+              size={30}
+            />
           </View>
         </View>
-
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.tabContainer}>
-          {account &&
-            (account?.games || []).map((venue: any) => (
-              <TouchableOpacity
-                key={venue.id}
-                style={[
-                  styles.tabButton,
-                  selectedVenue === venue.id && styles.tabButtonActive,
-                ]}
-                onPress={() => setSelectedVenue(venue.id)}>
-                <Text
+        <View>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabContainer}>
+            {account &&
+              (account?.games || []).map((venue: any) => (
+                <TouchableOpacity
+                  key={venue.id}
                   style={[
-                    styles.tabButtonText,
-                    selectedVenue === venue.id && styles.tabButtonTextActive,
-                  ]}>
-                  {venue.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-        </ScrollView>
+                    styles.tabButton,
+                    selectedVenue === venue.id && styles.tabButtonActive,
+                  ]}
+                  onPress={() => setSelectedVenue(venue.id)}>
+                  <Text
+                    style={[
+                      styles.tabButtonText,
+                      selectedVenue === venue.id && styles.tabButtonTextActive,
+                    ]}>
+                    {venue.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+          </ScrollView>
+        </View>
+
+        <Button
+          mode="contained"
+          style={styles.book}
+          onPress={() =>
+            (navigation as any).navigate('bookingData', {
+              venueId: selectedVenue,
+            })
+          }>
+          Book Game
+        </Button>
         <Card style={styles.performanceCard}>
           <Text style={styles.cardTitle}>📊 Analytics</Text>
           <View style={styles.analyticsGrid}>
@@ -246,6 +264,10 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     marginTop: 16,
+  },
+  book: {
+    width: '100%',
+    backgroundColor: '#4caf50',
   },
   cardTitle: {
     fontSize: 18,
@@ -312,6 +334,7 @@ const styles = StyleSheet.create({
   buttoncontainer: {
     flexDirection: 'row',
     gap: 8,
+    alignItems: 'center',
   },
   Heading1: {
     fontSize: 20,
@@ -321,7 +344,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button: {
-    width: '50%',
+    width: '40%',
+    height: 40,
+  },
+  add: {
+    width: '20%',
   },
   tabButton: {
     paddingVertical: 8,
