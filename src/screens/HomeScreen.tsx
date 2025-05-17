@@ -61,58 +61,8 @@ const HomeScreen = () => {
 
   const monthsBookingCount = data?.thisMonthBookingsCount ?? 0;
   const monthTotalAmount = data?.thisMonthTotalAmount ?? 0;
-  const weekTotalAmount = data?.thisWeekTotalAmount ?? 0;
   const bookingsToday = data?.todaysBookingsCount ?? 0;
-  const todaysTotalAmount = data?.todaysTotalAmount ?? 0;
   const newuserCount = data?.newUsersCount ?? 0;
-
-  const metricCards = useMemo(
-    () => [
-      {
-        id: '1',
-        title: 'This Months Booking Count',
-        value: `${monthsBookingCount}`,
-        subtext: 'Increased by 25% from the last month',
-        comment: 'Pretty good performance!',
-        icon: 'pie-chart',
-      },
-      {
-        id: '2',
-        title: 'This Month Total amount',
-        value: `${monthTotalAmount}`,
-        subtext: '80% Increase in 20 Days',
-        icon: 'stats-chart',
-      },
-      {
-        id: '3',
-        title: 'This Week Total amount',
-        value: `${weekTotalAmount}`,
-        subtext: '80% Increase than before',
-        icon: 'stats-chart-outline',
-      },
-      {
-        id: '4',
-        title: 'Todays booking Count',
-        value: `${bookingsToday}`,
-        subtext: '80% Increase in 20 days',
-        icon: 'pie-chart-outline',
-      },
-      {
-        id: '5',
-        title: 'Todays Total amount',
-        value: `${todaysTotalAmount}`,
-        subtext: '80% Increase in 20 days',
-        icon: 'pie-chart-outline',
-      },
-    ],
-    [
-      monthsBookingCount,
-      monthTotalAmount,
-      weekTotalAmount,
-      bookingsToday,
-      todaysTotalAmount,
-    ],
-  );
 
   const statusData = [
     {
@@ -161,21 +111,32 @@ const HomeScreen = () => {
     },
   };
 
-  const renderMetricCard = ({item}: any) => (
-    <Card style={styles.metricCard}>
-      <Card.Content>
-        <View style={styles.metricHeader}>
-          <Text style={styles.metricTitle}>{item.title}</Text>
-          <Icon source={item.icon} size={24} color="#4CAF50" />
-        </View>
-        <Text style={styles.metricValue}>{item.value}</Text>
-        <Text style={styles.metricSubtext}>{item.subtext}</Text>
-        {item.comment && (
-          <Text style={styles.metricComment}>{item.comment}</Text>
-        )}
-      </Card.Content>
-    </Card>
-  );
+  const analyticsData = [
+    {
+      id: '1',
+      title: 'New Players count',
+      count: `${newuserCount}`,
+      icon: 'person',
+    },
+    {
+      id: '2',
+      title: "This Month's Booking",
+      count: `${monthsBookingCount}`,
+      icon: 'calendar',
+    },
+    {
+      id: '3',
+      title: "This Month's Total Amount",
+      count: `${monthTotalAmount}`,
+      icon: 'cash',
+    },
+    {
+      id: '4',
+      title: "Today's Booking",
+      count: `${bookingsToday}`,
+      icon: 'calendar-number',
+    },
+  ];
 
   if (accountLoading) {
     return (
@@ -235,31 +196,21 @@ const HomeScreen = () => {
         </ScrollView>
         <Card style={styles.performanceCard}>
           <Card.Content>
-            <View style={styles.cardHeader}>
-              <Text style={styles.cardTitle}>New User Count</Text>
-              <Icon source="bar-chart" size={24} color="#4CAF50" />
-            </View>
-            <View style={styles.performanceRow}>
-              <Text style={styles.performanceScore}>{newuserCount}</Text>
-              <View style={styles.performanceBadge}>
-                <Text style={styles.badgeText}>Excellent</Text>
-              </View>
-            </View>
-            <View style={styles.progressContainer}>
-              <View style={styles.progressBar}>
-                <View style={[styles.progressFill, {width: '91.2%'}]} />
-              </View>
+            <Text style={styles.cardTitle}>📊 Analytics</Text>
+
+            <View style={styles.analyticsGrid}>
+              {analyticsData.map(item => (
+                <View key={item.id} style={styles.analyticsBox}>
+                  <View style={styles.iconWrap}>
+                    <Icon source={item.icon} size={22} color="#fff" />
+                  </View>
+                  <Text style={styles.analyticsValue}>{item.count}</Text>
+                  <Text style={styles.analyticsLabel}>{item.title}</Text>
+                </View>
+              ))}
             </View>
           </Card.Content>
         </Card>
-
-        <FlatList
-          data={metricCards}
-          renderItem={renderMetricCard}
-          keyExtractor={item => item.id}
-          scrollEnabled={false}
-          contentContainerStyle={styles.flatListContainer}
-        />
 
         <Title style={styles.sectionTitle}>Booking Status</Title>
         <PieChart
@@ -287,6 +238,55 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
+  performanceCard: {
+    borderRadius: 16,
+    marginHorizontal: 10,
+    marginTop: 20,
+    backgroundColor: '#fff',
+    elevation: 4,
+    paddingVertical: 20,
+    paddingHorizontal: 16,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 16,
+    color: '#333',
+  },
+  analyticsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  analyticsBox: {
+    width: '47%',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 14,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    shadowOffset: {width: 0, height: 1},
+  },
+  iconWrap: {
+    backgroundColor: '#4caf50',
+    borderRadius: 20,
+    padding: 6,
+    marginBottom: 8,
+  },
+  analyticsValue: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#222',
+  },
+  analyticsLabel: {
+    fontSize: 15,
+    color: '#777',
+    textAlign: 'center',
+    marginTop: 4,
+  },
   container: {
     padding: 16,
     backgroundColor: '#f5f5f5',
@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     flexDirection: 'row',
     marginBottom: 16,
-    marginTop: 20,
+    marginTop: 30,
   },
   headcontainer: {
     gap: 15,
@@ -322,74 +322,6 @@ const styles = StyleSheet.create({
   button: {
     width: '50%',
   },
-  flatListContainer: {
-    paddingBottom: 16,
-  },
-  performanceCard: {
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: '#f8f9fa',
-    marginTop: 20,
-  },
-  metricCard: {
-    marginBottom: 16,
-    borderRadius: 12,
-    backgroundColor: '#ffffff',
-    elevation: 2,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-  },
-  performanceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  performanceScore: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: '#333',
-    marginRight: 12,
-  },
-  performanceBadge: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 16,
-  },
-  badgeText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: 14,
-  },
-  progressContainer: {
-    marginTop: 12,
-  },
-  progressBar: {
-    height: 8,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#4CAF50',
-    borderRadius: 4,
-  },
-  metricHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
   tabButton: {
     paddingVertical: 8,
     paddingHorizontal: 16,
@@ -407,32 +339,7 @@ const styles = StyleSheet.create({
   tabButtonTextActive: {
     color: '#fff',
   },
-  metricTitle: {
-    fontSize: 16,
-    color: '#555',
-  },
-  metricValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  metricSubtext: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  metricComment: {
-    fontSize: 14,
-    color: '#4CAF50',
-    fontWeight: '500',
-    marginTop: 4,
-    fontStyle: 'italic',
-  },
-  card: {
-    marginBottom: 16,
-    borderRadius: 12,
-    elevation: 3,
-  },
+
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -443,28 +350,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
-  },
-  tabs: {
-    flexDirection: 'row',
-    backgroundColor: '#f5f5f5',
-    borderRadius: 8,
-    padding: 4,
-  },
-  tab: {
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    color: '#666',
-  },
-  activeTab: {
-    backgroundColor: '#fff',
-    borderRadius: 6,
-    color: '#000',
-    fontWeight: '500',
-    elevation: 1,
-  },
-  chart: {
-    marginVertical: 8,
-    borderRadius: 8,
   },
 });
 
