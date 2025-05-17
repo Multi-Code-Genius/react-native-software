@@ -6,8 +6,9 @@ import BottomSheet, {
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {Image, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
 import {
+  Banner,
   Button,
   Dialog,
   FAB,
@@ -232,6 +233,9 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             </View>
           }
           placement="top"
+          contentStyle={{
+            borderRadius: 190,
+          }}
           onClose={() => setVisibleTooltipId(null)}>
           <ImageBackground
             source={require('../assets/eventBG.jpg')}
@@ -246,7 +250,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
               overflow: 'hidden',
             }}
             imageStyle={{opacity: 0.6}}
-            resizeMode="cover">
+            resizeMode="repeat">
             <View
               style={{
                 width: '100%',
@@ -404,8 +408,10 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         selectedEvent={selectedEvent}
         onDragSelectedEventStart={handleDragStart}
         onDragSelectedEventEnd={handleDragEnd}>
-        <CalendarHeader />
-        <ScrollView
+        <View style={{position: 'relative'}}>
+          <CalendarHeader />
+        </View>
+        <View
           style={{flex: 1}}
           pointerEvents={
             isLoading || isPending || updateBookingAPIStatus ? 'none' : 'auto'
@@ -417,7 +423,21 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
             renderEvent={renderEvent}
             renderDraggableEvent={renderDraggableEvent}
           />
-        </ScrollView>
+        </View>
+        {selectedEvent && (
+          <FAB
+            icon="close"
+            label="Close editor"
+            customSize={40}
+            style={{
+              position: 'absolute',
+              marginVertical: 10,
+              right: 0,
+              zIndex: 10000,
+            }}
+            onPress={() => setSelectedEvent(null)}
+          />
+        )}
       </CalendarContainer>
 
       <BottomSheet
@@ -479,19 +499,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
           </Button>
         </BottomSheetView>
       </BottomSheet>
-
-      {selectedEvent && (
-        <FAB
-          icon="close"
-          style={{
-            position: 'absolute',
-            margin: 16,
-            right: 0,
-            bottom: 0,
-          }}
-          onPress={() => setSelectedEvent(null)}
-        />
-      )}
 
       <Portal>
         <Dialog
