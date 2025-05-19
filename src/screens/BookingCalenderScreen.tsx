@@ -45,6 +45,7 @@ import {TIME_SLOT_ICONS} from '../constants/TIME_SLOT_ICONS';
 import {useToast} from '../context/ToastContext';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 import {calculatedAmount} from '../hooks/useCalculatedAmount';
+import DropDownPicker from 'react-native-dropdown-picker';
 
 interface BookingCalenderScreenProps {
   navigation: any;
@@ -83,6 +84,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
     setEndTime,
     resetForm,
   } = useBookingFormStore();
+  const [localNumber, setLocalNumber] = useState(number);
 
   useEffect(() => {
     if (!startTime || !endTime || !price) {
@@ -96,7 +98,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   }, [startTime, endTime, price, setAmount]);
 
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const snapPoints = ['50%'];
+  const snapPoints = ['70%'];
 
   const {data, refetch, isLoading} = useBookingInfo({
     gameId: venueId,
@@ -185,6 +187,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
         onSuccess: () => {
           refetch();
           resetForm();
+          setLocalNumber('');
           bottomSheetRef.current?.close();
         },
         onError: error => {
@@ -354,20 +357,18 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
       debounce((value: string) => {
         setNumber(value);
       }, 500),
-    [setNumber],
+    [],
   );
 
-  const handleChange = (e: any) => {
-    const value = e.target?.value;
-
-    setNumber(value);
+  const handleNumberChange = (value: string) => {
+    setLocalNumber(value);
     debouncedSearch(value);
   };
 
   const {data: customerData, isLoading: customerLoading} =
     useSuggestedCustomer(number);
 
-  console.log('customerData', customerData);
+  console.log('customerData', customerData?.customers);
 
   const renderDraggableEvent = useCallback(
     (props: DraggableEventProps) => (
@@ -482,6 +483,54 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
                 Booking for slot: {startTime} - {endTime}
               </Text>
             </View>
+            <View>
+              <BottomSheetTextInput
+                placeholderTextColor="#888"
+                placeholder="Phone Number (e.g., +1 234 567 890)"
+                onSubmitEditing={Keyboard.dismiss}
+                value={localNumber}
+                onChangeText={handleNumberChange}
+                keyboardType="phone-pad"
+                style={styles.input}
+              />
+
+              {!customerLoading && customerData?.customers?.length > 0 && (
+                <View
+                  style={{
+                    maxHeight: 120,
+                    minHeight: 120,
+                    borderWidth: 1,
+                    // top: -8,
+                    borderColor: '#ccc',
+                    // marginTop: 4,
+                    // marginBottom: 8,
+                    // marginHorizontal: 16,
+                    overflow: 'hidden',
+                  }}>
+                  <ScrollView keyboardShouldPersistTaps="handled">
+                    {customerData.customers.map((cust, i) => (
+                      <Button
+                        key={i}
+                        mode="text"
+                        contentStyle={{justifyContent: 'flex-start'}}
+                        onPress={() => {
+                          setName(cust.user.name);
+                          setNumber(cust.user.mobileNumber);
+                          setLocalNumber(cust.user.mobileNumber);
+                        }}>
+                        {cust.user.name} - {cust.user.mobileNumber}
+                      </Button>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+
+              {!customerLoading && customerData?.customers?.length === 0 && (
+                <Text style={{paddingHorizontal: 16, color: '#888'}}>
+                  No matching customers found.
+                </Text>
+              )}
+            </View>
 
             <BottomSheetTextInput
               placeholderTextColor="#888"
@@ -491,15 +540,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
               onChangeText={setName}
               style={styles.input}
             />
-            <BottomSheetTextInput
-              placeholderTextColor="#888"
-              placeholder="Phone Number (e.g., +1 234 567 890)"
-              onSubmitEditing={Keyboard.dismiss}
-              value={number}
-              onChangeText={setNumber}
-              keyboardType="phone-pad"
-              style={styles.input}
-            />
+
             <BottomSheetTextInput
               onSubmitEditing={Keyboard.dismiss}
               placeholderTextColor="#888"

@@ -222,22 +222,18 @@ export const useBookingById = (id: string) => {
 };
 
 const suggestedCustomer = async (number: string) => {
-  try {
-    const response = await api(`/api/booking/suggested-customer/${number}`, {
-      method: 'GET',
-      headers: {'Content-Type': 'application/json'},
-      cache: 'no-store',
-    });
-    const resp = await response;
-    return resp;
-  } catch (error) {
-    throw new Error(error instanceof Error ? error.message : 'Data Not Found');
-  }
+  const response = await api(`/api/booking/suggest-customer/${number}`, {
+    method: 'GET',
+    headers: {'Content-Type': 'application/json'},
+    cache: 'no-store',
+  });
+
+  return response;
 };
 
 export const useSuggestedCustomer = (number: string) => {
   return useQuery({
-    queryKey: ['customer', number],
+    queryKey: ['customerNumber', number],
     queryFn: () => suggestedCustomer(number),
     staleTime: 0,
     refetchOnMount: true,

@@ -35,4 +35,17 @@ export const styles = StyleSheet.create({
   dialog: {
     backgroundColor: 'white',
   },
+  suggestionBox: {
+    position: 'absolute',
+    top: -8,
+    left: 0,
+    right: 0,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderBottomLeftRadius: 6,
+    borderBottomRightRadius: 6,
+    zIndex: 1000,
+    maxHeight: 120,
+  },
 });
