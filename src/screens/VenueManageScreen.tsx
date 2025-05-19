@@ -20,6 +20,7 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDeleteVenue, useGetVenue} from '../api/vanue';
 import {useToast} from '../context/ToastContext';
+import WelcomeTab from '../components/WelcomeTab';
 
 const VenueManageScreen = () => {
   const navigation = useNavigation();
@@ -108,52 +109,10 @@ const VenueManageScreen = () => {
             />
           </View>
         ) : (
-          <View style={styles.welcomeContainer}>
-            <Text variant="headlineLarge" style={styles.welcomeText}>
-              Congratulations!
-            </Text>
-            <Text variant="titleMedium" style={styles.welcomeText}>
-              Your account has been created successfully.
-            </Text>
-            <Divider style={styles.divider} />
-            <Text variant="bodyMedium" style={{color: colors.onBackground}}>
-              Please complete your profile to add venues, manage all your
-              bookings, and access all features.
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => {
-                showToast({
-                  message: 'Click on continue for Profile -->',
-                  type: 'success',
-                  actionLabel: 'Continue',
-                  onActionPress: () => {
-                    navigation.navigate('Account');
-                  },
-                });
-              }}
-              style={styles.button}
-              labelStyle={{fontWeight: 'bold'}}>
-              Complete Profile
-            </Button>
-            <Text style={styles.separator}>──── or ────</Text>
-            <Text
-              variant="titleMedium"
-              style={[styles.welcomeText, {marginBottom: 8}]}>
-              Are you a sports turf owner?
-            </Text>
-            <Button
-              mode="contained"
-              onPress={() => navigation.navigate('Addvenue')}
-              style={styles.button}
-              labelStyle={{fontWeight: 'bold'}}>
-              Add venue
-            </Button>
-          </View>
+          <WelcomeTab />
         )}
       </View>
 
-      {/* Delete Confirmation Dialog */}
       <Portal>
         <Dialog
           style={{backgroundColor: theme.colors.onPrimary}}

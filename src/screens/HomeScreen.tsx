@@ -14,20 +14,23 @@ import {
   Button,
   Card,
   Icon,
-  IconButton,
   Text,
   Title,
-  useTheme,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
 import DashboardBarChart from '../components/DashboardBarChart';
 import {useAccountLogic} from '../hooks/useAccountLogic';
+import {useGetVenue} from '../api/vanue';
+import WelcomeTab from '../components/WelcomeTab';
 
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
   const [selectedVenue, setSelectedVenue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
+  const {data: venuedata, refetch: refetchVenue} = useGetVenue();
+  const hasVenues =
+    Array.isArray(venuedata?.games) && venuedata.games.length > 0;
 
   useEffect(() => {
     if (account?.games?.length > 0) {
@@ -35,29 +38,31 @@ const HomeScreen = () => {
     }
   }, [account]);
 
-  const {data, refetch, isLoading} = useDashboardData(
-    selectedVenue,
-    account?.user?.id || '',
-  );
+  const {
+    data,
+    refetch: refetchDashboard,
+    isLoading,
+  } = useDashboardData(selectedVenue, account?.user?.id || '');
   const navigation = useNavigation();
-  console.log('data>>dashboard', data);
 
   useEffect(() => {
     if (selectedVenue) {
-      refetch();
+      refetchDashboard();
     }
-  }, [selectedVenue, refetch]);
+  }, [selectedVenue, refetchDashboard]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    (await !isLoading) && refetch();
+    await Promise.all([refetchVenue(), refetchDashboard()]);
     setRefreshing(false);
   };
-
   useFocusEffect(
     useCallback(() => {
-      !isLoading && refetch();
-    }, [refetch]),
+      if (!isLoading) {
+        refetchDashboard();
+        refetchVenue();
+      }
+    }, [refetchDashboard, refetchVenue]),
   );
 
   const monthsBookingCount = data?.thisMonthBookingsCount ?? 0;
@@ -149,105 +154,105 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <ScrollView
-        style={styles.container}
-        showsVerticalScrollIndicator={false}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }>
-        <Title style={styles.heading}>Dashboard</Title>
-
-        <View style={styles.headcontainer}>
-          <Text style={styles.Heading1}>Welcome Back, John...👋</Text>
-          <Text style={styles.paragraph}>
-            There is the latest update for the last 7 days. Check now.
-          </Text>
-          <View style={styles.buttoncontainer}>
-            <Button mode="outlined" style={styles.button}>
-              Export
-            </Button>
-            <Button mode="contained" style={styles.button}>
-              Create
-            </Button>
-            <IconButton
-              icon="add-circle"
-              onPress={() => (navigation as any).navigate('Addvenue')}
-              size={30}
-            />
-          </View>
-        </View>
-        <View>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.tabContainer}>
-            {account &&
-              (account?.games || []).map((venue: any) => (
-                <TouchableOpacity
-                  key={venue.id}
-                  style={[
-                    styles.tabButton,
-                    selectedVenue === venue.id && styles.tabButtonActive,
-                  ]}
-                  onPress={() => setSelectedVenue(venue.id)}>
-                  <Text
-                    style={[
-                      styles.tabButtonText,
-                      selectedVenue === venue.id && styles.tabButtonTextActive,
-                    ]}>
-                    {venue.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-          </ScrollView>
-        </View>
-
-        <Button
-          mode="contained"
-          style={styles.book}
-          onPress={() =>
-            (navigation as any).navigate('bookingData', {
-              venueId: selectedVenue,
-            })
+      {hasVenues ? (
+        <ScrollView
+          style={styles.container}
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }>
-          Book Game
-        </Button>
-        <Card style={styles.performanceCard}>
-          <Text style={styles.cardTitle}>📊 Analytics</Text>
-          <View style={styles.analyticsGrid}>
-            {analyticsData.map(item => (
-              <View key={item.id} style={styles.analyticsBox}>
-                <View style={styles.iconWrap}>
-                  <Icon source={item.icon} size={22} color="#fff" />
-                </View>
-                <Text style={styles.analyticsValue}>{item.count}</Text>
-                <Text style={styles.analyticsLabel}>{item.title}</Text>
-              </View>
-            ))}
+          <Title style={styles.heading}>Dashboard</Title>
+
+          <View style={styles.headcontainer}>
+            <Text style={styles.Heading1}>Welcome Back, John...👋</Text>
+            <Text style={styles.paragraph}>
+              There is the latest update for the last 7 days. Check now.
+            </Text>
+            <View style={styles.buttoncontainer}>
+              <Button mode="outlined" style={styles.button}>
+                Export
+              </Button>
+              <Button mode="contained" style={styles.button}>
+                Create
+              </Button>
+            </View>
           </View>
-        </Card>
-        <View style={styles.chartCard}>
           <View>
-            <Text style={styles.chartTitle}>📅 Booking Status</Text>
-            <PieChart
-              data={statusData}
-              width={Dimensions.get('window').width - 32}
-              height={200}
-              accessor="population"
-              backgroundColor="transparent"
-              paddingLeft="15"
-              chartConfig={chartConfig}
-              hasLegend
-            />
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.tabContainer}>
+              {account &&
+                (account?.games || []).map((venue: any) => (
+                  <TouchableOpacity
+                    key={venue.id}
+                    style={[
+                      styles.tabButton,
+                      selectedVenue === venue.id && styles.tabButtonActive,
+                    ]}
+                    onPress={() => setSelectedVenue(venue.id)}>
+                    <Text
+                      style={[
+                        styles.tabButtonText,
+                        selectedVenue === venue.id &&
+                          styles.tabButtonTextActive,
+                      ]}>
+                      {venue.name}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+            </ScrollView>
           </View>
-        </View>
-        <View style={styles.barContainer}>
-          <Text style={styles.title}>⏱️ Working Hours Statistics</Text>
-          <View style={styles.header}>
-            <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+
+          <Button
+            mode="contained"
+            style={styles.book}
+            onPress={() =>
+              (navigation as any).navigate('bookingData', {
+                venueId: selectedVenue,
+              })
+            }>
+            Book Game
+          </Button>
+          <Card style={styles.performanceCard}>
+            <Text style={styles.cardTitle}>📊 Analytics</Text>
+            <View style={styles.analyticsGrid}>
+              {analyticsData.map(item => (
+                <View key={item.id} style={styles.analyticsBox}>
+                  <View style={styles.iconWrap}>
+                    <Icon source={item.icon} size={22} color="#fff" />
+                  </View>
+                  <Text style={styles.analyticsValue}>{item.count}</Text>
+                  <Text style={styles.analyticsLabel}>{item.title}</Text>
+                </View>
+              ))}
+            </View>
+          </Card>
+          <View style={styles.chartCard}>
+            <View>
+              <Text style={styles.chartTitle}>📅 Booking Status</Text>
+              <PieChart
+                data={statusData}
+                width={Dimensions.get('window').width - 32}
+                height={200}
+                accessor="population"
+                backgroundColor="transparent"
+                paddingLeft="15"
+                chartConfig={chartConfig}
+                hasLegend
+              />
+            </View>
           </View>
-        </View>
-      </ScrollView>
+          <View style={styles.barContainer}>
+            <Text style={styles.title}>⏱️ Working Hours Statistics</Text>
+            <View style={styles.header}>
+              <DashboardBarChart data={data?.weeklyBookingsCountByDay} />
+            </View>
+          </View>
+        </ScrollView>
+      ) : (
+        <WelcomeTab />
+      )}
     </SafeAreaView>
   );
 };
@@ -344,7 +349,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button: {
-    width: '40%',
+    width: '50%',
     height: 40,
   },
   add: {

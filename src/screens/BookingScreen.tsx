@@ -3,13 +3,13 @@ import React, {useCallback} from 'react';
 import {FlatList, StyleSheet, View} from 'react-native';
 import {Card, Icon, Text} from 'react-native-paper';
 import {useGetVenue} from '../api/vanue';
-
 import {SafeAreaView} from 'react-native-safe-area-context';
+import WelcomeTab from '../components/WelcomeTab';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
   const {data, refetch} = useGetVenue();
-
+  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -56,23 +56,27 @@ const BookingScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <View className="flex-1">
-        <View style={styles.venueListContainer}>
-          <View style={styles.header}>
-            <Text variant="headlineLarge" style={styles.headerText}>
-              Venue Details
-            </Text>
+      {hasVenues ? (
+        <View className="flex-1">
+          <View style={styles.venueListContainer}>
+            <View style={styles.header}>
+              <Text variant="headlineLarge" style={styles.headerText}>
+                Venue Details
+              </Text>
+            </View>
+            <FlatList
+              data={data?.games}
+              renderItem={renderItem}
+              keyExtractor={(item: any) =>
+                item.id?.toString() ?? Math.random().toString()
+              }
+              showsVerticalScrollIndicator={false}
+            />
           </View>
-          <FlatList
-            data={data?.games}
-            renderItem={renderItem}
-            keyExtractor={(item: any) =>
-              item.id?.toString() ?? Math.random().toString()
-            }
-            showsVerticalScrollIndicator={false}
-          />
         </View>
-      </View>
+      ) : (
+        <WelcomeTab />
+      )}
     </SafeAreaView>
   );
 };
@@ -84,7 +88,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
   },
-
   card: {
     borderRadius: 16,
     overflow: 'hidden',
