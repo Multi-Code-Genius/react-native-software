@@ -118,8 +118,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   cardText: {
-    // fontSize: 14,
-    // marginBottom: 4,
     flex: 1,
     gap: 10,
     flexDirection: 'row',

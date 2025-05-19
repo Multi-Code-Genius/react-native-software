@@ -1,13 +1,20 @@
 import React from 'react';
-import {View, StyleSheet, FlatList, TouchableOpacity} from 'react-native';
-import {Text, Card, Avatar} from 'react-native-paper';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import {Text, Card, Avatar, Button} from 'react-native-paper';
 import {useGetCustomer} from '../api/customer';
 import {useNavigation} from '@react-navigation/native';
 
 const CustomerDetailsScreen = () => {
   const navigation = useNavigation();
-  const {data} = useGetCustomer();
-  console.log('data==========>>>>', data);
+  const {data, isLoading} = useGetCustomer();
+  const customers = data?.customers || [];
+  console.log('data==========>>>>customer', data);
 
   const renderItem = ({item}: any) => (
     <TouchableOpacity
@@ -38,6 +45,23 @@ const CustomerDetailsScreen = () => {
     </TouchableOpacity>
   );
 
+  if (!isLoading && customers.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Image
+          source={{
+            uri: 'https://cdn-icons-png.flaticon.com/512/4076/4076501.png',
+          }}
+          style={styles.emptyImage}
+          resizeMode="contain"
+        />
+        <Text style={styles.emptyTitle}>No Customers Found</Text>
+        <Text style={styles.emptySubtitle}>
+          You haven’t added any customers yet.
+        </Text>
+      </View>
+    );
+  }
   return (
     <FlatList
       contentContainerStyle={styles.container}
@@ -60,6 +84,36 @@ const styles = StyleSheet.create({
   },
   avatar: {
     backgroundColor: '#6200ee',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: '#f2f2f2',
+  },
+  emptyImage: {
+    width: 120,
+    height: 120,
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 6,
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    color: '#777',
+    marginBottom: 20,
+    textAlign: 'center',
+    paddingHorizontal: 16,
+  },
+  addButton: {
+    backgroundColor: '#6200ee',
+    paddingHorizontal: 16,
+    borderRadius: 25,
   },
 });
 

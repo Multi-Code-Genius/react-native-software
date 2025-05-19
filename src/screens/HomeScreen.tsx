@@ -162,7 +162,6 @@ const HomeScreen = () => {
             <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
           }>
           <Title style={styles.heading}>Dashboard</Title>
-
           <View style={styles.headcontainer}>
             <Text style={styles.Heading1}>Welcome Back, John...👋</Text>
             <Text style={styles.paragraph}>
