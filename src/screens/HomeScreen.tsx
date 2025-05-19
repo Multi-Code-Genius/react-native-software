@@ -23,6 +23,7 @@ import DashboardBarChart from '../components/DashboardBarChart';
 import {useAccountLogic} from '../hooks/useAccountLogic';
 import {useGetVenue} from '../api/vanue';
 import WelcomeTab from '../components/WelcomeTab';
+import {downloadAndOpenPdf} from '../utils/downloadPdf';
 
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
@@ -168,7 +169,10 @@ const HomeScreen = () => {
               There is the latest update for the last 7 days. Check now.
             </Text>
             <View style={styles.buttoncontainer}>
-              <Button mode="outlined" style={styles.button}>
+              <Button
+                mode="outlined"
+                style={styles.button}
+                onPress={() => downloadAndOpenPdf(selectedVenue)}>
                 Export
               </Button>
               <Button mode="contained" style={styles.button}>
