@@ -97,9 +97,6 @@ export const useEditVenueDetails = (
         message: 'Updated Venue successfully!',
         type: 'success',
         actionLabel: 'Continue',
-        // onActionPress: () => {
-        //   navigation.navigate('Account');
-        // },
       });
     },
     onError: error => {

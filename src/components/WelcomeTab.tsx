@@ -24,14 +24,7 @@ const WelcomeTab = () => {
       <Button
         mode="contained"
         onPress={() => {
-          showToast({
-            message: 'Click on continue for Profile -->',
-            type: 'success',
-            actionLabel: 'Continue',
-            onActionPress: () => {
-              navigation.navigate('Account');
-            },
-          });
+          navigation.navigate('Account');
         }}
         style={styles.button}
         labelStyle={{fontWeight: 'bold'}}>

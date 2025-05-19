@@ -69,24 +69,13 @@ const CustomToast: React.FC<CustomToastProps> = ({
         },
       ]}>
       <View style={styles.toastBox}>
-        <View style={styles.left}>
-          {showIcon && (
-            <Icon
-              name={iconName}
-              size={18}
-              color={iconColor}
-              style={styles.icon}
-            />
-          )}
-          <Text style={styles.text}>{message}</Text>
-        </View>
-        {actionLabel && (
-          <TouchableOpacity onPress={onActionPress}>
-            <Text style={[styles.actionText, {color: actionColor}]}>
-              {actionLabel}
-            </Text>
-          </TouchableOpacity>
-        )}
+        <Text
+          style={[styles.text]}
+          numberOfLines={2}
+          adjustsFontSizeToFit
+          minimumFontScale={0.8}>
+          {message}
+        </Text>
       </View>
     </Animated.View>
   );
@@ -104,9 +93,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c1c1e',
     padding: 12,
     borderRadius: 12,
-    width: '90%',
+    maxWidth: '90%', 
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center', 
     alignItems: 'center',
   },
   left: {
@@ -119,6 +108,7 @@ const styles = StyleSheet.create({
   text: {
     color: '#fff',
     fontSize: 16,
+    textAlign: 'center',
   },
   actionText: {
     fontWeight: '600',
