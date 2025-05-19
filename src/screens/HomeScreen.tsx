@@ -24,12 +24,14 @@ import {useAccountLogic} from '../hooks/useAccountLogic';
 import {useGetVenue} from '../api/vanue';
 import WelcomeTab from '../components/WelcomeTab';
 import {downloadAndOpenPdf} from '../utils/downloadPdf';
+import {useToast} from '../context/ToastContext';
 
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
   const [selectedVenue, setSelectedVenue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
   const {data: venuedata, refetch: refetchVenue} = useGetVenue();
+  const {showToast} = useToast();
   const hasVenues =
     Array.isArray(venuedata?.games) && venuedata.games.length > 0;
 
@@ -172,7 +174,7 @@ const HomeScreen = () => {
               <Button
                 mode="outlined"
                 style={styles.button}
-                onPress={() => downloadAndOpenPdf(selectedVenue)}>
+                onPress={() => downloadAndOpenPdf(selectedVenue, showToast)}>
                 Export
               </Button>
               <Button mode="contained" style={styles.button}>

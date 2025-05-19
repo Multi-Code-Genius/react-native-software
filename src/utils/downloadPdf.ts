@@ -3,6 +3,7 @@ import FileViewer from 'react-native-file-viewer';
 import {Platform, Alert, PermissionsAndroid} from 'react-native';
 import {Buffer} from 'buffer';
 import {api} from '../hooks/api';
+import {useToast} from '../context/ToastContext';
 
 const requestStoragePermission = async () => {
   if (Platform.OS === 'android' && Platform.Version < 33) {
@@ -26,7 +27,10 @@ const requestStoragePermission = async () => {
   return true;
 };
 
-export const downloadAndOpenPdf = async (gameId: string) => {
+export const downloadAndOpenPdf = async (
+  gameId: string,
+  showToast: Function,
+) => {
   try {
     const hasPermission = await requestStoragePermission();
     if (!hasPermission) {
@@ -43,18 +47,24 @@ export const downloadAndOpenPdf = async (gameId: string) => {
       cache: 'no-store',
     });
 
+    if (!response.ok) {
+      throw new Error(`Server responded with ${response.status}`);
+    }
+
     const arrayBuffer = await response.arrayBuffer();
-    const fileName = `monthly_report_${gameId}.pdf`;
-    const filePath = `${RNFS.DocumentDirectoryPath}/${fileName}`;
+    const fileName = `monthly_report_${gameId}_${Date.now()}.pdf`;
+    const filePath = `${RNFS.DownloadDirectoryPath}/${fileName}`;
 
     await RNFS.writeFile(
       filePath,
       Buffer.from(arrayBuffer).toString('base64'),
       'base64',
     );
-    await FileViewer.open(filePath, {
-      showOpenWithDialog: true,
-      displayName: 'Monthly Report',
+
+    showToast({
+      message: 'Report downloaded successfully!',
+      type: 'success',
+      showIcon: true,
     });
   } catch (error) {
     console.error('Download Error:', error);
