@@ -31,19 +31,31 @@ export default function EmailLoginSlide({
           <TextInput
             label="Number"
             mode="outlined"
-            keyboardType="email-address"
+            keyboardType="numeric"
             style={{textTransform: 'none'}}
             autoCapitalize="none"
+            maxLength={10}
             autoCorrect={false}
             value={email}
-            onChangeText={text => setEmail(text.toLowerCase())}
+            onChangeText={text => {
+              const numericText = text.replace(/[^0-9]/g, '');
+              if (numericText.length <= 10) {
+                setEmail(numericText);
+              }
+            }}
           />
 
           <Button
             mode="contained"
             onPress={sendOtp}
+            disabled={email.length !== 10}
             loading={isPending}
-            style={{alignSelf: 'center', width: '50%'}}>
+            style={{
+              alignSelf: 'center',
+              width: '50%',
+              backgroundColor: email.length === 10 ? '#6200ee' : '#999999',
+            }}
+            textColor={'white'}>
             Send OTP
           </Button>
         </View>
