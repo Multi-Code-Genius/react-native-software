@@ -14,6 +14,7 @@ import {
   Button,
   Card,
   Icon,
+  IconButton,
   Text,
   Title,
 } from 'react-native-paper';
@@ -174,6 +175,11 @@ const HomeScreen = () => {
               <Button mode="contained" style={styles.button}>
                 Create
               </Button>
+              <IconButton
+                icon="add-circle"
+                onPress={() => (navigation as any).navigate('Addvenue')}
+                size={30}
+              />
             </View>
           </View>
           <View>
@@ -348,7 +354,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   button: {
-    width: '50%',
+    width: '40%',
     height: 40,
   },
   add: {

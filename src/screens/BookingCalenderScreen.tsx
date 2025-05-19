@@ -6,7 +6,14 @@ import BottomSheet, {
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
-import {Image, ImageBackground, Keyboard, ScrollView, View} from 'react-native';
+import {
+  Image,
+  ImageBackground,
+  Keyboard,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   Banner,
   Button,
@@ -483,7 +490,7 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
                 Booking for slot: {startTime} - {endTime}
               </Text>
             </View>
-            <View>
+            <View style={{position: 'relative', zIndex: 10}}>
               <BottomSheetTextInput
                 placeholderTextColor="#888"
                 placeholder="Phone Number (e.g., +1 234 567 890)"
@@ -492,41 +499,62 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
                 onChangeText={handleNumberChange}
                 keyboardType="phone-pad"
                 style={styles.input}
+                underlineColorAndroid="transparent"
               />
 
-              {!customerLoading && customerData?.customers?.length > 0 && (
-                <View
-                  style={{
-                    maxHeight: 120,
-                    minHeight: 120,
-                    borderWidth: 1,
-                    // top: -8,
-                    borderColor: '#ccc',
-                    // marginTop: 4,
-                    // marginBottom: 8,
-                    // marginHorizontal: 16,
-                    overflow: 'hidden',
-                  }}>
-                  <ScrollView keyboardShouldPersistTaps="handled">
-                    {customerData.customers.map((cust, i) => (
-                      <Button
-                        key={i}
-                        mode="text"
-                        contentStyle={{justifyContent: 'flex-start'}}
-                        onPress={() => {
-                          setName(cust.user.name);
-                          setNumber(cust.user.mobileNumber);
-                          setLocalNumber(cust.user.mobileNumber);
-                        }}>
-                        {cust.user.name} - {cust.user.mobileNumber}
-                      </Button>
-                    ))}
-                  </ScrollView>
-                </View>
-              )}
+              {!customerLoading &&
+                customerData?.customers?.length > 0 &&
+                (() => {
+                  const filteredCustomers = customerData.customers.filter(
+                    cust => cust.user.mobileNumber !== localNumber,
+                  );
+
+                  if (filteredCustomers.length === 0) return null;
+
+                  return (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 50,
+                        left: 0,
+                        right: 0,
+                        backgroundColor: '#fff',
+                        borderWidth: filteredCustomers.length > 0 ? 1 : 0,
+                        borderColor: '#ccc',
+                        borderRadius: 8,
+                        maxHeight: 150,
+                        zIndex: 999,
+                      }}>
+                      <ScrollView keyboardShouldPersistTaps="handled">
+                        {filteredCustomers.map((cust, i) => (
+                          <TouchableOpacity
+                            key={i}
+                            style={{
+                              paddingVertical: 10,
+                              paddingHorizontal: 16,
+                              borderBottomWidth:
+                                i !== filteredCustomers.length - 1 ? 1 : 0,
+                              borderBottomColor: '#eee',
+                            }}
+                            onPress={() => {
+                              setName(cust.user.name);
+                              setNumber(cust.user.mobileNumber);
+                              setLocalNumber(cust.user.mobileNumber);
+                              Keyboard.dismiss();
+                            }}>
+                            <Text style={{fontSize: 14}}>
+                              {cust.user.name} - {cust.user.mobileNumber}
+                            </Text>
+                          </TouchableOpacity>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  );
+                })()}
 
               {!customerLoading && customerData?.customers?.length === 0 && (
-                <Text style={{paddingHorizontal: 16, color: '#888'}}>
+                <Text
+                  style={{paddingHorizontal: 16, color: '#888', marginTop: 8}}>
                   No matching customers found.
                 </Text>
               )}
