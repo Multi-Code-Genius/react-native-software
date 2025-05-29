@@ -3,13 +3,17 @@ import {View} from 'react-native';
 import {Button, Text, TextInput} from 'react-native-paper';
 
 export default function EmailLoginSlide({
-  email,
-  setEmail,
+  name,
+  setName,
+  phone,
+  setPhone,
   sendOtp,
   isPending,
 }: {
-  email: string;
-  setEmail: (text: string) => void;
+  name: string;
+  setName: (text: string) => void;
+  phone: string;
+  setPhone: (text: string) => void;
   sendOtp: () => void;
   isPending: boolean;
   paperTheme: any;
@@ -29,18 +33,24 @@ export default function EmailLoginSlide({
           </Text>
 
           <TextInput
-            label="Number"
+            label="Name"
+            mode="outlined"
+            value={name}
+            onChangeText={setName}
+          />
+
+          <TextInput
+            label="Phone Number"
             mode="outlined"
             keyboardType="numeric"
-            style={{textTransform: 'none'}}
             autoCapitalize="none"
             maxLength={10}
             autoCorrect={false}
-            value={email}
+            value={phone}
             onChangeText={text => {
               const numericText = text.replace(/[^0-9]/g, '');
               if (numericText.length <= 10) {
-                setEmail(numericText);
+                setPhone(numericText);
               }
             }}
           />
@@ -48,14 +58,15 @@ export default function EmailLoginSlide({
           <Button
             mode="contained"
             onPress={sendOtp}
-            disabled={email.length !== 10}
+            disabled={phone.length !== 10 || !name}
             loading={isPending}
             style={{
               alignSelf: 'center',
               width: '50%',
-              backgroundColor: email.length === 10 ? '#6200ee' : '#999999',
+              backgroundColor:
+                phone.length === 10 && name ? '#6200ee' : '#999999',
             }}
-            textColor={'white'}>
+            textColor="white">
             Send OTP
           </Button>
         </View>

@@ -112,7 +112,7 @@ export const useEditVenueDetails = (
 
 export const addVenue = async (data: Partial<VenueFormData>) => {
   try {
-    const response = await api('/api/game/create', {
+    const response = await api('/venue/create-venue', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',

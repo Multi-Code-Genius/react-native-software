@@ -6,10 +6,12 @@ import EmailLoginSlide from '../components/onboarding/EmailLoginSlide';
 import OtpSlide from '../components/onboarding/OtpSlide';
 import WelcomeSlide from '../components/onboarding/WelcomeSlide';
 import {useAuthStore} from '../store/authStore';
+import {Alert} from 'react-native';
 
 const OnboardingScreen = () => {
-  const [email, setEmail] = useState('');
-  const [, setOtp] = useState('');
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [otp, setOtp] = useState('');
   const [pageIndex, setPageIndex] = useState(0);
   const onboardingRef = useRef<Onboarding>(null);
 
@@ -20,14 +22,23 @@ const OnboardingScreen = () => {
   const {mutate: verifyOtp} = useVerifyOtp();
 
   const sendOtp = () => {
-    // if (!email.includes('@')) {
-    //   Alert.alert('Invalid Email', 'Please enter a valid email address.');
-    //   return;
-    // }
-    requestOtp({number: email});
+    if (!name || !phone) {
+      Alert.alert('Missing Info', 'Please enter both your name and number.');
+      return;
+    }
 
-    onboardingRef.current?.goNext();
-    setPageIndex(2);
+    requestOtp(
+      {name, phone},
+      {
+        onSuccess: () => {
+          onboardingRef.current?.goNext();
+          setPageIndex(2);
+        },
+        onError: (err: any) => {
+          Alert.alert('OTP Error', err.message || 'Failed to send OTP.');
+        },
+      },
+    );
   };
 
   return (
@@ -40,8 +51,16 @@ const OnboardingScreen = () => {
       showDone={pageIndex !== 1}
       pages={[
         WelcomeSlide(),
-        EmailLoginSlide({email, setEmail, sendOtp, isPending, paperTheme}),
-        OtpSlide({email, setOtp, verifyOtp, saveToken, paperTheme}),
+        EmailLoginSlide({
+          name,
+          setName,
+          phone,
+          setPhone,
+          sendOtp,
+          isPending,
+          paperTheme,
+        }),
+        OtpSlide({phone, setOtp, verifyOtp, saveToken, paperTheme}),
       ]}
     />
   );

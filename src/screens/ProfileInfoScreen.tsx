@@ -2,47 +2,42 @@ import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
-  Image,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  StyleSheet,
   View,
 } from 'react-native';
-import ImagePicker from 'react-native-image-crop-picker';
-import {
-  ActivityIndicator,
-  Button,
-  IconButton,
-  Text,
-  TextInput,
-} from 'react-native-paper';
+import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useUpdateAccountInfo, useUploadImage} from '../api/account';
+import {useUpdateAccountInfo} from '../api/account';
+import {styles} from '../styles/ProfileScreenStyles';
 
 const ProfileInfoScreen = () => {
   const {params} = useRoute();
   const {data} = params as {data: any};
   const [pressed, setPressed] = useState(false);
-  const [profilePicUri, setProfilePicUri] = useState(
-    data?.user?.profile_pic || '',
-  );
   const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
-    mobileNumber: '',
+    phone: '',
+    address: '',
+    city: '',
+    state: '',
+    zip_code: '',
   });
-  const userId = data?.user?.id;
 
   useEffect(() => {
     if (data) {
       setFormData({
         email: data?.user?.email || '',
         name: data?.user?.name || '',
-        mobileNumber: data?.user?.mobileNumber || '',
+        phone: data?.user?.phone || '',
+        address: data?.user?.address || '',
+        city: data?.user?.city || '',
+        state: data?.user?.state || '',
+        zip_code: data?.user?.zip_code || '',
       });
-      setProfilePicUri(data?.user?.profile_pic || '');
     }
   }, []);
 
@@ -55,60 +50,29 @@ const ProfileInfoScreen = () => {
 
   const handleSubmit = () => {
     const updateFields: Partial<typeof formData> = {};
+
     (Object.keys(formData) as (keyof typeof formData)[]).forEach(key => {
       if (formData[key] !== data?.user?.[key]) {
         updateFields[key] = formData[key];
       }
     });
 
-    updateInfo(updateFields, {
-      onSuccess: () => Alert.alert('Success', 'Profile updated successfully!'),
-      onError: (error: any) =>
-        Alert.alert('Error', error?.message || 'Failed to update.'),
-    });
-  };
+    const userId = data?.user?.id;
 
-  const uploadImageMutation = useUploadImage(
-    res => {
-      if (!res?.user) {
-        Alert.alert('Upload failed', 'Invalid response from server');
-        return;
-      }
-      setProfilePicUri(res.user.profile_pic);
-      Alert.alert('Success', 'Profile image uploaded successfully');
-    },
-    error => {
-      Alert.alert('Error', 'Image upload failed');
-      console.log('Upload error:', error);
-    },
-  );
+    if (!userId) {
+      Alert.alert('Error', 'User ID not found.');
+      return;
+    }
 
-  const handleMediaPick = () => {
-    if (!userId) return;
-
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true,
-      cropperCircleOverlay: true,
-      avoidEmptySpaceAroundImage: true,
-    })
-      .then((image: {path: any; mime: any}) => {
-        const formData = new FormData();
-        formData.append('profile_pic', {
-          uri: image.path,
-          name: 'image.jpg',
-          type: image.mime,
-        });
-
-        uploadImageMutation.mutate({
-          id: userId,
-          payload: formData,
-        });
-      })
-      .catch(err => {
-        console.log('Image pick error:', err);
-      });
+    updateInfo(
+      {id: userId, data: updateFields},
+      {
+        onSuccess: () =>
+          Alert.alert('Success', 'Profile updated successfully!'),
+        onError: (error: any) =>
+          Alert.alert('Error', error?.message || 'Failed to update.'),
+      },
+    );
   };
 
   return (
@@ -119,20 +83,7 @@ const ProfileInfoScreen = () => {
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.card}>
-            <View style={styles.profileImageWrapper}>
-              <Image
-                source={{uri: profilePicUri}}
-                style={styles.profileImage}
-                resizeMode="cover"
-              />
-              <IconButton
-                icon="pencil"
-                size={16}
-                onPress={handleMediaPick}
-                iconColor="#fff"
-                style={styles.iconOverlay}
-              />
-            </View>
+            <View style={styles.profileImageWrapper}></View>
 
             <Text style={styles.title}>Profile Information</Text>
 
@@ -163,11 +114,50 @@ const ProfileInfoScreen = () => {
                 mode="outlined"
                 keyboardType="phone-pad"
                 style={styles.input}
-                value={formData?.mobileNumber}
+                value={formData?.phone}
                 placeholder="Enter your phone number"
-                onChangeText={text => handleChange('mobileNumber', text)}
+                onChangeText={text => handleChange('phone', text)}
                 left={<TextInput.Icon icon="call" size={20} />}
               />
+              <TextInput
+                label="Address"
+                mode="outlined"
+                style={styles.input}
+                value={formData?.address}
+                placeholder="Enter your address"
+                onChangeText={text => handleChange('address', text)}
+                left={<TextInput.Icon icon="locate" size={20} />}
+              />
+              <TextInput
+                label="City"
+                mode="outlined"
+                style={styles.input}
+                value={formData?.city}
+                placeholder="Enter your city"
+                onChangeText={text => handleChange('city', text)}
+                left={<TextInput.Icon icon="location" size={20} />}
+              />
+              <View style={styles.inputcontainer}>
+                <TextInput
+                  label="State"
+                  mode="outlined"
+                  style={styles.input2}
+                  value={formData?.state}
+                  placeholder="Enter your State"
+                  onChangeText={text => handleChange('state', text)}
+                  left={<TextInput.Icon icon="map" size={20} />}
+                />
+                <TextInput
+                  label="Zipcode"
+                  mode="outlined"
+                  style={styles.input2}
+                  value={formData?.zip_code}
+                  placeholder="Enter your zipcode"
+                  onChangeText={text => handleChange('zip_code', text)}
+                  left={<TextInput.Icon icon="pin" size={20} />}
+                />
+              </View>
+
               <Button
                 mode="contained"
                 onPressIn={() => setPressed(true)}
@@ -192,87 +182,3 @@ const ProfileInfoScreen = () => {
 };
 
 export default ProfileInfoScreen;
-
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#f9f9f9',
-  },
-  container: {
-    flexGrow: 1,
-    alignItems: 'center',
-    padding: 24,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 420,
-    padding: 24,
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 6,
-  },
-  profileImageWrapper: {
-    width: 140,
-    height: 140,
-    borderRadius: 75,
-    borderWidth: 2,
-    borderColor: '#a7a0a0',
-    marginBottom: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    position: 'relative',
-  },
-  profileImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 75,
-  },
-  iconOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: '#000',
-    borderRadius: 20,
-    padding: 6,
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  form: {
-    gap: 16,
-  },
-  input: {
-    backgroundColor: '#f9f9f9',
-  },
-  button: {
-    marginTop: 16,
-    paddingVertical: 10,
-    borderRadius: 10,
-    backgroundColor: '#222223',
-    elevation: 2,
-  },
-  buttonPressed: {
-    opacity: 0.85,
-  },
-  buttonLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#ffffff',
-  },
-  text: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-});

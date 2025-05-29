@@ -4,13 +4,13 @@ import {OtpInput} from 'react-native-otp-entry';
 import {Text} from 'react-native-paper';
 
 export default function OtpSlide({
-  email,
+  phone,
   setOtp,
   verifyOtp,
   saveToken,
   paperTheme,
 }: {
-  email: string;
+  phone: string;
   setOtp: (text: string) => void;
   verifyOtp: any;
   saveToken: (token: string) => Promise<void>;
@@ -22,30 +22,26 @@ export default function OtpSlide({
       <View style={styles.container}>
         <Text style={styles.title}>OTP</Text>
         <Text style={[styles.otpText, {color: paperTheme.colors.outline}]}>
-          Enter the OTP sent to your email
+          Enter the OTP sent to your number
         </Text>
         <OtpInput
-          numberOfDigits={6}
+          numberOfDigits={4}
           focusColor={paperTheme.colors.primary}
-          autoFocus={false}
-          hideStick={true}
+          hideStick
+          autoFocus
           onTextChange={text => {
             setOtp(text);
-            if (text.length === 6) {
+            if (text.length === 4) {
               verifyOtp(
-                {number: email, otp: text},
+                {phone, otp: text},
                 {
                   onSuccess: async ({token}: {token: string}) => {
-                    if (!token) {
-                      return;
+                    if (token) {
+                      await saveToken(token);
                     }
-                    await saveToken(token);
                   },
                   onError: (error: any) => {
-                    Alert.alert(
-                      'Login Failed',
-                      error?.message || 'Please try again.',
-                    );
+                    Alert.alert('Login Failed', error?.message || 'Try again.');
                   },
                 },
               );

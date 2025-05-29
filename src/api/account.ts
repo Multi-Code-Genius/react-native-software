@@ -5,7 +5,7 @@ import queryClient from '../config/queryClient';
 
 const accountInfo = async () => {
   try {
-    const response = await api('/api/user', {
+    const response = await api('/user/profile', {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -31,9 +31,9 @@ export const useAccountInfo = () => {
   });
 };
 
-const updateAccountInfo = async (data: any) => {
+const updateAccountInfo = async ({id, data}: {id: string; data: any}) => {
   try {
-    const response = await api('/api/user/update', {
+    const response = await api(`/user/update/${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
@@ -58,36 +58,5 @@ export const useUpdateAccountInfo = () => {
     onError: error => {
       console.error('Failed to update Account:', error);
     },
-  });
-};
-
-export const imageuploading = async (id: string, payload: any) => {
-  console.log('payload', payload);
-
-  const response = await api(`/api/user/upload-profile/${id}`, {
-    method: 'POST',
-    body: payload,
-  });
-
-  return response;
-};
-
-export const useUploadImage = (
-  onSuccess?: (response: any) => void,
-  onError?: (error: any) => void,
-) => {
-  return useMutation({
-    mutationFn: ({id, payload}: {id: string; payload: FormData}) =>
-      imageuploading(id, payload),
-
-    onSuccess: data => {
-      queryClient.invalidateQueries({queryKey: ['profile']});
-
-      if (onSuccess) {
-        onSuccess(data);
-      }
-    },
-
-    onError,
   });
 };

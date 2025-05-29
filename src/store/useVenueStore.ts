@@ -3,27 +3,19 @@ import {create} from 'zustand';
 export type VenueFormData = {
   name: string;
   description: string;
-  // state: string;
-  // city: string;
   address: string;
-  // postalCode: string;
-  capacity: number;
   category: string;
   hourlyPrice: number;
-  // turfTypes: string[];
-  // surface: string;
-  net: number;
-  images: string[];
   location: {
     city: string;
-    area: string;
+    lat: number;
+    lng: number;
   };
   gameInfo: {
-    indoor: string;
-    outdoor: string;
-    roof: string;
-    surface: string;
+    type: string;
+    maxPlayers: number;
   };
+  grounds: number;
 };
 
 type VenueStore = {
@@ -31,11 +23,12 @@ type VenueStore = {
   updateField: (field: string, value: any) => void;
   resetForm: () => void;
 };
+
 export const useVenueStore = create<VenueStore>(set => ({
   formData: {},
   updateField: (field, value) =>
     set((state: any) => {
-      if (field === 'city' || field === 'area') {
+      if (field === 'city' || field === 'lat' || field === 'lng') {
         return {
           formData: {
             ...state.formData,
