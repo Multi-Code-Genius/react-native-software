@@ -1,22 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
-import {SegmentedButtons} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
 
 const VenueDetails = () => {
   const updateField = useVenueStore(state => state.updateField);
   const formData = useVenueStore(state => state.formData);
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(formData?.category || '');
-  const [items, setItems] = useState([
-    {label: 'Football', value: 'Football'},
-    {label: 'Cricket', value: 'Cricket'},
-    {label: 'Basketball', value: 'Basketball'},
-  ]);
-
-  const [selectedTurfType, setSelectedTurfType] = useState<string>('');
 
   return (
     <ScrollView
@@ -24,109 +13,86 @@ const VenueDetails = () => {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}>
       <View style={styles.card}>
-        <Text style={styles.label}>Capacity</Text>
+        <Text style={styles.label}>City</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="google-maps" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter city"
+            onChangeText={text => updateField('city', text)}
+            value={formData?.location?.city || ''}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>lat</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="latitude" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter lat"
+            onChangeText={text => updateField('lat', text)}
+            value={formData?.location?.lat?.toString() || ''}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>lng</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="longitude" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter lng"
+            onChangeText={text => updateField('lng', text)}
+            value={formData?.location?.lng?.toString() || ''}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Game Type</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="gamepad" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Game Type"
+            onChangeText={text => updateField('type', text)}
+            value={formData?.gameInfo?.type || ''}
+          />
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>maxPlayers</Text>
         <View style={styles.inputWrapper}>
           <Icon
-            name="account-group"
+            name="hexagon-outline"
             size={20}
             color="#666"
             style={styles.icon}
           />
           <TextInput
             style={styles.input}
+            placeholder="Enter maxPlayers"
             keyboardType="numeric"
-            placeholder="Enter Capacity"
-            onChangeText={text => updateField('capacity', text.toString())}
-            value={formData?.capacity || ''}
+            value={formData.gameInfo?.maxPlayers?.toString() || ''}
+            onChangeText={text => updateField('maxPlayers', text)}
           />
         </View>
       </View>
-
       <View style={styles.card}>
-        <Text style={styles.label}>Category</Text>
-        <DropDownPicker
-          open={open}
-          value={value}
-          items={items}
-          setOpen={setOpen}
-          setValue={setValue}
-          setItems={setItems}
-          placeholder="Select an option"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          textStyle={styles.dropdownText}
-          placeholderStyle={styles.dropdownPlaceholder}
-          onChangeValue={text => updateField('category', text)}
-          zIndex={10000}
-          listMode="SCROLLVIEW"
-        />
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Hourly Price</Text>
+        <Text style={styles.label}>Grounds</Text>
         <View style={styles.inputWrapper}>
           <Icon
-            name="currency-inr"
+            name="hexagon-outline"
             size={20}
             color="#666"
             style={styles.icon}
           />
           <TextInput
             style={styles.input}
-            placeholder="Enter Hourly Price"
-            keyboardType="numeric"
-            onChangeText={text => updateField('hourlyPrice', text)}
-            value={formData.hourlyPrice || ''}
-          />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Turf Type</Text>
-        <SegmentedButtons
-          value={selectedTurfType}
-          onValueChange={(selected: string) => {
-            setSelectedTurfType(selected);
-
-            const gameInfoUpdate = {
-              indoor: selected === 'indoor' ? 'true' : 'false',
-              outdoor: selected === 'outdoor' ? 'true' : 'false',
-              roof: selected === 'roof' ? 'true' : 'false',
-            };
-            updateField('gameInfo', {...formData.gameInfo, ...gameInfoUpdate});
-          }}
-          buttons={[
-            {value: 'indoor', label: 'Indoor'},
-            {value: 'outdoor', label: 'Outdoor'},
-            {value: 'roof', label: 'Roof'},
-          ]}
-        />
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Surface</Text>
-        <View style={styles.inputWrapper}>
-          <Icon name="texture-box" size={20} color="#666" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Surface"
-            onChangeText={text =>
-              updateField('gameInfo', {...formData.gameInfo, surface: text})
-            }
-            value={formData.gameInfo?.surface || ''}
-          />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Net</Text>
-        <View style={styles.inputWrapper}>
-          <Icon name="tournament" size={20} color="#666" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Turf Net"
-            onChangeText={text => updateField('net', text)}
-            value={formData.net || ''}
+            placeholder="Enter grounds"
+            onChangeText={text => updateField('grounds', parseInt(text))}
+            value={formData.grounds?.toString() || ''}
             keyboardType="numeric"
           />
         </View>

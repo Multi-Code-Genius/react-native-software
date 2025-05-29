@@ -19,7 +19,6 @@ import {
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDeleteVenue, useGetVenue} from '../api/vanue';
-import {useToast} from '../context/ToastContext';
 import WelcomeTab from '../components/WelcomeTab';
 
 const VenueManageScreen = () => {
@@ -28,7 +27,6 @@ const VenueManageScreen = () => {
   const {data, isLoading} = useGetVenue();
   console.log('data,', data);
 
-  const {showToast} = useToast();
   const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
     setShowCancelConfirm(false);
   });
@@ -59,14 +57,12 @@ const VenueManageScreen = () => {
 
             <View style={styles.infoRow}>
               <Icon source="cash" size={16} color="#4CAF50" />
-              <Text style={styles.infoText}>₹{item.hourlyPrice} / person</Text>
+              <Text style={styles.infoText}>₹{item.hourly_price} / person</Text>
             </View>
 
             <View style={styles.infoRow}>
               <Icon source="map" size={16} color="#607D8B" />
-              <Text style={styles.infoText}>
-                {item.location?.area} - {item.location?.city}
-              </Text>
+              <Text style={styles.infoText}>{item.location?.city}</Text>
             </View>
           </View>
 
@@ -84,7 +80,7 @@ const VenueManageScreen = () => {
     );
   };
 
-  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
+  const hasVenues = Array.isArray(data?.venues) && data.venues.length > 0;
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
@@ -102,7 +98,7 @@ const VenueManageScreen = () => {
               </Button>
             </View>
             <FlatList
-              data={data.games}
+              data={data.venues}
               renderItem={renderItem}
               keyExtractor={(item: any) => item.id?.toString()}
               showsVerticalScrollIndicator={false}

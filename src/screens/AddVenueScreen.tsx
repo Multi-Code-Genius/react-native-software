@@ -2,11 +2,9 @@ import React, {useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useAddVenue, useVanueImageUploading} from '../api/vanue';
+import {useAddVenue} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
-import ImageUpload from '../components/ImageUplod';
 import VenueDetails from '../components/VenueDetails';
-import {useAuthStore} from '../store/authStore';
 import {useVenueStore} from '../store/useVenueStore';
 
 const AddVenueScreen = () => {
@@ -14,44 +12,44 @@ const AddVenueScreen = () => {
   const formData = useVenueStore(state => state.formData);
   const {mutate, isPending} = useAddVenue();
 
-  const validateStep = () => {
-    if (currentStep === 0) {
-      const {name, description, address, location} = formData;
-      if (!name || !description || !address || !location?.area) {
-        Alert.alert(
-          'Validation Error',
-          'Please fill all the required fields in Basic Details.',
-        );
-        return false;
-      }
-    }
+  // const validateStep = () => {
+  //   if (currentStep === 0) {
+  //     const {name, description, address, location} = formData;
+  //     if (!name || !description || !address || !location?.area) {
+  //       Alert.alert(
+  //         'Validation Error',
+  //         'Please fill all the required fields in Basic Details.',
+  //       );
+  //       return false;
+  //     }
+  //   }
 
-    if (currentStep === 1) {
-      const {capacity, category, hourlyPrice, net, gameInfo} = formData;
+  //   // if (currentStep === 1) {
+  //   //   const {capacity, category, hourlyPrice, net, gameInfo} = formData;
 
-      const isTurfTypeSelected =
-        gameInfo?.indoor === 'true' ||
-        gameInfo?.outdoor === 'true' ||
-        gameInfo?.roof === 'true';
+  //   //   const isTurfTypeSelected =
+  //   //     gameInfo?.indoor === 'true' ||
+  //   //     gameInfo?.outdoor === 'true' ||
+  //   //     gameInfo?.roof === 'true';
 
-      if (
-        !capacity ||
-        !category ||
-        !hourlyPrice ||
-        !net ||
-        !gameInfo?.surface ||
-        !isTurfTypeSelected
-      ) {
-        Alert.alert(
-          'Validation Error',
-          'Please fill all the required fields in Venue Details.',
-        );
-        return false;
-      }
-    }
+  //   //   if (
+  //   //     !capacity ||
+  //   //     !category ||
+  //   //     !hourlyPrice ||
+  //   //     !net ||
+  //   //     !gameInfo?.surface ||
+  //   //     !isTurfTypeSelected
+  //   //   ) {
+  //   //     Alert.alert(
+  //   //       'Validation Error',
+  //   //       'Please fill all the required fields in Venue Details.',
+  //   //     );
+  //   //     return false;
+  //   //   }
+  //   // }
 
-    return true;
-  };
+  //   return true;
+  // };
 
   const steps = [
     <BasicDetailsComponent key="step1" />,
@@ -59,14 +57,10 @@ const AddVenueScreen = () => {
   ];
 
   const goNext = () => {
-    if (!validateStep()) {
-      return;
-    }
-
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log('All steps completed');
+      console.log('All steps completed', formData);
       mutate(formData);
     }
   };

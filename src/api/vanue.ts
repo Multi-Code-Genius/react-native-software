@@ -1,15 +1,13 @@
-import {BASE_URL} from '@env';
 import {useMutation, useQuery} from '@tanstack/react-query';
 import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
 import {api} from '../hooks/api';
-import {useAuthStore} from '../store/authStore';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
 import {VenueFormDetails} from '../types/venue';
 
 export const getVanues = async () => {
   try {
-    const response = await api('/api/game/all', {
+    const response = await api('/venue/my-venues', {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -33,7 +31,7 @@ export const useGetVenue = (
 };
 export const venueById = async (id: any) => {
   try {
-    const response = await api(`/api/game/id/${id}`, {
+    const response = await api(`/venue/venue/${id}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -136,45 +134,6 @@ export const useAddVenue = (
       queryClient.invalidateQueries({queryKey: ['vanues']});
       useVenueStore.getState().resetForm();
     },
-    onError,
-  });
-};
-
-const vanueImageuploading = async (id: string, payload: any) => {
-  console.log('payload', payload);
-
-  const response = await fetch(`${BASE_URL}/api/game/add-images/${id}`, {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${useAuthStore.getState().token}`,
-    },
-    body: payload,
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Upload failed: ${errorText}`);
-  }
-
-  return await response.json();
-};
-
-export const useVanueImageUploading = (
-  onSuccess?: (response: any) => void,
-  onError?: (error: any) => void,
-) => {
-  return useMutation({
-    mutationFn: ({id, payload}: {id: string; payload: FormData}) =>
-      vanueImageuploading(id, payload),
-
-    onSuccess: data => {
-      queryClient.invalidateQueries({queryKey: ['vanues']});
-
-      if (onSuccess) {
-        onSuccess(data);
-      }
-    },
-
     onError,
   });
 };

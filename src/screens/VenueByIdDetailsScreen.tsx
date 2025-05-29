@@ -11,8 +11,6 @@ import {
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useGetVenueById} from '../api/vanue';
 
-type GameInfoKeys = 'indoor' | 'outdoor' | 'roof';
-
 export const VenueByIdDetailsScreen = () => {
   const route = useRoute();
   const navigation = useNavigation();
@@ -26,23 +24,11 @@ export const VenueByIdDetailsScreen = () => {
       </View>
     );
   }
-  const game = data?.game;
+  const game = data?.venue;
 
   if (!game) {
     return <Text>No venue data found.</Text>;
   }
-
-  const gameInfo = game.gameInfo as Partial<Record<GameInfoKeys, any>>;
-
-  const labelMap: Record<GameInfoKeys, string> = {
-    indoor: 'Indoor',
-    outdoor: 'Outdoor',
-    roof: 'Roof',
-  };
-
-  const trueFields = (Object.keys(gameInfo) as GameInfoKeys[]).filter(
-    key => gameInfo[key] === 'true',
-  );
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
@@ -72,14 +58,22 @@ export const VenueByIdDetailsScreen = () => {
               <View style={styles.details}>
                 <View style={{flexDirection: 'row', gap: 5}}>
                   <Icon source="tennisball" size={18} color="brown" />
+                  <Text style={styles.category}>Game Type</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>{game.game_info.type}</Text>
+              </View>
+            </View>
+            <View style={styles.columnContainer}>
+              <View style={styles.details}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="cat" size={18} color="brown" />
                   <Text style={styles.category}>Category:</Text>
                 </View>
                 <Divider className="mb-2" />
                 <Text style={styles.data}>{game.category}</Text>
               </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
+              <View style={styles.details2}>
                 <View style={{flexDirection: 'row', gap: 5}}>
                   <Icon source="location" size={18} color="red" />
                   <Text style={styles.category}>Address:</Text>
@@ -88,36 +82,7 @@ export const VenueByIdDetailsScreen = () => {
                 <Text style={styles.data}>{game.address}</Text>
               </View>
             </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="map" size={18} color="green" />
-                  <Text style={styles.category}> Location:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>
-                  {game.location.area}, {game.location.city}
-                </Text>
-              </View>
-            </View>
-            <View style={styles.columnContainer}>
-              <View style={styles.details}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="people" size={18} color="grey" />
-                  <Text style={styles.category}>Capacity:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>{game.capacity}</Text>
-              </View>
-              <View style={styles.details2}>
-                <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="cash" size={18} color="brown" />
-                  <Text style={styles.category}>Price/hr:</Text>
-                </View>
-                <Divider className="mb-2" />
-                <Text style={styles.data}>₹{game.hourlyPrice}</Text>
-              </View>
-            </View>
+
             <View style={styles.columnContainer}>
               <View style={[styles.details, {width: '100%'}]}>
                 <View style={{flexDirection: 'row', gap: 5}}>
@@ -129,28 +94,57 @@ export const VenueByIdDetailsScreen = () => {
               </View>
             </View>
             <View style={styles.columnContainer}>
-              {trueFields &&
-                trueFields.map(fieldKey => (
-                  <View style={styles.columnContainer} key={fieldKey}>
-                    <View style={styles.details}>
-                      <View style={{flexDirection: 'row', gap: 5}}>
-                        <Icon source="move-sharp" size={18} />
-                        <Text style={styles.category}>
-                          {labelMap[fieldKey]}
-                        </Text>
-                      </View>
-                      <Divider className="mb-2" />
-                      <Text style={styles.data}>{gameInfo[fieldKey]}</Text>
-                    </View>
-                  </View>
-                ))}
-              <View style={styles.details2}>
+              <View style={styles.details}>
                 <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="extension-puzzle" size={18} color="green" />
-                  <Text style={styles.category}>Surface</Text>
+                  <Icon source="people" size={18} color="grey" />
+                  <Text style={styles.category}>MaxPlayers</Text>
                 </View>
                 <Divider className="mb-2" />
-                <Text style={styles.data}>{game.gameInfo?.surface}</Text>
+                <Text style={styles.data}>{game.game_info?.maxPlayers}</Text>
+              </View>
+              <View style={styles.details2}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="cash" size={18} color="brown" />
+                  <Text style={styles.category}>Price/hr:</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>₹{game.hourly_price}</Text>
+              </View>
+            </View>
+            <View style={styles.columnContainer}>
+              <View style={styles.details2}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="people" size={18} color="grey" />
+                  <Text style={styles.category}>City</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>{game.location.city}</Text>
+              </View>
+              <View style={styles.details}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="cash" size={18} color="brown" />
+                  <Text style={styles.category}>Latitude:</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>{game.location.lat}</Text>
+              </View>
+            </View>
+            <View style={styles.columnContainer}>
+              <View style={styles.details}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="extension-puzzle" size={18} color="green" />
+                  <Text style={styles.category}>grounds</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>{game.grounds}</Text>
+              </View>
+              <View style={styles.details2}>
+                <View style={{flexDirection: 'row', gap: 5}}>
+                  <Icon source="cash" size={18} color="brown" />
+                  <Text style={styles.category}>Longitude :</Text>
+                </View>
+                <Divider className="mb-2" />
+                <Text style={styles.data}>{game.location.lng}</Text>
               </View>
             </View>
           </View>

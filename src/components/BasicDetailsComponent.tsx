@@ -8,10 +8,6 @@ const BasicDetailsComponent = () => {
   const updateField = useVenueStore(state => state.updateField);
   const formData = useVenueStore(state => state.formData);
 
-  useEffect(() => {
-    updateField('city', 'surat');
-  }, [updateField]);
-
   return (
     <ScrollView
       style={styles.container}
@@ -58,33 +54,23 @@ const BasicDetailsComponent = () => {
           />
         </View>
       </View>
-
       <View style={styles.card}>
-        <Text style={styles.label}>City</Text>
-        <View style={styles.inputWrapper}>
-          <Icon name="city" size={20} color="#666" style={styles.icon} />
-          <TextInput style={styles.input} value="Surat" editable={false} />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Area</Text>
+        <Text style={styles.label}>Category</Text>
         <View style={styles.inputWrapper}>
           <Icon
-            name="map-marker-radius"
+            name="apache-kafka"
             size={20}
             color="#666"
             style={styles.icon}
           />
           <TextInput
             style={styles.input}
-            placeholder="Enter Area"
-            onChangeText={text => updateField('area', text)}
-            value={formData.location?.area || ''}
+            placeholder="Enter Category"
+            onChangeText={text => updateField('category', text)}
+            value={formData.category || ''}
           />
         </View>
       </View>
-
       <View style={styles.card}>
         <Text style={styles.label}>Address</Text>
         <View style={styles.inputWrapper}>
@@ -99,6 +85,24 @@ const BasicDetailsComponent = () => {
             placeholder="Enter Address"
             onChangeText={text => updateField('address', text)}
             value={formData.address || ''}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>hourlyPrice</Text>
+        <View style={styles.inputWrapper}>
+          <Icon
+            name="currency-rupee"
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Address"
+            keyboardType="numeric"
+            onChangeText={text => updateField('hourlyPrice', parseFloat(text))}
+            value={formData.hourlyPrice ? formData.hourlyPrice.toString() : ''}
           />
         </View>
       </View>

@@ -8,56 +8,37 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {useEditVenueDetails, useGetVenueById} from '../api/vanue';
 import EditBasicDetailsComponent from '../components/EditVenueDetails/EditBasicDetailsComponent';
 import EditVenueDetailsComponent from '../components/EditVenueDetails/EditVenueDetailsComponent';
-import EditImageUploadComponent from '../components/EditVenueDetails/EditImageUploadComponent';
-import {defaultFormData, VenueFormDetails} from '../types/venue';
+import {VenueFormData} from '../store/useVenueStore';
 
 const EditVenueDetailsScreen = () => {
   const route = useRoute();
   const venueId = route.params as {id?: string};
   const {mutate, isPending} = useEditVenueDetails();
   const {data} = useGetVenueById(venueId?.id);
-
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<VenueFormDetails>(defaultFormData);
+  const [formData, setFormData] = useState<VenueFormData>();
   console.log('formData', formData);
 
   useEffect(() => {
-    if (data && data.game) {
-      const game = data.game;
-
-      let turfType = '';
-      if (game.gameInfo) {
-        if (game.gameInfo.indoor === true || game.gameInfo.indoor === 'true')
-          turfType = 'indoor';
-        else if (
-          game.gameInfo.outdoor === true ||
-          game.gameInfo.outdoor === 'true'
-        )
-          turfType = 'outdoor';
-        else if (game.gameInfo.roof === true || game.gameInfo.roof === 'true')
-          turfType = 'roof';
-      }
+    if (data && data.venue) {
+      const game = data.venue;
 
       setFormData({
         name: game.name || '',
         description: game.description || '',
         address: game.address || '',
         location: {
-          area: game.location?.area || '',
           city: game.location?.city || '',
+          lat: game.location?.lat || '',
+          lng: game.location?.lng || '',
         },
-        capacity: game.capacity ? String(game.capacity) : '',
         category: game.category || '',
-        hourlyPrice: game.hourlyPrice ? String(game.hourlyPrice) : '',
-        net: game.net ? String(game.net) : '',
-        turfType: turfType,
+        hourlyPrice: game.hourlyPrice || '',
         gameInfo: {
-          surface: game.gameInfo?.surface || '',
-          indoor: String(game.gameInfo?.indoor),
-          outdoor: String(game.gameInfo?.outdoor),
-          roof: String(game.gameInfo?.roof),
+          type: game.gameInfo?.type || '',
+          maxPlayers: game.gameInfo?.maxPlayers || '',
         },
-        images: game.images || [],
+        grounds: game.grounds || '',
       });
     }
   }, [data]);

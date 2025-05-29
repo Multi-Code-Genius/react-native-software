@@ -9,7 +9,7 @@ import WelcomeTab from '../components/WelcomeTab';
 const BookingScreen = () => {
   const navigation = useNavigation();
   const {data, refetch} = useGetVenue();
-  const hasVenues = Array.isArray(data?.games) && data.games.length > 0;
+  const hasVenues = Array.isArray(data?.venues) && data.venues.length > 0;
   useFocusEffect(
     useCallback(() => {
       refetch();
@@ -37,17 +37,17 @@ const BookingScreen = () => {
           </View>
           <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="people" size={18} color="skyblue" />
-            <Text style={styles.boldText}>Capacity: {item.capacity}</Text>
+            <Text style={styles.boldText}>
+              Max Players: {item.game_info.maxPlayers}
+            </Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="cash" size={18} color="brown" />
-            <Text style={styles.boldText}>Price: ₹{item.hourlyPrice}/hr</Text>
+            <Text style={styles.boldText}>Price: ₹{item.hourly_price}/hr</Text>
           </View>
           <View style={{flex: 1, flexDirection: 'row', gap: 10}}>
             <Icon source="map" size={18} color="orange" />
-            <Text>
-              {item.location?.area}, {item.location?.city}
-            </Text>
+            <Text>{item.location?.city}</Text>
           </View>
         </View>
       </Card.Content>
@@ -65,7 +65,7 @@ const BookingScreen = () => {
               </Text>
             </View>
             <FlatList
-              data={data?.games}
+              data={data?.venues}
               renderItem={renderItem}
               keyExtractor={(item: any) =>
                 item.id?.toString() ?? Math.random().toString()

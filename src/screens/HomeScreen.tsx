@@ -33,8 +33,11 @@ const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const {data: venuedata, refetch: refetchVenue} = useGetVenue();
   const {showToast} = useToast();
+
+  console.log('venuedata>>>>>', venuedata);
   const hasVenues =
-    Array.isArray(venuedata?.games) && venuedata.games.length > 0;
+    Array.isArray(venuedata?.venues) && venuedata.venues.length > 0;
+  console.log('hasVenues>>>>>', hasVenues);
 
   useEffect(() => {
     if (account?.games?.length > 0) {

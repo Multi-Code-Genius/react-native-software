@@ -40,13 +40,13 @@ export const useVenueStore = create<VenueStore>(set => ({
         };
       }
 
-      if (field === 'gameInfo') {
+      if (field === 'type' || field === 'maxPlayers') {
         return {
           formData: {
             ...state.formData,
             gameInfo: {
               ...state.formData.gameInfo,
-              ...value,
+              [field]: value,
             },
           },
         };
