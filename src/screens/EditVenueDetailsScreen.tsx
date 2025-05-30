@@ -1,66 +1,52 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import {ActivityIndicator, Text} from 'react-native-paper';
-import {StyleSheet} from 'react-native';
-import {TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useEditVenueDetails, useGetVenueById} from '../api/vanue';
 import EditBasicDetailsComponent from '../components/EditVenueDetails/EditBasicDetailsComponent';
 import EditVenueDetailsComponent from '../components/EditVenueDetails/EditVenueDetailsComponent';
-import {VenueFormData} from '../store/useVenueStore';
+import {useVenueStore} from '../store/useVenueStore';
 
 const EditVenueDetailsScreen = () => {
   const route = useRoute();
   const venueId = route.params as {id?: string};
+
   const {mutate, isPending} = useEditVenueDetails();
   const {data} = useGetVenueById(venueId?.id);
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<VenueFormData>();
-  console.log('formData', formData);
+  const {formData, updateField, resetForm} = useVenueStore();
 
   useEffect(() => {
     if (data && data.venue) {
-      const game = data.venue;
+      const venue = data.venue;
+      resetForm();
 
-      setFormData({
-        name: game.name || '',
-        description: game.description || '',
-        address: game.address || '',
-        location: {
-          city: game.location?.city || '',
-          lat: game.location?.lat || '',
-          lng: game.location?.lng || '',
-        },
-        category: game.category || '',
-        hourlyPrice: game.hourlyPrice || '',
-        gameInfo: {
-          type: game.gameInfo?.type || '',
-          maxPlayers: game.gameInfo?.maxPlayers || '',
-        },
-        grounds: game.grounds || '',
-      });
+      updateField('name', venue.name || '');
+      updateField('description', venue.description || '');
+      updateField('address', venue.address || '');
+      updateField('category', venue.category || '');
+      updateField('hourlyPrice', venue.hourly_price || 0);
+      updateField('grounds', venue.grounds || 0);
+
+      updateField('city', venue.location?.city || '');
+      updateField('lat', venue.location?.lat || 0);
+      updateField('lng', venue.location?.lng || 0);
+
+      updateField('type', venue.game_info?.type || '');
+      updateField('maxPlayers', venue.game_info?.maxPlayers || 0);
     }
   }, [data]);
 
   const steps = [
-    <EditBasicDetailsComponent
-      key="step1"
-      formData={formData}
-      setFormData={setFormData}
-    />,
-    <EditVenueDetailsComponent
-      key="step2"
-      formData={formData}
-      setFormData={setFormData}
-    />,
+    <EditBasicDetailsComponent key="step1" />,
+    <EditVenueDetailsComponent key="step2" />,
   ];
 
   const goNext = () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log('All steps completed');
       mutate({data: formData, gameId: venueId?.id});
     }
   };
@@ -83,8 +69,9 @@ const EditVenueDetailsScreen = () => {
             disabled={currentStep === 0}>
             <Text style={styles.text}>Previous</Text>
           </TouchableOpacity>
+
           <TouchableOpacity
-            style={[styles.input]}
+            style={styles.input}
             onPress={goNext}
             disabled={isPending}>
             {isPending ? (
@@ -104,9 +91,6 @@ const EditVenueDetailsScreen = () => {
 export default EditVenueDetailsScreen;
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-  },
   container: {
     flexDirection: 'row',
     gap: 10,

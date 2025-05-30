@@ -99,7 +99,7 @@ const BasicDetailsComponent = () => {
           />
           <TextInput
             style={styles.input}
-            placeholder="Enter Address"
+            placeholder="Enter hourly price"
             keyboardType="numeric"
             onChangeText={text => updateField('hourlyPrice', parseFloat(text))}
             value={formData.hourlyPrice ? formData.hourlyPrice.toString() : ''}

@@ -3,7 +3,6 @@ import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
-import {VenueFormDetails} from '../types/venue';
 
 export const getVanues = async () => {
   try {
@@ -51,11 +50,11 @@ export const useGetVenueById = (id: any) => {
 };
 
 export const editVenueDetails = async (
-  data: Partial<VenueFormDetails>,
+  data: Partial<VenueFormData>,
   gameId: any,
 ) => {
   try {
-    const response = await api(`/api/game/update-venue/${gameId}`, {
+    const response = await api(`/venue/update/${gameId}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -82,7 +81,7 @@ export const useEditVenueDetails = (
       data,
       gameId,
     }: {
-      data: Partial<VenueFormDetails>;
+      data: Partial<VenueFormData>;
       gameId: string;
     }) => editVenueDetails(data, gameId),
 

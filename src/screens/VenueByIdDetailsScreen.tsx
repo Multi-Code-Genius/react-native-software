@@ -67,7 +67,7 @@ export const VenueByIdDetailsScreen = () => {
             <View style={styles.columnContainer}>
               <View style={styles.details}>
                 <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="cat" size={18} color="brown" />
+                  <Icon source="apps" size={18} color="brown" />
                   <Text style={styles.category}>Category:</Text>
                 </View>
                 <Divider className="mb-2" />
@@ -114,7 +114,7 @@ export const VenueByIdDetailsScreen = () => {
             <View style={styles.columnContainer}>
               <View style={styles.details2}>
                 <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="people" size={18} color="grey" />
+                  <Icon source="id-card" size={18} color="grey" />
                   <Text style={styles.category}>City</Text>
                 </View>
                 <Divider className="mb-2" />
@@ -122,7 +122,7 @@ export const VenueByIdDetailsScreen = () => {
               </View>
               <View style={styles.details}>
                 <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="cash" size={18} color="brown" />
+                  <Icon source="earth" size={18} color="brown" />
                   <Text style={styles.category}>Latitude:</Text>
                 </View>
                 <Divider className="mb-2" />
@@ -140,7 +140,7 @@ export const VenueByIdDetailsScreen = () => {
               </View>
               <View style={styles.details2}>
                 <View style={{flexDirection: 'row', gap: 5}}>
-                  <Icon source="cash" size={18} color="brown" />
+                  <Icon source="compass" size={18} color="brown" />
                   <Text style={styles.category}>Longitude :</Text>
                 </View>
                 <Divider className="mb-2" />

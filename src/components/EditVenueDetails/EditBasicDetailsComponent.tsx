@@ -1,18 +1,13 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {VenueFormDetails} from '../../types/venue';
+import {useVenueStore} from '../../store/useVenueStore';
 
-interface Props {
-  formData: VenueFormDetails;
-  setFormData: React.Dispatch<React.SetStateAction<VenueFormDetails>>;
-}
-const EditBasicDetailsComponent: React.FC<Props> = ({
-  formData,
-  setFormData,
-}: any) => {
-  const handleChange = (field, value) => {
-    setFormData((prev: any) => ({...prev, [field]: value}));
+const EditBasicDetailsComponent = () => {
+  const {formData, updateField} = useVenueStore();
+
+  const handleChange = (field: string, value: any) => {
+    updateField(field, value);
   };
 
   return (
@@ -27,7 +22,7 @@ const EditBasicDetailsComponent: React.FC<Props> = ({
           <TextInput
             style={styles.input}
             placeholder="Enter name"
-            value={formData.name || ''}
+            value={formData?.name || ''}
             onChangeText={text => handleChange('name', text)}
           />
         </View>
@@ -56,36 +51,26 @@ const EditBasicDetailsComponent: React.FC<Props> = ({
             placeholder="Enter venue description"
             multiline
             numberOfLines={14}
-            value={formData.description || ''}
+            value={formData?.description || ''}
             onChangeText={text => handleChange('description', text)}
           />
         </View>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>City</Text>
-        <View style={styles.inputWrapper}>
-          <Icon name="city" size={20} color="#666" style={styles.icon} />
-          <TextInput style={styles.input} value="Surat" editable={false} />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Area</Text>
+        <Text style={styles.label}>Category</Text>
         <View style={styles.inputWrapper}>
           <Icon
-            name="map-marker-radius"
+            name="apache-kafka"
             size={20}
             color="#666"
             style={styles.icon}
           />
           <TextInput
+            placeholder="Enter venue category"
             style={styles.input}
-            placeholder="Enter Area"
-            value={formData?.location?.area || ''}
-            onChangeText={text =>
-              handleChange('location', {...formData.location, area: text})
-            }
+            value={formData?.category || ''}
+            onChangeText={text => handleChange('category', text)}
           />
         </View>
       </View>
@@ -102,8 +87,34 @@ const EditBasicDetailsComponent: React.FC<Props> = ({
           <TextInput
             style={styles.input}
             placeholder="Enter Address"
-            value={formData.address || ''}
+            value={formData?.address || ''}
             onChangeText={text => handleChange('address', text)}
+          />
+        </View>
+      </View>
+
+      <View style={styles.card}>
+        <Text style={styles.label}>hourlyPrice</Text>
+        <View style={styles.inputWrapper}>
+          <Icon
+            name="currency-rupee"
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter hourlyPrice"
+            keyboardType="numeric"
+            value={
+              formData?.hourlyPrice !== undefined &&
+              formData?.hourlyPrice !== null
+                ? formData.hourlyPrice.toString()
+                : ''
+            }
+            onChangeText={text =>
+              handleChange('hourlyPrice', text ? parseFloat(text) : '')
+            }
           />
         </View>
       </View>

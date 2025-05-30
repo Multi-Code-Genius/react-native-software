@@ -1,39 +1,74 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {SegmentedButtons} from 'react-native-paper';
-import {VenueFormDetails} from '../../types/venue';
+import {useVenueStore} from '../../store/useVenueStore';
 
-interface Props {
-  formData: VenueFormDetails;
-  setFormData: React.Dispatch<React.SetStateAction<VenueFormDetails>>;
-}
-const EditVenueDetailsComponent: React.FC<Props> = ({
-  formData,
-  setFormData,
-}) => {
-  const [open, setOpen] = React.useState(false);
-  const [items, setItems] = React.useState([
-    {label: 'Football', value: 'Football'},
-    {label: 'Cricket', value: 'Cricket'},
-    {label: 'Basketball', value: 'Basketball'},
-  ]);
+const EditVenueDetailsComponent = () => {
+  const {formData, updateField} = useVenueStore();
 
-  const handleChange = (field, val) => {
-    setFormData(prev => ({...prev, [field]: val}));
+  const handleChange = (field: string, value: any) => {
+    updateField(field, value);
   };
-
   return (
     <ScrollView
       style={styles.container}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}>
       <View style={styles.card}>
-        <Text style={styles.label}>Capacity</Text>
+        <Text style={styles.label}>City</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="google-maps" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter city"
+            value={formData?.location?.city || ''}
+            onChangeText={text => handleChange('city', text)}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>lat</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="latitude" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="Enter lat"
+            value={formData?.location?.lat?.toString() || ''}
+            onChangeText={text => handleChange('lat', parseFloat(text) || 0)}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>lng</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="longitude" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            placeholder="Enter lng"
+            value={formData?.location?.lng?.toString() || ''}
+            onChangeText={text => handleChange('lng', parseFloat(text) || 0)}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Game Type</Text>
+        <View style={styles.inputWrapper}>
+          <Icon name="gamepad" size={20} color="#666" style={styles.icon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Game Type"
+            value={formData?.gameInfo?.type || ''}
+            onChangeText={text => handleChange('type', text)}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Max Players</Text>
         <View style={styles.inputWrapper}>
           <Icon
-            name="account-group"
+            name="hexagon-outline"
             size={20}
             color="#666"
             style={styles.icon}
@@ -41,100 +76,31 @@ const EditVenueDetailsComponent: React.FC<Props> = ({
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            placeholder="Enter Capacity"
-            value={formData.capacity || ''}
-            onChangeText={text => handleChange('capacity', text)}
-          />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Category</Text>
-        <DropDownPicker
-          open={open}
-          value={formData.category || ''}
-          items={items}
-          setOpen={setOpen}
-          setValue={(val: any) => {
-            handleChange('category', val());
-          }}
-          setItems={setItems}
-          placeholder="Select an option"
-          style={styles.dropdown}
-          dropDownContainerStyle={styles.dropdownContainer}
-          textStyle={styles.dropdownText}
-          placeholderStyle={styles.dropdownPlaceholder}
-          zIndex={10000}
-          listMode="SCROLLVIEW"
-        />
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Hourly Price</Text>
-        <View style={styles.inputWrapper}>
-          <Icon
-            name="currency-inr"
-            size={20}
-            color="#666"
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Hourly Price"
-            keyboardType="numeric"
-            value={formData.hourlyPrice || ''}
-            onChangeText={text => handleChange('hourlyPrice', text)}
-          />
-        </View>
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Turf Type</Text>
-        <SegmentedButtons
-          value={formData.turfType || ''}
-          onValueChange={selected => {
-            handleChange('turfType', selected);
-
-            const gameInfoUpdate = {
-              indoor: selected === 'indoor' ? 'true' : 'false',
-              outdoor: selected === 'outdoor' ? 'true' : 'false',
-              roof: selected === 'roof' ? 'true' : 'false',
-            };
-            handleChange('gameInfo', {...formData.gameInfo, ...gameInfoUpdate});
-          }}
-          buttons={[
-            {value: 'indoor', label: 'Indoor'},
-            {value: 'outdoor', label: 'Outdoor'},
-            {value: 'roof', label: 'Roof'},
-          ]}
-        />
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.label}>Surface</Text>
-        <View style={styles.inputWrapper}>
-          <Icon name="texture-box" size={20} color="#666" style={styles.icon} />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Surface"
-            value={formData.gameInfo?.surface || ''}
+            placeholder="Enter maxPlayers"
+            value={formData?.gameInfo?.maxPlayers?.toString() || ''}
             onChangeText={text =>
-              handleChange('gameInfo', {...formData.gameInfo, surface: text})
+              handleChange('maxPlayers', text ? parseInt(text, 10) : 0)
             }
           />
         </View>
       </View>
-
       <View style={styles.card}>
-        <Text style={styles.label}>Net</Text>
+        <Text style={styles.label}>Grounds</Text>
         <View style={styles.inputWrapper}>
-          <Icon name="tournament" size={20} color="#666" style={styles.icon} />
+          <Icon
+            name="hexagon-outline"
+            size={20}
+            color="#666"
+            style={styles.icon}
+          />
           <TextInput
             style={styles.input}
-            placeholder="Enter Turf Net"
             keyboardType="numeric"
-            value={formData.net || ''}
-            onChangeText={text => handleChange('net', text)}
+            placeholder="Enter Grounds"
+            value={formData?.grounds?.toString() || ''}
+            onChangeText={text =>
+              handleChange('grounds', text ? parseInt(text, 10) : 0)
+            }
           />
         </View>
       </View>
