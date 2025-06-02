@@ -46,6 +46,7 @@ const CalendarComponent = ({navigation, bottomSheetRef}: any) => {
   const {isPending} = useCreateBooking();
   const [deleteDialogVisible, setDeleteDialogVisible] = useState(false);
   const [initialDate, setInitialDate] = useState(moment().format('YYYY-MM-DD'));
+
   const [selectedEvent, setSelectedEvent] = useState<SelectedEventType | null>(
     null,
   );
@@ -68,14 +69,14 @@ const CalendarComponent = ({navigation, bottomSheetRef}: any) => {
 
   const {setTotalAmount, setStartTime, setEndTime} = useBookingFormStore();
   const formattedEvents =
-    data?.booking?.map((booking: any) => ({
+    data?.bookings?.map((booking: any) => ({
       id: booking.id,
-      title: booking?.customer?.name,
-      start: {dateTime: booking.startTime},
-      end: {dateTime: booking.endTime},
+      title: `Booking by ${booking.customer.name}`,
+      start: {dateTime: booking.start_time},
+      end: {dateTime: booking.end_time},
       status: booking.status,
-      totalAmount: booking.totalAmount,
-      contact: booking?.customer?.id,
+      totalAmount: booking.customer.total_amount,
+      contact: booking.customer_id,
     })) || [];
 
   const {mutate: cancelBooking} = useCancelBooking();

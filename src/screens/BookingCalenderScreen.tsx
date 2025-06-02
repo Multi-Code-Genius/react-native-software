@@ -69,16 +69,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
 
   const newdate = moment.utc(initialDate, 'DD-MM-YYYY').startOf('day').format();
 
-  console.log('newdate>>>', newdate);
-  console.log(
-    'newdate local:',
-    moment(initialDate, 'DD-MM-YYYY').startOf('day').format(),
-  );
-  console.log(
-    'newdate utc:',
-    moment(initialDate, 'DD-MM-YYYY').utc().startOf('day').format(),
-  );
-
   const handleBookingSubmit = () => {
     if (
       !name ||

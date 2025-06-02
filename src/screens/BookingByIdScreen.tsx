@@ -16,9 +16,9 @@ const BookingByIdScreen = ({navigation}: any) => {
 
   useEffect(() => {
     if (data?.booking) {
-      setName(data.booking.user?.name || '');
-      setPhone(data.booking.user?.mobileNumber || '');
-      setAmount(data.booking.totalAmount?.toString() || '');
+      setName(data.booking.customer?.name || '');
+      setPhone(data.booking.customer?.mobile || '');
+      setAmount(data.booking.customer?.total_spent?.toString() || '');
     }
   }, [data]);
 
@@ -118,7 +118,7 @@ const BookingByIdScreen = ({navigation}: any) => {
                   </View>
                   <TextInput
                     style={[styles.input]}
-                    value={formatTimeToAMPM(data?.booking?.startTime)}
+                    value={formatTimeToAMPM(data?.booking?.start_time)}
                     editable={false}
                   />
                 </View>
@@ -133,7 +133,7 @@ const BookingByIdScreen = ({navigation}: any) => {
 
                   <TextInput
                     style={[styles.input]}
-                    value={formatTimeToAMPM(data?.booking?.endTime)}
+                    value={formatTimeToAMPM(data?.booking?.end_time)}
                     editable={false}
                   />
                 </View>
