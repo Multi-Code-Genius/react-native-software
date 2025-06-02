@@ -139,7 +139,7 @@ export const useAddVenue = (
 
 export const deleteVenueDetails = async (venueId: any) => {
   try {
-    const response = await api(`/api/game/delete-venue/${venueId}`, {
+    const response = await api(`/venue/delete/${venueId}`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',

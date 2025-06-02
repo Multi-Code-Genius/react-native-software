@@ -2,35 +2,54 @@ import {create} from 'zustand';
 
 interface BookingFormState {
   name: string;
-  number: string;
-  amount: string;
+  phone: string;
+  venueId: number;
+  date: string;
   startTime: string;
   endTime: string;
+  bookedGrounds: number;
+  totalAmount: number;
+
   setName: (name: string) => void;
-  setNumber: (number: string) => void;
-  setAmount: (amount: string) => void;
-  setStartTime: (time: string) => void;
-  setEndTime: (time: string) => void;
+  setPhone: (phone: string) => void;
+  setVenueId: (venueId: number) => void;
+  setDate: (date: string) => void;
+  setStartTime: (startTime: string) => void;
+  setEndTime: (endTime: string) => void;
+  setBookedGrounds: (bookedGrounds: number) => void;
+  setTotalAmount: (totalAmount: number) => void;
+
   resetForm: () => void;
 }
 
 export const useBookingFormStore = create<BookingFormState>(set => ({
   name: '',
-  number: '',
-  amount: '',
+  phone: '',
+  venueId: 0,
+  date: '',
   startTime: '',
   endTime: '',
+  bookedGrounds: 0,
+  totalAmount: 0,
+
   setName: name => set({name}),
-  setNumber: number => set({number}),
-  setAmount: amount => set({amount}),
-  setStartTime: time => set({startTime: time}),
-  setEndTime: time => set({endTime: time}),
+  setPhone: phone => set({phone}),
+  setVenueId: venueId => set({venueId}),
+  setDate: date => set({date}),
+  setStartTime: startTime => set({startTime}),
+  setEndTime: endTime => set({endTime}),
+  setBookedGrounds: bookedGrounds => set({bookedGrounds}),
+  setTotalAmount: totalAmount => set({totalAmount}),
+
   resetForm: () =>
     set({
       name: '',
-      number: '',
-      amount: '',
+      phone: '',
+      venueId: 0,
+      date: '',
       startTime: '',
       endTime: '',
+      bookedGrounds: 0,
+      totalAmount: 0,
     }),
 }));

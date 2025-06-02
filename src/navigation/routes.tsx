@@ -17,6 +17,13 @@ import CustomerIdDetailsScreen from '../screens/CustomerIdDetailsScreen';
 export type RootStackParamList = {
   Home: undefined;
   Details: undefined;
+  BookingCalenderScreen: {
+    venueId: string;
+    price: number;
+  };
+  BookingDataById: {
+    bookingId: string;
+  };
 };
 
 const Stack = createNativeStackNavigator();

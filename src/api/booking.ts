@@ -6,7 +6,7 @@ import {api} from '../hooks/api';
 const fetchBooking = async (data: any) => {
   try {
     const response = await api(
-      `/api/booking/game/${data.gameId}/${data.date}`,
+      `/booking/booking-date/${data.date}/${data.gameId}/`,
       {
         method: 'GET',
         headers: {'Content-Type': 'application/json'},
@@ -45,7 +45,7 @@ export const useBookingMutation = (
 
 const createBooking = async (data: any) => {
   try {
-    const response = await api('/api/booking/create', {
+    const response = await api('/booking/create-booking', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -55,6 +55,7 @@ const createBooking = async (data: any) => {
 
     return resp;
   } catch (error) {
+    console.log('error>>', error);
     throw new Error(error instanceof Error ? error.message : 'Data Not Found');
   }
 };
@@ -84,7 +85,7 @@ export const useCreateBooking = (
 
 const cancelBooking = async (id: string) => {
   try {
-    const response = await api(`/api/booking/cancel/${id}`, {
+    const response = await api(`/booking/cancel/${id}`, {
       method: 'DELETE',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -123,7 +124,7 @@ export const useCancelBooking = (
 
 const updateBooking = async (data: any) => {
   try {
-    const response = await api(`/api/booking/update/${data.id}`, {
+    const response = await api(`/booking/update-booking/${data.id}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data.data),
@@ -164,7 +165,7 @@ export const useUpdateBooking = (
 
 export const updateBookingStatus = async (id: string, status: string) => {
   try {
-    const response = await api(`/api/booking/status/${id}`, {
+    const response = await api(`/booking/paymentUpdate/${id}`, {
       method: 'PATCH',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({status}),
@@ -195,7 +196,7 @@ export const useUpdateBokkingStatus = (
 
 const bookingById = async (id: string) => {
   try {
-    const response = await api(`/api/booking/one-booking/${id}`, {
+    const response = await api(`/booking/booking-id/${id}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
