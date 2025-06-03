@@ -8,13 +8,13 @@ import {
 } from 'react-native';
 import {Text, Card, Avatar} from 'react-native-paper';
 import {useGetCustomer} from '../api/customer';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 const CustomerDetailsScreen = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {data, isLoading} = useGetCustomer();
   const customers = data?.customer || [];
-  console.log('data==========>>>>customer', data);
 
   const renderItem = ({item}: any) => (
     <TouchableOpacity

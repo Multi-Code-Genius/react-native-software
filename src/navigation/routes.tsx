@@ -17,12 +17,25 @@ import CustomerIdDetailsScreen from '../screens/CustomerIdDetailsScreen';
 export type RootStackParamList = {
   Home: undefined;
   Details: undefined;
+  VenueManage: undefined;
+  CustomerDetails: undefined;
+  Addvenue: undefined;
+  Account: undefined;
   BookingCalenderScreen: {
     venueId: string;
     price: number;
   };
   BookingDataById: {
     bookingId: string;
+  };
+  CustomerByID: {
+    id: string;
+  };
+  EditVenueDetails: {
+    id: string;
+  };
+  VenueByID: {
+    id: string;
   };
 };
 

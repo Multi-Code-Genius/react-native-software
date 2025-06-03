@@ -33,7 +33,7 @@ import {
   useTheme,
 } from 'react-native-paper';
 import Tooltip from 'react-native-walkthrough-tooltip';
-import {styles} from './BookingScreenStyles';
+import {styles} from '../../styles/BookingScreenStyles';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {RootStackParamList} from '../../navigation/routes';
 

@@ -16,7 +16,7 @@ import {
   useSuggestedCustomer,
 } from '../api/booking';
 import BookingScreenAppBar from '../components/BookingScreen/BookingScreenAppBar';
-import {styles} from '../components/BookingScreen/BookingScreenStyles';
+import {styles} from '../styles/BookingScreenStyles';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 import {calculatedAmount} from '../hooks/useCalculatedAmount';
 import CalendarComponent from '../components/BookingScreen/CalendarComponent';
@@ -32,7 +32,6 @@ const BookingCalenderScreen = ({navigation}: BookingCalenderScreenProps) => {
   const {venueId} = route.params as {venueId: string};
   const {price} = route.params as {price: string};
 
-  console.log('price>>>', price);
   const {
     name,
     phone,

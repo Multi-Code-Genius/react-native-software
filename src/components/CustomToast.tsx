@@ -1,13 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  Animated,
-  Dimensions,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/Feather';
+import {Animated, Dimensions, StyleSheet, Text, View} from 'react-native';
 
 const {width} = Dimensions.get('window');
 
@@ -24,9 +16,6 @@ const CustomToast: React.FC<CustomToastProps> = ({
   visible,
   message,
   type = 'success',
-  actionLabel = type === 'error' ? 'Retry' : 'View',
-  onActionPress,
-  showIcon = false,
 }) => {
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
 
@@ -47,10 +36,6 @@ const CustomToast: React.FC<CustomToastProps> = ({
       ]).start();
     }
   }, [visible, fadeAnim]);
-
-  const iconName = type === 'error' ? 'x' : 'check';
-  const iconColor = '#fff';
-  const actionColor = type === 'error' ? '#f44' : '#0af';
 
   return (
     <Animated.View
@@ -93,9 +78,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1c1c1e',
     padding: 12,
     borderRadius: 12,
-    maxWidth: '90%', 
+    maxWidth: '90%',
     flexDirection: 'row',
-    justifyContent: 'center', 
+    justifyContent: 'center',
     alignItems: 'center',
   },
   left: {

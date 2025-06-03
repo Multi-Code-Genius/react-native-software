@@ -1,13 +1,12 @@
 import React from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Button, Divider, Text, useTheme} from 'react-native-paper';
-import {useToast} from '../context/ToastContext';
-import {useNavigation} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 const WelcomeTab = () => {
   const {colors} = useTheme();
-  const {showToast} = useToast();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     <View style={styles.welcomeContainer}>
       <Text variant="headlineLarge" style={styles.welcomeText}>
