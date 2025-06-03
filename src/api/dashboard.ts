@@ -9,10 +9,8 @@ const getDashboardData = async (venueId: string) => {
       cache: 'no-store',
     });
     const resp = await response;
-    console.log('dashboard >>>>>>', resp);
     return resp;
   } catch (error) {
-    console.error('Dashboard Data Error:', error);
     throw new Error(error instanceof Error ? error.message : 'Data Not Found');
   }
 };

@@ -11,6 +11,7 @@ import DatePicker from 'react-native-date-picker';
 import {Button, Dialog, Portal, useTheme} from 'react-native-paper';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {parseTimeTo24Hour} from '../helper/helper';
+import {styles} from '../styles/ModalFormStyles';
 
 interface Props {
   visible: boolean;
@@ -297,44 +298,3 @@ export default function ModalForm({
     </Portal>
   );
 }
-
-const styles = StyleSheet.create({
-  dialog: {
-    marginHorizontal: 20,
-    borderRadius: 20,
-    overflow: 'hidden',
-  },
-  scrollContent: {
-    paddingBottom: 16,
-    paddingVertical: 10,
-  },
-  inputGroup: {
-    marginBottom: 12,
-  },
-  label: {
-    marginBottom: 4,
-    color: '#374151',
-    fontSize: 14,
-  },
-  input: {
-    borderColor: '#D1D5DB',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    backgroundColor: 'white',
-  },
-  pickerButton: {
-    borderColor: '#D1D5DB',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-  },
-  pickerText: {
-    fontSize: 16,
-    color: '#1F2937',
-  },
-});
