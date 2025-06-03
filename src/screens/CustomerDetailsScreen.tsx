@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import {Text, Card, Avatar, Button} from 'react-native-paper';
+import {Text, Card, Avatar} from 'react-native-paper';
 import {useGetCustomer} from '../api/customer';
 import {useNavigation} from '@react-navigation/native';
 
 const CustomerDetailsScreen = () => {
   const navigation = useNavigation();
   const {data, isLoading} = useGetCustomer();
-  const customers = data?.customers || [];
+  const customers = data?.customer || [];
   console.log('data==========>>>>customer', data);
 
   const renderItem = ({item}: any) => (
@@ -35,10 +35,7 @@ const CustomerDetailsScreen = () => {
         />
         <Card.Content>
           <Text variant="titleMedium">
-            Total Bookings: {item?.bookings?.length}
-          </Text>
-          <Text variant="titleMedium">
-            Total Spent Amount: ₹{item?.totalSpentAmount}
+            Total Spent Amount: ₹{item?.total_spent}
           </Text>
         </Card.Content>
       </Card>
@@ -65,7 +62,7 @@ const CustomerDetailsScreen = () => {
   return (
     <FlatList
       contentContainerStyle={styles.container}
-      data={data?.customers || []}
+      data={data?.customer || []}
       renderItem={renderItem}
       keyExtractor={item => item.id}
       ItemSeparatorComponent={() => <View style={{height: 16}} />}

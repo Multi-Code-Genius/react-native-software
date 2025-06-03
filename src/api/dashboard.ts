@@ -3,7 +3,7 @@ import {api} from '../hooks/api';
 
 const getDashboardData = async (venueId: string) => {
   try {
-    const response = await api(`/api/dashboard/game/${venueId}`, {
+    const response = await api(`/dashboard/data/${venueId}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',

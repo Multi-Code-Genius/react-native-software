@@ -34,10 +34,8 @@ const HomeScreen = () => {
   const {data: venuedata, refetch: refetchVenue} = useGetVenue();
   const {showToast} = useToast();
 
-  console.log('venuedata>>>>>', venuedata);
   const hasVenues =
     Array.isArray(venuedata?.venues) && venuedata.venues.length > 0;
-  console.log('hasVenues>>>>>', hasVenues);
 
   useEffect(() => {
     if (account?.games?.length > 0) {
@@ -49,7 +47,7 @@ const HomeScreen = () => {
     data,
     refetch: refetchDashboard,
     isLoading,
-  } = useDashboardData(selectedVenue, account?.user?.id || '');
+  } = useDashboardData(selectedVenue, account?.id || '');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -72,10 +70,10 @@ const HomeScreen = () => {
     }, [refetchDashboard, refetchVenue]),
   );
 
-  const monthsBookingCount = data?.thisMonthBookingsCount ?? 0;
-  const monthTotalAmount = data?.thisMonthTotalAmount ?? 0;
-  const bookingsToday = data?.todaysBookingsCount ?? 0;
-  const newuserCount = data?.newUsersCount ?? 0;
+  const monthsBookingCount = data?.ThisMonthBookings.length ?? 0;
+  const monthTotalAmount = data?.MonthTotalBookingAmount ?? 0;
+  const bookingsToday = data?.todaysBookings.length ?? 0;
+  const newuserCount = data?.NewCustomers.length ?? 0;
 
   const statusData = [
     {
@@ -196,8 +194,8 @@ const HomeScreen = () => {
               horizontal
               showsHorizontalScrollIndicator={false}
               style={styles.tabContainer}>
-              {account &&
-                (account?.games || []).map((venue: any) => (
+              {venuedata &&
+                (venuedata?.venues || []).map((venue: any) => (
                   <TouchableOpacity
                     key={venue.id}
                     style={[

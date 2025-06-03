@@ -3,7 +3,7 @@ import {api} from '../hooks/api';
 
 export const getCustomerDetails = async () => {
   try {
-    const response = api('/api/booking/user-booking', {
+    const response = api('/customer/client', {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
