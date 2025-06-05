@@ -5,7 +5,6 @@ import {PrivateRoute} from '../routes/PrivateRoute';
 import AddVenueScreen from '../screens/AddVenueScreen';
 import BookingCalenderScreen from '../screens/BookingCalenderScreen';
 import EditVenueDetailsScreen from '../screens/EditVenueDetailsScreen';
-import OnboardingScreen from '../screens/OnboardingScreen';
 import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
 import {useAuthStore} from '../store/authStore';
@@ -13,6 +12,10 @@ import BookingByIdScreen from '../screens/BookingByIdScreen';
 import VenueManageScreen from '../screens/VenueManageScreen';
 import CustomerDetailsScreen from '../screens/CustomerDetailsScreen';
 import CustomerIdDetailsScreen from '../screens/CustomerIdDetailsScreen';
+import LoginScreen from '../screens/LoginScreen';
+import WelcomeSlideScreen from '../screens/WelcomeSlideScreen';
+import OnboardingScreen from '../screens/OnboardingScreen';
+import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -21,6 +24,7 @@ export type RootStackParamList = {
   CustomerDetails: undefined;
   Addvenue: undefined;
   Account: undefined;
+  Login: undefined;
   BookingCalenderScreen: {
     venueId: string;
     price: number;
@@ -41,6 +45,61 @@ export type RootStackParamList = {
 
 const Stack = createNativeStackNavigator();
 
+const AuthStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="MainTabs"
+      component={PrivateRoute}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen name="Addvenue" component={AddVenueScreen} />
+    <Stack.Screen name="Profile" component={ProfileInfoScreen} />
+    <Stack.Screen
+      name="bookingData"
+      component={BookingCalenderScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="bookingDataById"
+      component={BookingByIdScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
+
+    {/* <Stack.Screen name="VenueManage" component={VenueManageScreen} /> */}
+    <Stack.Screen name="VenueManage" component={VenueManageScreen} />
+    {/* <Stack.Screen name="bookingData" component={BookingCalenderScreen} /> */}
+    <Stack.Screen name="EditVenueDetails" component={EditVenueDetailsScreen} />
+    <Stack.Screen name="CustomerDetails" component={CustomerDetailsScreen} />
+    <Stack.Screen name="CustomerByID" component={CustomerIdDetailsScreen} />
+  </Stack.Navigator>
+);
+
+const AppStack = () => (
+  <Stack.Navigator>
+    <Stack.Screen
+      name="Welcome"
+      component={WelcomeSlideScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="Login"
+      component={LoginScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="OtpVerify"
+      component={OtpVerificationScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+  </Stack.Navigator>
+);
 export default function AppNavigator() {
   const {isAuthenticated, initializeAuth} = useAuthStore();
 
@@ -52,50 +111,7 @@ export default function AppNavigator() {
   }, [initializeAuth]);
   return (
     <NavigationContainer>
-      {isAuthenticated ? (
-        <Stack.Navigator>
-          <Stack.Screen
-            name="MainTabs"
-            component={PrivateRoute}
-            options={{headerShown: false}}
-          />
-          <Stack.Screen name="Addvenue" component={AddVenueScreen} />
-          <Stack.Screen name="Profile" component={ProfileInfoScreen} />
-          <Stack.Screen
-            name="bookingData"
-            component={BookingCalenderScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="bookingDataById"
-            component={BookingByIdScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
-
-          {/* <Stack.Screen name="VenueManage" component={VenueManageScreen} /> */}
-          <Stack.Screen name="VenueManage" component={VenueManageScreen} />
-          {/* <Stack.Screen name="bookingData" component={BookingCalenderScreen} /> */}
-          <Stack.Screen
-            name="EditVenueDetails"
-            component={EditVenueDetailsScreen}
-          />
-          <Stack.Screen
-            name="CustomerDetails"
-            component={CustomerDetailsScreen}
-          />
-          <Stack.Screen
-            name="CustomerByID"
-            component={CustomerIdDetailsScreen}
-          />
-        </Stack.Navigator>
-      ) : (
-        <OnboardingScreen />
-      )}
+      {isAuthenticated ? <AuthStack /> : <AppStack />}
     </NavigationContainer>
   );
 }
