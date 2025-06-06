@@ -5,6 +5,7 @@ import {Card, Icon, Text} from 'react-native-paper';
 import {useGetVenue} from '../api/vanue';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import WelcomeTab from '../components/WelcomeTab';
+import AppHeader from '../components/AppHeader';
 
 const BookingScreen = () => {
   const navigation = useNavigation();
@@ -56,6 +57,7 @@ const BookingScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
+      <AppHeader />
       {hasVenues ? (
         <View className="flex-1">
           <View style={styles.venueListContainer}>

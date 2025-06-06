@@ -16,10 +16,9 @@ export function PrivateRoute() {
     <Tab.Navigator
       screenOptions={() => ({
         animation: 'shift',
-        // animation: 'shift',
         tabBarStyle: {
           backgroundColor: '#191919',
-          height: 60,
+          height: 75,
           paddingBottom: 5,
           paddingTop: 5,
           borderTopWidth: 0,

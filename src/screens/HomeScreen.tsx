@@ -18,6 +18,8 @@ import WelcomeTab from '../components/WelcomeTab';
 import {downloadAndOpenPdf} from '../utils/downloadPdf';
 import {useToast} from '../context/ToastContext';
 import {styles} from '../styles/HomeScreenStyles';
+import LayoutWithHeader from '../components/LayoutWithHeader';
+import AppHeader from '../components/AppHeader';
 
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
@@ -151,6 +153,7 @@ const HomeScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
+      <AppHeader />
       {hasVenues ? (
         <ScrollView
           style={styles.container}

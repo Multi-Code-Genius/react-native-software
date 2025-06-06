@@ -15,6 +15,7 @@ import {useAccountInfo} from '../api/account';
 import {useAuthStore} from '../store/authStore';
 import {styles} from '../styles/AccountScreenStyles';
 import {RootStackParamList} from '../navigation/routes';
+import AppHeader from '../components/AppHeader';
 
 const AccountScreen = () => {
   const {data, isPending, refetch} = useAccountInfo();
@@ -75,6 +76,7 @@ const AccountScreen = () => {
 
   return (
     <View style={styles.container}>
+      <AppHeader />
       <View style={styles.header}>
         <View style={styles.headerRow}>
           <Text style={styles.title}>Account</Text>
