@@ -26,7 +26,7 @@ export function PrivateRoute() {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
-          fontFamily: 'Montserrat',
+          fontFamily: 'Montserrat-Regular',
           textTransform: 'capitalize',
           lineHeight: 15,
         },

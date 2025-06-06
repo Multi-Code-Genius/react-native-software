@@ -27,7 +27,6 @@ const AppHeader = () => {
         justifyContent: 'space-between',
         paddingHorizontal: 24,
       }}>
-      {/* Left: Title */}
       <Text
         style={{
           color: '#F5F5F5',
@@ -38,7 +37,6 @@ const AppHeader = () => {
         {title}
       </Text>
 
-      {/* Right: Bell + Button */}
       <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
         <View style={{position: 'relative'}}>
           <Icon name="notifications-outline" size={24} color="#fff" />
@@ -67,7 +65,7 @@ const AppHeader = () => {
             style={{
               fontSize: 10,
               fontWeight: '600',
-              fontFamily: 'Montserrat',
+              fontFamily: 'Montserrat-Regular',
               color: '#000',
             }}>
             Book Venue
