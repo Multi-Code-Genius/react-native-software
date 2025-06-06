@@ -4,6 +4,8 @@ import {api} from '../hooks/api';
 
 export const requestOtp = async (payload: {phone: string; name: string}) => {
   try {
+    console.log('phome', payload);
+
     const response = await api('/auth/send-otp', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},

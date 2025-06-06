@@ -57,17 +57,8 @@ export const api = async (endpoint: string, config: any = {}) => {
   try {
     const apiUrl = BASE_URL;
 
-    // const apiUrl = 'http://192.168.1.3:5001';
-    const normalizedEndpoint = endpoint.startsWith('/')
-      ? endpoint
-      : `/${endpoint}`;
-    const response = await fetch(
-      `${apiUrl}api/v2${normalizedEndpoint}`,
-      requestConfig,
-    );
+    const response = await fetch(`${apiUrl}/api/v2${endpoint}`, requestConfig);
 
-    console.log('apiurl>>', apiUrl);
-    console.log('endpoint', endpoint);
     if (!response.ok) {
       const errorData = await response
         .json()
