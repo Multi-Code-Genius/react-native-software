@@ -11,12 +11,19 @@ import {
 import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {RootStackParamList} from '../navigation/types';
+
+type LoginScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  'Login'
+>;
 
 const LoginScreen = () => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const {mutate: requestOtp, isPending} = useRequestOtp();
-  const navigation = useNavigation();
+  const navigation = useNavigation<LoginScreenNavigationProp>();
 
   const isFormValid = phone.length === 10;
 

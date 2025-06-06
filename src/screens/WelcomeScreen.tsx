@@ -19,7 +19,7 @@ const WelcomeScreen = () => {
         <View style={styles.buttoncontainer}>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('Addvenue')}>
+            onPress={() => navigation.navigate('Addvenue' as never)}>
             <Text style={styles.buttonText}>Add Turf</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button2}>

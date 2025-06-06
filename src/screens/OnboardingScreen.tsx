@@ -7,7 +7,7 @@ const OnboardingScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
-    navigation.navigate('Login');
+    navigation.navigate('Login' as never);
   };
   return (
     <View style={styles.container}>
