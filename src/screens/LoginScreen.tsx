@@ -51,19 +51,6 @@ const LoginScreen = () => {
 
       <View style={styles.contentContainer}>
         <View style={styles.formContainer}>
-          {/* Name Field */}
-          {/* <Text style={styles.label}>Name</Text>
-          <View style={styles.inputWrapper}>
-            <Icon name="person" size={20} color="#999" style={styles.icon} />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your name"
-              placeholderTextColor="#999"
-              value={name}
-              onChangeText={setName}
-            />
-          </View> */}
-
           <Text style={styles.label}>Mobile Number</Text>
           <View style={styles.inputWrapper}>
             <Icon

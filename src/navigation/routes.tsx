@@ -13,9 +13,9 @@ import VenueManageScreen from '../screens/VenueManageScreen';
 import CustomerDetailsScreen from '../screens/CustomerDetailsScreen';
 import CustomerIdDetailsScreen from '../screens/CustomerIdDetailsScreen';
 import LoginScreen from '../screens/LoginScreen';
-import WelcomeSlideScreen from '../screens/WelcomeSlideScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
+import WelcomeScreen from '../screens/WelcomeScreen';
 
 export type RootStackParamList = {
   Home: undefined;
@@ -47,6 +47,11 @@ const Stack = createNativeStackNavigator();
 
 const AuthStack = () => (
   <Stack.Navigator>
+    <Stack.Screen
+      name="welcome"
+      component={WelcomeScreen}
+      options={{headerShown: false}}
+    />
     <Stack.Screen
       name="MainTabs"
       component={PrivateRoute}
@@ -82,8 +87,8 @@ const AuthStack = () => (
 const AppStack = () => (
   <Stack.Navigator>
     <Stack.Screen
-      name="Welcome"
-      component={WelcomeSlideScreen}
+      name="Onboarding"
+      component={OnboardingScreen}
       options={{headerShown: false}}
     />
     <Stack.Screen
