@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -50,7 +51,10 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require('../assets/SplashScreen.png')}
+      style={styles.container}
+      resizeMode="cover">
       <View style={styles.topcontainer}>
         <Text style={styles.head}>Login or Signup</Text>
         <Text style={styles.subtext}>Run Your Turf Like a Pro.</Text>
@@ -103,20 +107,19 @@ const LoginScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   topcontainer: {
     height: '40%',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
-    backgroundColor: 'black',
+    // backgroundColor: 'rgba(0, 0, 0, 0.425)',
     gap: 2,
     padding: 24,
   },
@@ -124,6 +127,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 24,
+    backgroundColor: 'rgba(255,255,255,0.9)',
   },
   formContainer: {
     flex: 1,

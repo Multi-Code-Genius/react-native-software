@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+} from 'react-native';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
 
@@ -9,8 +16,12 @@ const OnboardingScreen = () => {
   const handlePress = () => {
     navigation.navigate('Login' as never);
   };
+
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require('../assets/SplashScreen.png')}
+      style={styles.container}
+      resizeMode="cover">
       <View style={styles.imageWrapper}>
         <Image source={require('../assets/Group6.png')} style={styles.image} />
       </View>
@@ -28,7 +39,7 @@ const OnboardingScreen = () => {
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -40,7 +51,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: 'black',
   },
   imageWrapper: {
     flex: 1,

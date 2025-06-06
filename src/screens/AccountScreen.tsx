@@ -18,7 +18,7 @@ import {RootStackParamList} from '../navigation/routes';
 import AppHeader from '../components/AppHeader';
 
 const AccountScreen = () => {
-  const {data, isPending, refetch} = useAccountInfo();
+  const {data, isPending} = useAccountInfo();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(false);
 
@@ -44,10 +44,10 @@ const AccountScreen = () => {
   const handleItemPress = (title: string) => {
     switch (title) {
       case 'Venue Manage':
-        navigation.navigate('VenueManage');
+        navigation.navigate('VenueManage' as never);
         break;
       case 'Customers':
-        navigation.navigate('CustomerDetails');
+        navigation.navigate('CustomerDetails' as never);
         break;
       case 'Logout':
         showDialog();
