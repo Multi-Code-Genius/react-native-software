@@ -20,6 +20,7 @@ const BasicDetailsComponent = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter City"
+            placeholderTextColor="#717171"
             onChangeText={text => updateField('city', text)}
             value={formData?.location?.city || ''}
           />
@@ -37,6 +38,7 @@ const BasicDetailsComponent = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter Area"
+            placeholderTextColor="#717171"
             onChangeText={text => updateField('area', text)}
             value={formData?.location?.city || ''}
           />
@@ -63,6 +65,7 @@ const BasicDetailsComponent = () => {
           <TextInput
             style={[styles.textareaInput]}
             placeholder="Enter Your Address"
+            placeholderTextColor="#717171"
             multiline
             numberOfLines={16}
             onChangeText={text => updateField('address', text)}
@@ -115,12 +118,12 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 14,
-    color: '#323232',
+    color: 'white',
     paddingVertical: 20,
   },
   textareaInput: {
     flex: 1,
-    color: 'black',
+    color: 'white',
     fontSize: 14,
   },
 });

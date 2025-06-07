@@ -31,6 +31,7 @@ const VenueDetails = () => {
           <TextInput
             style={styles.input}
             placeholder="Enter Venue Name"
+            placeholderTextColor="#717171"
             onChangeText={text => updateField('name', text)}
             value={formData.name || ''}
           />

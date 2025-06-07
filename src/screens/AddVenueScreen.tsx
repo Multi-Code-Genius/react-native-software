@@ -108,25 +108,43 @@ const AddVenueScreen = () => {
           </View>
           <View style={{flex: 1}}>{steps[currentStep]}</View>
           <View style={styles.container}>
-            <TouchableOpacity
-              style={[styles.input, currentStep === 0 && styles.disabledButton]}
-              onPress={goPrevious}
-              disabled={currentStep === 0}>
-              <Text style={styles.text}>Previous</Text>
-            </TouchableOpacity>
+            {currentStep === 0 || currentStep === steps.length - 1 ? (
+              <>
+                <TouchableOpacity
+                  style={[
+                    styles.input,
+                    currentStep === 0 && styles.disabledButton,
+                  ]}
+                  onPress={goPrevious}
+                  disabled={currentStep === 0}>
+                  <Text style={styles.text}>Previous</Text>
+                </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.input]}
-              onPress={goNext}
-              disabled={isPending}>
-              {isPending ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.text}>
-                  {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
-                </Text>
-              )}
-            </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.input}
+                  onPress={goNext}
+                  disabled={isPending}>
+                  {isPending ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.text}>
+                      {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              </>
+            ) : (
+              <TouchableOpacity
+                style={[styles.input, {width: '100%'}]}
+                onPress={goNext}
+                disabled={isPending}>
+                {isPending ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.text}>Next</Text>
+                )}
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </ImageBackground>
@@ -186,7 +204,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 18,
     marginVertical: 16,
-    width: '50%',
+    flex: 1,
   },
   text: {
     color: 'black',

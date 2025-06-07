@@ -49,7 +49,7 @@ export const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 14,
-    color: '#717171',
+    color: 'white',
     paddingVertical: 20,
   },
   turfContainer: {
@@ -148,6 +148,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 10,
+    marginHorizontal: 10,
   },
   inputBox: {
     flex: 1,
