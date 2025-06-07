@@ -1,33 +1,44 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
+import {ImageBackground} from 'react-native';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const WelcomeScreen = () => {
   const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <View style={styles.imageWrapper}>
-        <Text style={styles.title1}>Welcome To </Text>
-        <Text style={styles.title2}>Turf Keeper</Text>
-      </View>
-      <View style={styles.textContainer}>
-        <View style={styles.titlecontainer}>
-          <Text style={styles.title}>
-            You're all set. Let’s take a few steps to manage your turf business
-          </Text>
+    <ImageBackground
+      source={require('../assets/SplashScreen.png')}
+      style={{flex: 1}}
+      resizeMode="cover">
+      <View style={styles.container}>
+        <View style={styles.imageWrapper}>
+          <Text style={styles.title1}>Welcome To </Text>
+          <Text style={styles.title2}>Turf Keeper</Text>
         </View>
-        <View style={styles.buttoncontainer}>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={() => navigation.navigate('Addvenue' as never)}>
-            <Text style={styles.buttonText}>Add Turf</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button2}>
-            <Text style={styles.buttonText2}>Complete Profile</Text>
-          </TouchableOpacity>
+        <View style={styles.textContainer}>
+          <View style={styles.titlecontainer}>
+            <Text style={styles.title}>
+              You're all set. Let’s take a few steps to manage your turf
+              business
+            </Text>
+          </View>
+          <View style={styles.buttoncontainer}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => navigation.navigate('Addvenue' as never)}>
+              <Text style={styles.buttonText}>Add Turf</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.button2}
+              onPress={() =>
+                navigation.navigate('MainTabs', {screen: 'Account'})
+              }>
+              <Text style={styles.buttonText2}>Complete Profile</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 

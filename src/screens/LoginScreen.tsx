@@ -67,13 +67,13 @@ const LoginScreen = () => {
             <Icon
               name="smartphone"
               size={20}
-              color="#999"
+              color="#717171"
               style={styles.icon}
             />
             <TextInput
               style={styles.input}
               placeholder="Enter your mobile number"
-              placeholderTextColor="#999"
+              placeholderTextColor="#717171"
               keyboardType="numeric"
               maxLength={10}
               value={phone}
@@ -94,7 +94,7 @@ const LoginScreen = () => {
             style={[
               styles.button,
               {
-                backgroundColor: isFormValid ? '#000' : '#999',
+                backgroundColor: isFormValid ? '#B2C000' : '#999',
               },
             ]}
             onPress={sendOtp}
@@ -121,12 +121,13 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     gap: 2,
     padding: 24,
+    borderBottomColor: '#3f3f3f',
+    borderBottomWidth: 1,
   },
   contentContainer: {
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 24,
-    backgroundColor: 'rgba(255,255,255,0.9)',
   },
   formContainer: {
     flex: 1,
@@ -141,22 +142,24 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 12,
     fontWeight: '300',
+    color: '#4C4C4C',
     fontFamily: 'Montserrat-Regular',
     color: '#FFFFFF',
   },
   label: {
     fontSize: 12,
     marginBottom: 4,
+    color: '#fff',
     fontWeight: 'semibold',
-    color: '#000',
+    fontWeight: 'semibold',
     fontFamily: 'Montserrat-Regular',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#323232',
     borderWidth: 1,
-    borderColor: '#e0e0e0',
+    borderColor: '#3f3e3e',
     borderRadius: 4,
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -165,9 +168,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     paddingVertical: 8,
-    backgroundColor: 'white',
+    backgroundColor: '#323232',
+    color: '#fff',
     fontFamily: 'Montserrat-Regular',
-    color: '#000',
   },
 
   icon: {
@@ -187,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   buttonText: {
-    color: 'white',
+    color: 'black',
     fontFamily: 'Montserrat-Regular',
     fontSize: 16,
     fontWeight: 'semibold',
