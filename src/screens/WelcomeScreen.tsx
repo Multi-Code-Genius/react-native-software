@@ -88,11 +88,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     width: '80%',
     marginHorizontal: 'auto',
+    fontFamily: 'ClashGrotesk-Regular',
   },
   title1: {
     color: 'white',
     fontSize: 24,
     fontWeight: '400',
+    fontFamily: 'Montserrat-Regular',
   },
   backButton: {
     position: 'absolute',
@@ -110,6 +112,7 @@ const styles = StyleSheet.create({
     color: '#B2C000',
     fontSize: 40,
     fontWeight: '600',
+    fontFamily: 'Montserrat-Regular',
   },
   button: {
     backgroundColor: '#B2C000',
