@@ -57,7 +57,7 @@ export const api = async (endpoint: string, config: any = {}) => {
   try {
     const apiUrl = BASE_URL;
 
-    const response = await fetch(`${apiUrl}/api/v2${endpoint}`, requestConfig);
+    const response = await fetch(`${apiUrl}api/v2${endpoint}`, requestConfig);
 
     if (!response.ok) {
       const errorData = await response

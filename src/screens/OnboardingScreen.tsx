@@ -33,7 +33,8 @@ const OnboardingScreen = () => {
           </Text>
         </View>
         <Text style={styles.title}>
-          From Turf Mangement{'\n'}To Business Insights{'\n'}All In One App
+          From Sports Venue Mangement{'\n'}To Business Insights{'\n'}All In One
+          App
         </Text>
         <TouchableOpacity style={styles.button} onPress={handlePress}>
           <Text style={styles.buttonText}>Get Started</Text>
@@ -79,10 +80,12 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 14,
     fontWeight: '400',
+    fontFamily: 'Montserrat-Regular',
   },
   highlight: {
     color: '#B2C000',
     fontWeight: 'bold',
+    fontFamily: 'Montserrat-Regular',
   },
   title: {
     color: 'white',
@@ -91,6 +94,7 @@ const styles = StyleSheet.create({
     lineHeight: 46,
     fontWeight: '500',
     marginBottom: 40,
+    fontFamily: 'ClashGrotesk-Regular',
   },
   button: {
     backgroundColor: '#B2C000',
