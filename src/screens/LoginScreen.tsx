@@ -134,20 +134,23 @@ const styles = StyleSheet.create({
   },
   head: {
     color: 'white',
+    fontFamily: 'ClashGrotesk-Regular',
     fontSize: 32,
-    fontWeight: '500',
+    fontWeight: 'medium',
     lineHeight: 46,
   },
   subtext: {
     fontSize: 12,
     fontWeight: '300',
     color: '#4C4C4C',
+    fontFamily: 'Montserrat-Regular',
   },
   label: {
     fontSize: 12,
     marginBottom: 4,
-    fontWeight: '600',
     color: '#fff',
+    fontWeight: 'semibold',
+    fontFamily: 'Montserrat-Regular',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -165,7 +168,9 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     backgroundColor: '#323232',
     color: '#fff',
+    fontFamily: 'Montserrat-Regular',
   },
+
   icon: {
     marginRight: 8,
   },
@@ -173,6 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#A0A0A0',
+    fontFamily: 'Montserrat-Regular',
   },
   buttonContainer: {
     paddingBottom: 14,
@@ -183,8 +189,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
     textAlign: 'center',
   },
 });

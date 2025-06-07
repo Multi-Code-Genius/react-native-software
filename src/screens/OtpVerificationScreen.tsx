@@ -41,78 +41,86 @@ const OtpVerificationScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/SplashScreen.png')}
-      style={styles.container}
-      resizeMode="cover">
-      <View style={styles.container}>
-        <View style={styles.topcontainer}>
+    <View style={styles.container}>
+      <ImageBackground
+        source={require('../assets/SplashScreen.png')}
+        style={styles.topcontainer}
+        resizeMode="cover">
+        <View style={styles.overlay}>
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={styles.backButton}>
             <Icon name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <Text style={styles.head}>Verify OTP</Text>
+          <Text style={styles.head}>OTP Verification</Text>
           <Text style={styles.subtext}>
             Quick verify and you're in the zone!
           </Text>
         </View>
+      </ImageBackground>
 
-        <View style={styles.contentContainer}>
-          <View style={styles.formContainer}>
-            <Text style={styles.label}>One Time Password</Text>
-            <OtpInput
-              numberOfDigits={4}
-              focusColor={'#3a3939'}
-              hideStick
-              autoFocus
-              onTextChange={text => {
-                setOtp(text);
-              }}
-              theme={{
-                containerStyle: {
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginBottom: 16,
-                },
-                pinCodeContainerStyle: {
-                  width: 60,
-                  height: 70,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderColor: '#3a3939',
-                  backgroundColor: '#292828',
-                },
-                pinCodeTextStyle: {
-                  fontSize: 24,
-                  color: 'white',
-                  fontWeight: '600',
-                },
-              }}
-            />
-          </View>
+      <View style={styles.contentContainer}>
+        <View style={styles.formContainer}>
+          <Text style={styles.label}>One Time Password</Text>
+          <OtpInput
+            numberOfDigits={4}
+            focusColor={paperTheme.colors.primary}
+            hideStick
+            autoFocus
+            onTextChange={text => {
+              setOtp(text);
+              if (text.length === 4) {
+                handleVerifyOtp();
+              }
+            }}
+            theme={{
+              containerStyle: {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                marginBottom: 16,
+              },
+              pinCodeContainerStyle: {
+                width: 60,
+                height: 70,
+                borderWidth: 1,
+                borderColor: '#ccc',
+                borderRadius: 8,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: '#fff',
+              },
+              focusedPinCodeContainerStyle: {
+                borderColor: paperTheme.colors.primary,
+              },
+              pinCodeTextStyle: {
+                fontSize: 24,
+                color: paperTheme.colors.onBackground,
+                fontWeight: '600',
+              },
+            }}
+          />
+        </View>
 
-          <View style={styles.buttonContainer}>
-            <Text style={styles.resend}>Resend OTP in 00:30</Text>
+        <View style={styles.buttonContainer}>
+          <Text style={styles.resend}>Resend OTP in 00:30</Text>
 
-            <TouchableOpacity
-              style={[
-                styles.button,
-                {backgroundColor: otp.length === 4 ? '#B2C000' : '#999'},
-              ]}
-              onPress={handleVerifyOtp}
-              disabled={otp.length !== 4 || isPending}>
-              {isPending ? (
-                <ActivityIndicator color="#fff" />
-              ) : (
-                <Text style={styles.buttonText}>Verify OTP</Text>
-              )}
-            </TouchableOpacity>
-          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {backgroundColor: otp.length === 4 ? '#000' : '#999'},
+            ]}
+            onPress={handleVerifyOtp}
+            disabled={otp.length !== 4 || isPending}>
+            {isPending ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.buttonText}>Verify OTP</Text>
+            )}
+          </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 
@@ -121,15 +129,17 @@ export default OtpVerificationScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   topcontainer: {
     height: '40%',
+  },
+  overlay: {
+    flex: 1,
+    // backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    borderBottomColor: '#4C4C4C',
-    borderBottomWidth: 1,
-    gap: 2,
     padding: 24,
+    gap: 2,
   },
   contentContainer: {
     flex: 1,
@@ -148,50 +158,26 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 12,
     fontWeight: '300',
-    color: '#4C4C4C',
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 8,
-    backgroundColor: 'white',
+    color: '#FFFFFF',
   },
   label: {
     fontSize: 12,
     marginBottom: 8,
     fontWeight: '600',
-    color: '#fff',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-  icon: {
-    marginRight: 8,
+    color: '#000',
   },
   buttonContainer: {
     paddingBottom: 14,
   },
   button: {
     paddingVertical: 18,
-    backgroundColor: '#000',
+    borderRadius: 8,
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
-  },
-  note: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#A0A0A0',
   },
   resend: {
     textAlign: 'center',
