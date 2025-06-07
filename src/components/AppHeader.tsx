@@ -10,9 +10,9 @@ const AppHeader = () => {
 
   const screenTitles: Record<string, string> = {
     Home: 'Turfkeeper',
-    Bookings: 'Your Bookings',
-    Venue: 'Venues',
-    Profile: 'My Profile',
+    Bookings: 'Turfkeeper',
+    Venue: 'Turfkeeper',
+    Profile: 'Turfkeeper',
   };
 
   const title = screenTitles[route.name] || 'App';
@@ -32,7 +32,9 @@ const AppHeader = () => {
           color: '#F5F5F5',
           fontSize: 24,
           fontWeight: '500',
-          fontFamily: 'Clash Grotesk',
+          fontFamily: 'ClashGrotesk-Regular',
+          lineHeight: 30,
+          letterSpacing: 2,
         }}>
         {title}
       </Text>

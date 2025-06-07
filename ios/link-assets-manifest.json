@@ -2,15 +2,27 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "src/assets/fonts/Montserrat-Regular-Black.ttf",
+      "path": "src/assets/fonts/ClashGrotesk-Bold.otf",
+      "sha1": "7e0a4dfecaf6dc11b831bcff9dfdca4815ff6bd3"
+    },
+    {
+      "path": "src/assets/fonts/ClashGrotesk-Medium.otf",
+      "sha1": "dacc45a62aeb471bf95e4b7ed5eb3c409f1829e3"
+    },
+    {
+      "path": "src/assets/fonts/ClashGrotesk-Regular.otf",
+      "sha1": "6025c9ee7fc14cdb0544a00ad9a224da38abfe98"
+    },
+    {
+      "path": "src/assets/fonts/Montserrat-Black.ttf",
       "sha1": "ea4feb16f3d8cb3f1cbc8e3a7af7388cc01ce32e"
     },
     {
-      "path": "src/assets/fonts/Montserrat-Regular-Light.ttf",
+      "path": "src/assets/fonts/Montserrat-Light.ttf",
       "sha1": "1db8878a7654208b6c55402f6ff717e03a312e1e"
     },
     {
-      "path": "src/assets/fonts/Montserrat-Regular-Medium.ttf",
+      "path": "src/assets/fonts/Montserrat-Medium.ttf",
       "sha1": "4656e40419da86a5fec473ea8e7fc0efef183f05"
     },
     {
@@ -18,11 +30,11 @@
       "sha1": "1c8119b38eef1914a4fbd9f6cfdedf198445ab97"
     },
     {
-      "path": "src/assets/fonts/Montserrat-Regular-SemiBold.ttf",
+      "path": "src/assets/fonts/Montserrat-SemiBold.ttf",
       "sha1": "d491c9d0af61faef59ca807737b560170f547f5b"
     },
     {
-      "path": "src/assets/fonts/Montserrat-Regular-Thin.ttf",
+      "path": "src/assets/fonts/Montserrat-Thin.ttf",
       "sha1": "447838642258b95e8a61df1770189f962cc0741b"
     }
   ]

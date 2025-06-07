@@ -49,12 +49,15 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Montserrat-Regular-Black.ttf</string>
-		<string>Montserrat-Regular-Light.ttf</string>
-		<string>Montserrat-Regular-Medium.ttf</string>
 		<string>Montserrat-Regular.ttf</string>
-		<string>Montserrat-Regular-SemiBold.ttf</string>
-		<string>Montserrat-Regular-Thin.ttf</string>
+		<string>Montserrat-Black.ttf</string>
+		<string>Montserrat-Light.ttf</string>
+		<string>Montserrat-Medium.ttf</string>
+		<string>Montserrat-SemiBold.ttf</string>
+		<string>Montserrat-Thin.ttf</string>
+		<string>ClashGrotesk-Bold.otf</string>
+		<string>ClashGrotesk-Medium.otf</string>
+		<string>ClashGrotesk-Regular.otf</string>
 	</array>
 </dict>
 </plist>
