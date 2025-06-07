@@ -144,11 +144,13 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#4C4C4C',
     fontFamily: 'Montserrat-Regular',
+    color: '#FFFFFF',
   },
   label: {
     fontSize: 12,
     marginBottom: 4,
     color: '#fff',
+    fontWeight: 'semibold',
     fontWeight: 'semibold',
     fontFamily: 'Montserrat-Regular',
   },
