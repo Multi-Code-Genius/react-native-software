@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: 'black',
     paddingHorizontal: 20,
   },
   imageWrapper: {

@@ -10,99 +10,63 @@ const BasicDetailsComponent = () => {
 
   return (
     <ScrollView
-      style={styles.container}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}>
+      <Text style={styles.head}>Location Details</Text>
       <View style={styles.card}>
-        <Text style={styles.label}>Name</Text>
+        <Text style={styles.label}>City</Text>
         <View style={styles.inputWrapper}>
-          <Icon name="account" size={20} color="#666" style={styles.icon} />
+          <Icon name="city" size={25} color="#717171" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Enter name"
-            onChangeText={text => updateField('name', text)}
-            value={formData.name || ''}
+            placeholder="Enter City"
+            onChangeText={text => updateField('city', text)}
+            value={formData?.location?.city || ''}
           />
         </View>
       </View>
-
       <View style={styles.card}>
-        <Text style={styles.label}>Description</Text>
+        <Text style={styles.label}>Area</Text>
+        <View style={styles.inputWrapper}>
+          <Icon
+            name="map-marker-radius"
+            size={25}
+            color="#717171"
+            style={styles.icon}
+          />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter Area"
+            onChangeText={text => updateField('area', text)}
+            value={formData?.location?.city || ''}
+          />
+        </View>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>Adress</Text>
         <View
           style={[
             styles.inputWrapper,
             {
-              height: 100,
+              height: 120,
               alignItems: 'flex-start',
               justifyContent: 'flex-start',
               paddingTop: 5,
             },
           ]}>
           <Icon
-            name="note-text"
+            name="office-building-marker"
             size={20}
             color="#666"
             style={styles.newIcon}
           />
           <TextInput
             style={[styles.textareaInput]}
-            placeholder="Enter venue description"
+            placeholder="Enter Your Address"
             multiline
-            numberOfLines={14}
-            onChangeText={text => updateField('description', text)}
-            value={formData.description || ''}
-          />
-        </View>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.label}>Category</Text>
-        <View style={styles.inputWrapper}>
-          <Icon
-            name="apache-kafka"
-            size={20}
-            color="#666"
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Category"
-            onChangeText={text => updateField('category', text)}
-            value={formData.category || ''}
-          />
-        </View>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.label}>Address</Text>
-        <View style={styles.inputWrapper}>
-          <Icon
-            name="home-map-marker"
-            size={20}
-            color="#666"
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter Address"
+            numberOfLines={16}
             onChangeText={text => updateField('address', text)}
-            value={formData.address || ''}
-          />
-        </View>
-      </View>
-      <View style={styles.card}>
-        <Text style={styles.label}>hourlyPrice</Text>
-        <View style={styles.inputWrapper}>
-          <Icon
-            name="currency-rupee"
-            size={20}
-            color="#666"
-            style={styles.icon}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Enter hourly price"
-            keyboardType="numeric"
-            onChangeText={text => updateField('hourlyPrice', parseFloat(text))}
-            value={formData.hourlyPrice ? formData.hourlyPrice.toString() : ''}
+            value={formData.description || ''}
           />
         </View>
       </View>
@@ -113,33 +77,33 @@ const BasicDetailsComponent = () => {
 export default BasicDetailsComponent;
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f7f8fc',
-  },
   content: {
-    padding: 10,
+    paddingVertical: 10,
+  },
+  head: {
+    fontSize: 16,
+    fontWeight: '500',
+    paddingVertical: 15,
+    borderBottomColor: '#252525',
+    borderBottomWidth: 1,
+    paddingLeft: 15,
+    color: '#fff',
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    elevation: 0,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 16,
+    fontWeight: '600',
     marginBottom: 8,
-    color: '#444',
+    color: '#e2dede',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#272727',
   },
   icon: {
     marginRight: 8,
@@ -150,9 +114,9 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
     fontSize: 14,
-    color: '#000',
+    color: '#323232',
+    paddingVertical: 20,
   },
   textareaInput: {
     flex: 1,

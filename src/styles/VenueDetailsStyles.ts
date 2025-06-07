@@ -2,39 +2,55 @@ import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#f7f8fc',
+    backgroundColor: '#000',
   },
   content: {
     padding: 10,
   },
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
     padding: 16,
     marginBottom: 16,
-    elevation: 0,
+  },
+  head: {
+    fontSize: 16,
+    fontWeight: '500',
+    paddingVertical: 15,
+    borderBottomColor: '#252525',
+    borderBottomWidth: 1,
+    paddingLeft: 15,
+    color: '#fff',
   },
   label: {
     fontSize: 14,
     fontWeight: '500',
     marginBottom: 8,
-    color: '#444',
+    color: '#B8B8B8',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#fafafa',
+    backgroundColor: '#272727',
   },
+  dropdownWrapper: {
+    width: '100%',
+  },
+  inputWrapper4: {
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: '#272727',
+  },
+
   icon: {
     marginRight: 8,
   },
   input: {
     flex: 1,
-    height: 40,
+    fontSize: 14,
+    color: '#717171',
+    paddingVertical: 20,
   },
   turfContainer: {
     flexDirection: 'row',
@@ -77,22 +93,14 @@ export const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginBottom: 20,
   },
+
   dropdown: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    backgroundColor: '#fafafa',
-    minHeight: 45,
-    zIndex: 1000,
+    flex: 1,
+    backgroundColor: '#272727',
   },
 
   dropdownContainer: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
-    backgroundColor: '#fff',
-    zIndex: 1000,
+    backgroundColor: '#272727',
   },
 
   dropdownText: {
@@ -102,5 +110,64 @@ export const styles = StyleSheet.create({
 
   dropdownPlaceholder: {
     color: '#999',
+  },
+  inputWrapper2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderWidth: 1,
+    backgroundColor: '#333',
+  },
+
+  input2: {
+    fontSize: 16,
+    color: '#888888',
+    marginLeft: 8,
+  },
+
+  inputWrapper3: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderWidth: 1,
+    backgroundColor: '#333',
+  },
+
+  input3: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  backButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 8,
+    backgroundColor: '#B2C000',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 10,
+  },
+  inputBox: {
+    flex: 1,
+    backgroundColor: '#1e1e1e',
+    borderColor: '#333',
+    borderWidth: 1,
+    borderRadius: 4,
+    padding: 10,
+    marginRight: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  inputText: {
+    color: '#aaa',
+    marginLeft: 8,
+  },
+  head1: {
+    fontSize: 16,
+    color: '#fff',
+    fontWeight: '500',
+    marginBottom: 10,
   },
 });
