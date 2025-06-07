@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     height: '40%',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
-    // backgroundColor: 'rgba(0, 0, 0, 0.425)',
     gap: 2,
     padding: 24,
   },
@@ -134,20 +133,23 @@ const styles = StyleSheet.create({
   },
   head: {
     color: 'white',
+    fontFamily: 'ClashGrotesk-Regular',
     fontSize: 32,
-    fontWeight: '500',
+    fontWeight: 'medium',
     lineHeight: 46,
   },
   subtext: {
     fontSize: 12,
     fontWeight: '300',
+    fontFamily: 'Montserrat-Regular',
     color: '#FFFFFF',
   },
   label: {
     fontSize: 12,
     marginBottom: 4,
-    fontWeight: '600',
+    fontWeight: 'semibold',
     color: '#000',
+    fontFamily: 'Montserrat-Regular',
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -164,8 +166,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 8,
     backgroundColor: 'white',
+    fontFamily: 'Montserrat-Regular',
     color: '#000',
   },
+
   icon: {
     marginRight: 8,
   },
@@ -173,6 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '500',
     color: '#A0A0A0',
+    fontFamily: 'Montserrat-Regular',
   },
   buttonContainer: {
     paddingBottom: 14,
@@ -183,8 +188,9 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
+    fontFamily: 'Montserrat-Regular',
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: 'semibold',
     textAlign: 'center',
   },
 });
