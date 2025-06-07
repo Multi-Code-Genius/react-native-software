@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {OtpInput} from 'react-native-otp-entry';
@@ -40,79 +41,78 @@ const OtpVerificationScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.topcontainer}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-
-        <Text style={styles.head}>OTP Verification</Text>
-        <Text style={styles.subtext}>Quick verify and you're in the zone!</Text>
-      </View>
-
-      <View style={styles.contentContainer}>
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>One Time Password</Text>
-          <OtpInput
-            numberOfDigits={4}
-            focusColor={paperTheme.colors.primary}
-            hideStick
-            autoFocus
-            onTextChange={text => {
-              setOtp(text);
-              if (text.length === 4) {
-                handleVerifyOtp();
-              }
-            }}
-            theme={{
-              containerStyle: {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginBottom: 16,
-              },
-              pinCodeContainerStyle: {
-                width: 60,
-                height: 70,
-                borderWidth: 1,
-                borderColor: '#ccc',
-                borderRadius: 8,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: '#fff',
-              },
-              focusedPinCodeContainerStyle: {
-                borderColor: paperTheme.colors.primary,
-              },
-              pinCodeTextStyle: {
-                fontSize: 24,
-                color: paperTheme.colors.onBackground,
-                fontWeight: '600',
-              },
-            }}
-          />
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Text style={styles.resend}>Resend OTP in 00:30</Text>
-
+    <ImageBackground
+      source={require('../assets/SplashScreen.png')}
+      style={styles.container}
+      resizeMode="cover">
+      <View style={styles.container}>
+        <View style={styles.topcontainer}>
           <TouchableOpacity
-            style={[
-              styles.button,
-              {backgroundColor: otp.length === 4 ? '#000' : '#999'},
-            ]}
-            onPress={handleVerifyOtp}
-            disabled={otp.length !== 4 || isPending}>
-            {isPending ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Verify OTP</Text>
-            )}
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}>
+            <Icon name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
+
+          <Text style={styles.head}>Verify OTP</Text>
+          <Text style={styles.subtext}>
+            Quick verify and you're in the zone!
+          </Text>
+        </View>
+
+        <View style={styles.contentContainer}>
+          <View style={styles.formContainer}>
+            <Text style={styles.label}>One Time Password</Text>
+            <OtpInput
+              numberOfDigits={4}
+              focusColor={'#3a3939'}
+              hideStick
+              autoFocus
+              onTextChange={text => {
+                setOtp(text);
+              }}
+              theme={{
+                containerStyle: {
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginBottom: 16,
+                },
+                pinCodeContainerStyle: {
+                  width: 60,
+                  height: 70,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  borderColor: '#3a3939',
+                  backgroundColor: '#292828',
+                },
+                pinCodeTextStyle: {
+                  fontSize: 24,
+                  color: 'white',
+                  fontWeight: '600',
+                },
+              }}
+            />
+          </View>
+
+          <View style={styles.buttonContainer}>
+            <Text style={styles.resend}>Resend OTP in 00:30</Text>
+
+            <TouchableOpacity
+              style={[
+                styles.button,
+                {backgroundColor: otp.length === 4 ? '#B2C000' : '#999'},
+              ]}
+              onPress={handleVerifyOtp}
+              disabled={otp.length !== 4 || isPending}>
+              {isPending ? (
+                <ActivityIndicator color="#fff" />
+              ) : (
+                <Text style={styles.buttonText}>Verify OTP</Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
@@ -121,13 +121,13 @@ export default OtpVerificationScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
   },
   topcontainer: {
     height: '40%',
     justifyContent: 'flex-end',
     alignItems: 'flex-start',
-    backgroundColor: 'black',
+    borderBottomColor: '#4C4C4C',
+    borderBottomWidth: 1,
     gap: 2,
     padding: 24,
   },
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 12,
     fontWeight: '300',
-    color: '#FFFFFF',
+    color: '#4C4C4C',
   },
   input: {
     flex: 1,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 8,
     fontWeight: '600',
-    color: '#000',
+    color: '#fff',
   },
   inputWrapper: {
     flexDirection: 'row',
