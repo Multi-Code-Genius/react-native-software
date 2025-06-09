@@ -1,100 +1,81 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Dimensions} from 'react-native';
-import {BarChart} from 'react-native-chart-kit';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+import Svg, {Rect} from 'react-native-svg';
 
-const screenWidth = Dimensions.get('window').width;
+const data = [
+  {day: 'Mon', value: 2},
+  {day: 'Tue', value: 4},
+  {day: 'Wed', value: 1},
+  {day: 'Thu', value: 3},
+  {day: 'Fri', value: 1},
+  {day: 'Sat', value: 5},
+  {day: 'Sun', value: 6},
+];
 
-const DashboardBarChart = ({data}: {data: any}) => {
-  const bookingsPerDay = {
-    labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-    datasets: [
-      {
-        data: [
-          data?.Sunday,
-          data?.Monday,
-          data?.Tuesday,
-          data?.Wednesday,
-          data?.Thursday,
-          data?.Friday,
-          data?.Saturday,
-        ],
-      },
-    ],
-  };
+const MAX_VALUE = 6;
+const BAR_WIDTH = 18;
+const CHART_HEIGHT = 150;
 
-  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-
-  const handleTouch = (index: number) => {
-    setSelectedIndex(index === selectedIndex ? null : index);
-  };
-
+export default function DashboardBarChart() {
   return (
-    <View>
-      <BarChart
-        data={bookingsPerDay}
-        width={screenWidth - 30}
-        height={250}
-        chartConfig={chartConfig}
-        verticalLabelRotation={0}
-        showValuesOnTopOfBars={true}
-        fromZero
-        yLabelsOffset={30}
-        withInnerLines={false}
-        withHorizontalLabels
-        style={styles.chart}
-      />
-      <View style={styles.touchOverlay}>
-        {bookingsPerDay.labels.map((label, index) => (
-          <Text
-            key={label}
-            style={styles.touchableZone}
-            onPress={() => handleTouch(index)}>
-            {selectedIndex === index
-              ? bookingsPerDay.datasets[0].data[index]
-              : ''}
-          </Text>
-        ))}
+    <View style={styles.container}>
+      <View style={styles.chartArea}>
+        {data.map((item, index) => {
+          const filledHeight = (item.value / MAX_VALUE) * CHART_HEIGHT;
+          return (
+            <View key={index} style={styles.barContainer}>
+              <Svg height={CHART_HEIGHT} width={BAR_WIDTH}>
+                <Rect
+                  x={0}
+                  y={0}
+                  rx={10}
+                  width={BAR_WIDTH}
+                  height={CHART_HEIGHT}
+                  fill="#383C1D"
+                />
+                <Rect
+                  x={0}
+                  y={CHART_HEIGHT - filledHeight}
+                  rx={10}
+                  width={BAR_WIDTH}
+                  height={filledHeight}
+                  fill="#B2C000"
+                />
+              </Svg>
+              <Text style={styles.valueLabel}>
+                {item.value > 0 ? item.value : ''}
+              </Text>
+              <Text style={styles.dayLabel}>{item.day}</Text>
+            </View>
+          );
+        })}
       </View>
     </View>
   );
-};
-
-const chartConfig = {
-  backgroundGradientFrom: '#ffffff',
-  backgroundGradientTo: '#ffffff',
-  decimalPlaces: 0,
-  color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
-  labelColor: () => '#000',
-  propsForLabels: {
-    fontSize: 10,
-  },
-  propsForBackgroundLines: {
-    strokeWidth: 0,
-  },
-  barPercentage: 0.6,
-  paddingLeft: 0,
-};
+}
 
 const styles = StyleSheet.create({
-  chart: {
-    borderRadius: 8,
+  container: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    marginTop: 10,
   },
-  touchOverlay: {
-    position: 'absolute',
-    top: 50,
-    left: 0,
-    right: 0,
+  chartArea: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 16,
+    justifyContent: 'space-between',
+    gap: 16,
   },
-  touchableZone: {
-    width: 30,
-    textAlign: 'center',
-    color: '#000',
-    fontSize: 12,
+  barContainer: {
+    alignItems: 'center',
+  },
+  valueLabel: {
+    position: 'absolute',
+    top: -20,
+    color: '#B2C000',
     fontWeight: 'bold',
   },
+  dayLabel: {
+    marginTop: 8,
+    color: 'white',
+  },
 });
-
-export default DashboardBarChart;

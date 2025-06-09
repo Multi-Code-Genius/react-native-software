@@ -1,33 +1,31 @@
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {RefreshControl, ScrollView, TouchableOpacity, View} from 'react-native';
 import {
-  ActivityIndicator,
-  Button,
-  Card,
-  Icon,
-  IconButton,
-  Text,
-  Title,
-} from 'react-native-paper';
+  ImageBackground,
+  RefreshControl,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import {ActivityIndicator, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
 import {useAccountLogic} from '../hooks/useAccountLogic';
 import {useGetVenue} from '../api/vanue';
-import WelcomeTab from '../components/WelcomeTab';
-import {downloadAndOpenPdf} from '../utils/downloadPdf';
-import {useToast} from '../context/ToastContext';
 import {styles} from '../styles/HomeScreenStyles';
-import LayoutWithHeader from '../components/LayoutWithHeader';
 import AppHeader from '../components/AppHeader';
+import DatePicker from 'react-native-date-picker';
+import Icon from 'react-native-vector-icons/Ionicons';
+import BookingStatusChart from '../components/BookingStatusChart';
+import DashboardBarChart from '../components/DashboardBarChart';
 
 const HomeScreen = () => {
   const {account, isLoading: accountLoading} = useAccountLogic();
   const [selectedVenue, setSelectedVenue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
   const {data: venuedata, refetch: refetchVenue} = useGetVenue();
-  const {showToast} = useToast();
-
+  const [date, setDate] = useState(new Date());
+  const [open, setOpen] = useState(false);
   const hasVenues =
     Array.isArray(venuedata?.venues) && venuedata.venues.length > 0;
 
@@ -71,75 +69,52 @@ const HomeScreen = () => {
 
   const statusData = [
     {
-      name: 'Confirmed',
-      population: data?.statusCounts?.CONFIRMED ?? 0,
-      color: '#f3f04d',
-      legendFontColor: '#000',
-      legendFontSize: 12,
-    },
-    {
       name: 'Cancelled',
       population: data?.statusCounts?.CANCELLED ?? 0,
-      color: '#f36b62',
-      legendFontColor: '#000',
+      color: '#6e722d',
+      legendFontColor: '#ffffff',
       legendFontSize: 12,
     },
     {
       name: 'Pending',
       population: data?.statusCounts?.PENDING ?? 0,
-      color: '#f5b556',
-      legendFontColor: '#000',
+      color: '#c8be2e',
+      legendFontColor: '#ffffff',
       legendFontSize: 12,
     },
     {
-      name: 'Completed',
-      population: data?.statusCounts?.COMPLETED ?? 0,
-      color: '#69b86c',
-      legendFontColor: '#000',
+      name: 'Confirmed',
+      population: data?.statusCounts?.CONFIRMED ?? 0,
+      color: '#d2e403',
+      legendFontColor: '#ffffff',
       legendFontSize: 12,
     },
   ];
 
-  const chartConfig = {
-    backgroundGradientFrom: '#ffffff',
-    backgroundGradientTo: '#ffffff',
-    decimalPlaces: 0,
-    color: (opacity = 1) => `rgba(33, 150, 243, ${opacity})`,
-    labelColor: () => '#000',
-    style: {
-      borderRadius: 16,
-    },
-    propsForDots: {
-      r: '6',
-      strokeWidth: '2',
-      stroke: '#2196f3',
-    },
-  };
-
   const analyticsData = [
     {
       id: '1',
-      title: 'New Players count',
+      title: "Today's Booking",
       count: `${newuserCount}`,
-      icon: 'person',
-    },
-    {
-      id: '2',
-      title: "This Month's Booking",
-      count: `${monthsBookingCount}`,
       icon: 'calendar',
     },
     {
-      id: '3',
-      title: "This Month's Total Amount",
-      count: `${monthTotalAmount}`,
+      id: '2',
+      title: 'Total Income This Month',
+      count: `${monthsBookingCount}`,
       icon: 'cash',
     },
     {
+      id: '3',
+      title: 'Total Booking this Month',
+      count: `${monthTotalAmount}`,
+      icon: 'calendar',
+    },
+    {
       id: '4',
-      title: "Today's Booking",
+      title: 'New Customer This Month',
       count: `${bookingsToday}`,
-      icon: 'calendar-number',
+      icon: 'people-outline',
     },
   ];
 
@@ -154,91 +129,144 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <AppHeader />
-      {hasVenues ? (
-        <ScrollView
-          style={styles.container}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-          }>
-          <Title style={styles.heading}>Dashboard</Title>
-          <View style={styles.headcontainer}>
-            <Text style={styles.Heading1}>Welcome Back, John...👋</Text>
-            <Text style={styles.paragraph}>
-              There is the latest update for the last 7 days. Check now.
-            </Text>
-            <View style={styles.buttoncontainer}>
-              <Button
-                mode="outlined"
-                style={styles.button}
-                onPress={() => downloadAndOpenPdf(selectedVenue, showToast)}>
-                Export
-              </Button>
-              <Button mode="contained" style={styles.button}>
-                Create
-              </Button>
-              <IconButton
-                icon="add-circle"
-                onPress={() => (navigation as any).navigate('Addvenue')}
-                size={30}
-              />
-            </View>
-          </View>
-          <View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.tabContainer}>
-              {venuedata &&
-                (venuedata?.venues || []).map((venue: any) => (
-                  <TouchableOpacity
-                    key={venue.id}
-                    style={[
-                      styles.tabButton,
-                      selectedVenue === venue.id && styles.tabButtonActive,
-                    ]}
-                    onPress={() => setSelectedVenue(venue.id)}>
-                    <Text
-                      style={[
-                        styles.tabButtonText,
-                        selectedVenue === venue.id &&
-                          styles.tabButtonTextActive,
-                      ]}>
-                      {venue.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-            </ScrollView>
-          </View>
 
-          <Button
-            mode="contained"
-            style={styles.book}
-            onPress={() =>
-              (navigation as any).navigate('bookingData', {
-                venueId: selectedVenue,
-              })
-            }>
-            Book Game
-          </Button>
-          <Card style={styles.performanceCard}>
-            <Text style={styles.cardTitle}>📊 Analytics</Text>
-            <View style={styles.analyticsGrid}>
-              {analyticsData.map(item => (
-                <View key={item.id} style={styles.analyticsBox}>
-                  <View style={styles.iconWrap}>
-                    <Icon source={item.icon} size={22} color="#fff" />
+      {/* {!hasVenues ? ( */}
+
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
+        <ImageBackground
+          source={require('../assets/ScreenShaded.png')}
+          style={styles.headerGlow}
+          resizeMode="cover">
+          <View>
+            <View
+              style={{
+                padding: 15,
+                borderBottomColor: '#252525',
+                borderBottomWidth: 1,
+              }}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  paddingVertical: 20,
+                  alignItems: 'flex-end',
+                }}>
+                <Text style={styles.heading}>ANALYTICS</Text>
+                <TouchableOpacity
+                  onPress={() => setOpen(true)}
+                  style={styles.dateButton}>
+                  <Icon name="calendar" size={20} color="white" />
+                  <Text style={styles.dateText}>
+                    {date.toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: 'short',
+                    })}
+                  </Text>
+                  <Icon name="chevron-down" size={16} color="white" />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.analyticsGrid}>
+                {analyticsData.map(item => (
+                  <View key={item.id} style={styles.analyticsBox}>
+                    <Text style={styles.analyticsLabel}>{item.title}</Text>
+                    <View style={styles.iconWrap}>
+                      <Icon name={item.icon} size={22} color="#fff" />
+                      <Text style={styles.analyticsValue}>{item.count}</Text>
+                    </View>
                   </View>
-                  <Text style={styles.analyticsValue}>{item.count}</Text>
-                  <Text style={styles.analyticsLabel}>{item.title}</Text>
-                </View>
-              ))}
+                ))}
+              </View>
             </View>
-          </Card>
-        </ScrollView>
-      ) : (
+            <View style={styles.chartcontainer}>
+              <View style={{padding: 20, gap: 16}}>
+                <Text style={styles.heading}>ACTIVITY</Text>
+                <View style={styles.ChartCard}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-end',
+                      paddingBottom: 16,
+                    }}>
+                    <View style={{gap: 10, flexDirection: 'row'}}>
+                      <Icon name="calendar" size={20} color="white" />
+                      <Text style={styles.dateText}>Booking Status</Text>
+                    </View>
+
+                    <TouchableOpacity
+                      onPress={() => setOpen(true)}
+                      style={styles.dateButton}>
+                      <Text style={styles.dateText}>
+                        {date.toLocaleDateString('en-GB', {
+                          month: 'short',
+                        })}
+                      </Text>
+                      <Icon name="chevron-down" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                  <BookingStatusChart />
+                </View>
+              </View>
+            </View>
+            <View style={styles.chartcontainer}>
+              <View style={{padding: 20, gap: 16}}>
+                <View style={styles.ChartCard}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-end',
+                      paddingBottom: 16,
+                    }}>
+                    <View style={{gap: 10, flexDirection: 'row'}}>
+                      <Icon name="calendar" size={20} color="white" />
+                      <Text style={styles.dateText}>Weekly Booking</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => setOpen(true)}
+                      style={styles.dateButton}>
+                      <Text style={styles.dateText}>
+                        {date.toLocaleDateString('en-GB', {
+                          month: 'short',
+                        })}
+                      </Text>
+                      <Icon name="chevron-down" size={16} color="white" />
+                    </TouchableOpacity>
+                  </View>
+                  <DashboardBarChart />
+                </View>
+              </View>
+            </View>
+            <View style={{paddingVertical: 40, paddingHorizontal: 20}}>
+              <Text style={styles.bottomText}>
+                With Love {'\n'} TurfKeeper
+              </Text>
+            </View>
+          </View>
+        </ImageBackground>
+      </ScrollView>
+      <DatePicker
+        modal
+        open={open}
+        date={date}
+        mode="date"
+        onConfirm={selectedDate => {
+          setOpen(false);
+          setDate(selectedDate);
+        }}
+        onCancel={() => setOpen(false)}
+        theme="dark"
+      />
+
+      {/* ) : (
         <WelcomeTab />
-      )}
+      )} */}
     </SafeAreaView>
   );
 };
