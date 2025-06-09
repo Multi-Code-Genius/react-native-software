@@ -198,17 +198,6 @@ const HomeScreen = () => {
                       <Icon name="calendar" size={20} color="white" />
                       <Text style={styles.dateText}>Booking Status</Text>
                     </View>
-
-                    <TouchableOpacity
-                      onPress={() => setOpen(true)}
-                      style={styles.dateButton}>
-                      <Text style={styles.dateText}>
-                        {date.toLocaleDateString('en-GB', {
-                          month: 'short',
-                        })}
-                      </Text>
-                      <Icon name="chevron-down" size={16} color="white" />
-                    </TouchableOpacity>
                   </View>
                   <BookingStatusChart />
                 </View>
@@ -228,25 +217,13 @@ const HomeScreen = () => {
                       <Icon name="calendar" size={20} color="white" />
                       <Text style={styles.dateText}>Weekly Booking</Text>
                     </View>
-                    <TouchableOpacity
-                      onPress={() => setOpen(true)}
-                      style={styles.dateButton}>
-                      <Text style={styles.dateText}>
-                        {date.toLocaleDateString('en-GB', {
-                          month: 'short',
-                        })}
-                      </Text>
-                      <Icon name="chevron-down" size={16} color="white" />
-                    </TouchableOpacity>
                   </View>
                   <DashboardBarChart />
                 </View>
               </View>
             </View>
             <View style={{paddingVertical: 40, paddingHorizontal: 20}}>
-              <Text style={styles.bottomText}>
-                With Love {'\n'} TurfKeeper
-              </Text>
+              <Text style={styles.bottomText}>With Love {'\n'} TurfKeeper</Text>
             </View>
           </View>
         </ImageBackground>

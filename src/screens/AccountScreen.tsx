@@ -78,47 +78,6 @@ const AccountScreen = () => {
     <View style={styles.container}>
       <AppHeader />
       <View style={styles.header}>
-        <View style={styles.headerRow}>
-          <Text style={styles.title}>Account</Text>
-        </View>
-        <View style={styles.profileContainer}>
-          {isPending ? (
-            <ActivityIndicator color="#0c0c0c" />
-          ) : (
-            <>
-              {data?.user?.profile_pic ? (
-                <View style={styles.profileImageWrapper}>
-                  <Image
-                    source={{uri: data?.user?.profile_pic}}
-                    style={styles.profileImage}
-                  />
-                  <IconButton
-                    icon="pencil"
-                    size={20}
-                    iconColor="white"
-                    onPress={() =>
-                      (navigation as any).navigate('Profile', {data})
-                    }
-                    style={styles.iconOverlay}
-                  />
-                </View>
-              ) : (
-                <View style={styles.profileImageWrapper}>
-                  <View style={styles.profileImage} />
-                  <IconButton
-                    icon="pencil"
-                    size={20}
-                    iconColor="white"
-                    onPress={() =>
-                      (navigation as any).navigate('Profile', {data})
-                    }
-                    style={styles.iconOverlay}
-                  />
-                </View>
-              )}
-            </>
-          )}
-        </View>
         <Text style={styles.userName}>{data?.user?.name || 'User Name'}</Text>
         <Text style={styles.userEmail}>
           {data?.user?.email || 'example@email.com'}

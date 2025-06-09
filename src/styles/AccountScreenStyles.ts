@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     paddingVertical: 30,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#000',
   },
   title: {
     fontSize: 24,
