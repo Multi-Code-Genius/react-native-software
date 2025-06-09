@@ -5,8 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
 
 const BasicDetailsComponent = () => {
-  const updateField = useVenueStore(state => state.updateField);
-  const formData = useVenueStore(state => state.formData);
+  const {formData, updateField} = useVenueStore();
 
   return (
     <ScrollView
@@ -69,7 +68,7 @@ const BasicDetailsComponent = () => {
             multiline
             numberOfLines={16}
             onChangeText={text => updateField('address', text)}
-            value={formData.description || ''}
+            value={formData.address || ''}
           />
         </View>
       </View>

@@ -61,6 +61,8 @@ const AddVenueScreen = () => {
     } else {
       console.log('All steps completed', formData);
       mutate(formData);
+
+      console.log('formData', formData);
     }
   };
 

@@ -4,8 +4,6 @@ import {api} from '../hooks/api';
 
 export const requestOtp = async (payload: {phone: string; name: string}) => {
   try {
-    console.log('phome', payload);
-
     const response = await api('/auth/send-otp', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
@@ -14,7 +12,7 @@ export const requestOtp = async (payload: {phone: string; name: string}) => {
     return await response;
   } catch (error: any) {
     console.log('login Error', error.message);
-    throw error; // rethrow so mutation can catch it
+    throw error;
   }
 };
 

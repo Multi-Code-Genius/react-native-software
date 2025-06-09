@@ -43,9 +43,6 @@ const LoginScreen = () => {
         onSuccess: () => {
           navigation.navigate('OtpVerify', {phone});
         },
-        onError: (err: any) => {
-          Alert.alert('OTP Error', err.message || 'Failed to send OTP.');
-        },
       },
     );
   };
@@ -94,7 +91,7 @@ const LoginScreen = () => {
             style={[
               styles.button,
               {
-                backgroundColor: isFormValid ? '#B2C000' : '#999',
+                backgroundColor: isFormValid ? '#B2C000' : '#B2C000',
               },
             ]}
             onPress={sendOtp}
