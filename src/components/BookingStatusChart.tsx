@@ -1,28 +1,46 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
-import Svg, {G, Circle} from 'react-native-svg';
-import {useDashboardData} from '../api/dashboard';
-import {useAccountLogic} from '../hooks/useAccountLogic';
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import Svg, {Circle, G} from 'react-native-svg';
 
 const SIZE = 250;
 const STROKE_WIDTH = 30;
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export default function RoundedDonutChart() {
+export default function RoundedDonutChart({thisMonthBookings}: []) {
   let offset = 0;
-  const {account, isLoading: accountLoading} = useAccountLogic();
-  const [selectedVenue, setSelectedVenue] = useState<string>('');
-  const {
-    data,
-    refetch: refetchDashboard,
-    isLoading,
-  } = useDashboardData(selectedVenue, account?.id || '');
+
+  let cancel = 0;
+  let confirm = 0;
+  let pending = 0;
+
+  thisMonthBookings.map((i: any) => {
+    if (i.status === 'PENDING') {
+      return pending++;
+    } else if (i.status === 'CANCELLED') {
+      return cancel++;
+    } else if (i.status === 'CONFIRMED') {
+      return confirm++;
+    }
+  });
+
+  const total = cancel + confirm + pending;
+
   const chartdata = [
-    {value: data?.statusCounts?.CANCELLED ?? 0, color: '#B2C000'},
-    {value: data?.statusCounts?.PENDING ?? 0, color: '#5E6600'},
-    {value: data?.statusCounts?.CONFIRMED ?? 0, color: '#383C1D'},
+    {
+      value: total > 0 ? (cancel / total) * 100 : 0,
+      color: '#B2C000',
+    },
+    {
+      value: total > 0 ? (pending / total) * 100 : 0,
+      color: '#5E6600',
+    },
+    {
+      value: total > 0 ? (confirm / total) * 100 : 0,
+      color: '#383C1D',
+    },
   ];
+
   return (
     <View
       style={{width: '100%', justifyContent: 'center', alignItems: 'center'}}>
@@ -51,7 +69,7 @@ export default function RoundedDonutChart() {
                   strokeWidth={STROKE_WIDTH}
                   strokeDasharray={strokeDasharray}
                   strokeDashoffset={offset}
-                  strokeLinecap="round"
+                  strokeLinecap="butt"
                   fill="none"
                 />
               );
@@ -62,15 +80,13 @@ export default function RoundedDonutChart() {
         </Svg>
 
         <View style={styles.centerLabel}>
-          <Text style={styles.count}>50</Text>
+          <Text style={styles.count}>{thisMonthBookings.length}</Text>
           <Text style={styles.label}>Total{'\n'}Bookings</Text>
         </View>
       </View>
       <View style={styles.legendContainer}>
         <View style={styles.legendItem}>
-          <Text style={[styles.legendCount, {color: '#B2C000'}]}>
-            {data?.statusCounts?.CANCELLED ?? 0}
-          </Text>
+          <Text style={[styles.legendCount, {color: '#B2C000'}]}>{cancel}</Text>
           <View style={styles.legendLabelContainer}>
             <View style={[styles.dot, {backgroundColor: '#B2C000'}]} />
             <Text style={styles.legendLabel}>Cancelled</Text>
@@ -79,7 +95,7 @@ export default function RoundedDonutChart() {
 
         <View style={styles.legendItem}>
           <Text style={[styles.legendCount, {color: '#5E6600'}]}>
-            {data?.statusCounts?.PENDING ?? 0}
+            {pending}
           </Text>
           <View style={styles.legendLabelContainer}>
             <View style={[styles.dot, {backgroundColor: '#5E6600'}]} />
@@ -89,7 +105,7 @@ export default function RoundedDonutChart() {
 
         <View style={styles.legendItem}>
           <Text style={[styles.legendCount, {color: '#383C1D'}]}>
-            {data?.statusCounts?.CONFIRMED ?? 0}
+            {confirm}
           </Text>
           <View style={styles.legendLabelContainer}>
             <View style={[styles.dot, {backgroundColor: '#383C1D'}]} />
