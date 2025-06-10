@@ -19,6 +19,7 @@ import {useNavigation} from '@react-navigation/native';
 import VenueGround from '../components/VenueGround';
 import VenueImage from '../components/VenueImage';
 import LinearGradient from 'react-native-linear-gradient';
+import ImageUpload from '../components/ImageUplod';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
@@ -52,7 +53,7 @@ const AddVenueScreen = () => {
     <BasicDetailsComponent key="step1" />,
     <VenueDetails key="step2" />,
     <VenueGround key="step3" />,
-    <VenueImage key="step4" />,
+    <ImageUpload key="step4" />,
   ];
 
   const goNext = () => {
@@ -110,16 +111,12 @@ const AddVenueScreen = () => {
           </View>
           <View style={{flex: 1}}>{steps[currentStep]}</View>
           <View style={styles.container}>
-            {currentStep === 0 || currentStep === steps.length - 1 ? (
+            {currentStep !== 0 ? (
               <>
                 <TouchableOpacity
-                  style={[
-                    styles.input,
-                    currentStep === 0 && styles.disabledButton,
-                  ]}
-                  onPress={goPrevious}
-                  disabled={currentStep === 0}>
-                  <Text style={styles.text}>Previous</Text>
+                  style={[styles.disabledButton]}
+                  onPress={goPrevious}>
+                  <Text style={styles.text1}>Previous</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -208,15 +205,24 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     flex: 1,
   },
+  disabledButton: {
+    backgroundColor: '#3E4102',
+    paddingHorizontal: 24,
+    paddingVertical: 18,
+    marginVertical: 16,
+    flex: 1,
+  },
   text: {
-    color: 'black',
     textAlign: 'center',
     fontWeight: 'bold',
+    color: '#000',
   },
-  disabledButton: {
-    backgroundColor: '#242600',
-    color: 'white',
+  text1: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#fff',
   },
+
   headerContainer: {
     paddingVertical: 10,
     paddingHorizontal: 16,

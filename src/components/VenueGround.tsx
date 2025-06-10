@@ -1,15 +1,46 @@
-import React, {useState} from 'react';
-import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
-import {useVenueStore} from '../store/useVenueStore';
+import React from 'react';
+import {
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {styles} from '../styles/VenueDetailsStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useVenueStore} from '../store/useVenueStore';
 
 const VenueGround = () => {
-  const updateField = useVenueStore(state => state.updateField);
-  const formData = useVenueStore(state => state.formData);
-  const [isGround1Open, setIsGround1Open] = useState(false);
-  const [isNewGround, setIsNewGround] = useState(false);
-  const [value, setValue] = useState(null);
+  const {formData, updateGroundField, addGround} = useVenueStore();
+  const grounds = formData.ground_details || [];
+
+  console.log('formdata>>>', formData);
+  const [expandedIds, setExpandedIds] = React.useState<number[]>([1]);
+
+  const toggleExpand = (id: number) => {
+    setExpandedIds(prev =>
+      prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id],
+    );
+  };
+
+  const handleChange = (
+    index: number,
+    field: 'width' | 'height' | 'capacity' | 'hourly_price',
+    value: string,
+  ) => {
+    const numericValue = parseFloat(value) || 0;
+    updateGroundField(index, field, numericValue);
+  };
+
+  const isGroundFilled = (ground: any) => {
+    return (
+      ground.width > 0 &&
+      ground.height > 0 &&
+      ground.capacity > 0 &&
+      ground.hourly_price > 0
+    );
+  };
+
   return (
     <ScrollView
       style={styles.container}
@@ -17,55 +48,10 @@ const VenueGround = () => {
       showsVerticalScrollIndicator={false}>
       <Text style={styles.head}>Venue Size & Price</Text>
 
-      <View style={styles.card}>
-        <TouchableOpacity
-          onPress={() => setIsGround1Open(prev => !prev)}
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            backgroundColor: '#272727',
-            padding: 10,
-          }}>
-          <Text style={styles.head1}>Ground 1</Text>
-          <Icon
-            name={isGround1Open ? 'arrow-up' : 'arrow-down'}
-            size={24}
-            color="#fff"
-          />
-        </TouchableOpacity>
-        <View>
-          {isGround1Open && (
-            <View style={{backgroundColor: '#272727'}}>
-              <View style={styles.row}>
-                <View style={styles.inputBox}>
-                  <Icon name="arrow-split-vertical" size={20} color="#fff" />
-                  <Text style={styles.inputText}>width</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <Icon name="arrow-split-horizontal" size={20} color="#fff" />
-                  <Text style={styles.inputText}>height</Text>
-                </View>
-              </View>
-
-              <View style={styles.row}>
-                <View style={styles.inputBox}>
-                  <Icon name="account-group-outline" size={20} color="#fff" />
-                  <Text style={styles.inputText}>Max Player</Text>
-                </View>
-                <View style={styles.inputBox}>
-                  <Icon name="currency-rupee" size={20} color="#fff" />
-                  <Text style={styles.inputText}>Price</Text>
-                </View>
-              </View>
-            </View>
-          )}
-        </View>
-      </View>
-      <View style={styles.card}>
-        {isNewGround ? (
+      {grounds.map((ground, index) => (
+        <View key={ground.ground} style={styles.card}>
           <TouchableOpacity
-            onPress={() => setIsNewGround(prev => !prev)}
+            onPress={() => toggleExpand(ground.ground)}
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -73,56 +59,98 @@ const VenueGround = () => {
               backgroundColor: '#272727',
               padding: 10,
             }}>
-            <Text style={styles.head1}>Ground 2</Text>
+            <Text style={styles.head1}>Ground {ground.ground}</Text>
             <Icon
-              name={isGround1Open ? 'arrow-up' : 'arrow-down'}
+              name={
+                expandedIds.includes(ground.ground) ? 'arrow-up' : 'arrow-down'
+              }
               size={24}
               color="#fff"
             />
           </TouchableOpacity>
-        ) : (
-          <View
-            style={{
-              borderWidth: 1,
-              borderColor: '#837d7d',
-              padding: 10,
-              width: '50%',
-              borderRadius: 20,
+
+          {expandedIds.includes(ground.ground) && (
+            <View style={{backgroundColor: '#272727'}}>
+              <View style={styles.row}>
+                <View style={styles.inputBox}>
+                  <Icon name="arrow-split-vertical" size={20} color="#fff" />
+
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Width"
+                    placeholderTextColor="#717171"
+                    keyboardType="numeric"
+                    value={ground.width?.toString() || ''}
+                    onChangeText={text => handleChange(index, 'width', text)}
+                  />
+                </View>
+                <View style={styles.inputBox}>
+                  <Icon name="arrow-split-horizontal" size={20} color="#fff" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Height"
+                    placeholderTextColor="#717171"
+                    keyboardType="numeric"
+                    value={ground.height?.toString() || ''}
+                    onChangeText={text => handleChange(index, 'height', text)}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.row}>
+                <View style={styles.inputBox}>
+                  <Icon name="account-group-outline" size={20} color="#fff" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Capacity"
+                    placeholderTextColor="#717171"
+                    keyboardType="numeric"
+                    value={ground.capacity?.toString() || ''}
+                    onChangeText={text => handleChange(index, 'capacity', text)}
+                  />
+                </View>
+                <View style={styles.inputBox}>
+                  <Icon name="currency-rupee" size={20} color="#fff" />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Price"
+                    placeholderTextColor="#717171"
+                    keyboardType="numeric"
+                    value={ground.hourly_price?.toString() || ''}
+                    onChangeText={text =>
+                      handleChange(index, 'hourly_price', text)
+                    }
+                  />
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
+      ))}
+
+      {isGroundFilled(grounds[grounds.length - 1]) && (
+        <View
+          style={{
+            borderWidth: 1,
+            borderColor: '#837d7d',
+            padding: 10,
+            width: '50%',
+            borderRadius: 20,
+            marginTop: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => {
+              const newGroundId =
+                (grounds[grounds.length - 1]?.ground || 0) + 1;
+              addGround();
+              setExpandedIds(prev => [...prev, newGroundId]);
             }}>
-            <TouchableOpacity onPress={() => setIsNewGround(prev => !prev)}>
-              <Text style={{color: '#fff', textAlign: 'center'}}>
-                Add Ground 2 +
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        {isNewGround && (
-          <View style={{backgroundColor: '#272727'}}>
-            <View style={styles.row}>
-              <View style={styles.inputBox}>
-                <Icon name="arrow-split-vertical" size={20} color="#fff" />
-                <Text style={styles.inputText}>width</Text>
-              </View>
-              <View style={styles.inputBox}>
-                <Icon name="arrow-split-horizontal" size={20} color="#fff" />
-                <Text style={styles.inputText}>height</Text>
-              </View>
-            </View>
-
-            <View style={styles.row}>
-              <View style={styles.inputBox}>
-                <Icon name="account-group-outline" size={20} color="#fff" />
-                <Text style={styles.inputText}>Max Player</Text>
-              </View>
-              <View style={styles.inputBox}>
-                <Icon name="currency-rupee" size={20} color="#fff" />
-                <Text style={styles.inputText}>Price</Text>
-              </View>
-            </View>
-          </View>
-        )}
-      </View>
+            <Text style={{color: '#fff', textAlign: 'center'}}>
+              Add Ground {grounds.length + 1} +
+            </Text>
+          </TouchableOpacity>
+        </View>
+      )}
     </ScrollView>
   );
 };

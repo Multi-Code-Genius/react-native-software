@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -9,14 +9,31 @@ import {
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
 import {styles} from '../styles/VenueDetailsStyles';
+import DatePicker from 'react-native-date-picker';
 
 const VenueDetails = () => {
   const updateField = useVenueStore(state => state.updateField);
   const formData = useVenueStore(state => state.formData);
-
+  console.log('formdata>>', formData);
   const sportTypes = ['Cricket', 'Football'];
   const venueTypes = ['Outdoor', 'Indoor', 'Roof'];
 
+  const [openingTime, setOpeningTime] = useState(
+    formData?.gameInfo?.openingTime
+      ? new Date(formData.gameInfo.openingTime)
+      : new Date(),
+  );
+  const [closingTime, setClosingTime] = useState(
+    formData?.gameInfo?.closingTime
+      ? new Date(formData.gameInfo.closingTime)
+      : new Date(),
+  );
+
+  const [showOpeningPicker, setShowOpeningPicker] = useState(false);
+  const [showClosingPicker, setShowClosingPicker] = useState(false);
+
+  const formatTime = (date: Date) =>
+    date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
   return (
     <ScrollView
       style={styles.container}
@@ -44,13 +61,14 @@ const VenueDetails = () => {
           {sportTypes.map(type => (
             <TouchableOpacity
               key={type}
-              onPress={() => updateField('sportType', type)}
+              onPress={() => updateField('type', type)}
               style={[
                 styles.inputWrapper2,
                 {
-                  borderColor: formData.sportType === type ? '#B2C000' : '#999',
+                  borderColor:
+                    formData.gameInfo?.type === type ? '#B2C000' : '#999',
                   backgroundColor:
-                    formData.sportType === type ? '#1D1D1D' : '#333',
+                    formData.gameInfo?.type === type ? '#1D1D1D' : '#333',
                 },
               ]}>
               <Icon
@@ -62,7 +80,10 @@ const VenueDetails = () => {
               <Text
                 style={[
                   styles.input2,
-                  {color: formData.sportType === type ? '#B2C000' : '#fff'},
+                  {
+                    color:
+                      formData.gameInfo?.type === type ? '#B2C000' : '#fff',
+                  },
                 ]}>
                 {type}
               </Text>
@@ -77,19 +98,19 @@ const VenueDetails = () => {
           {venueTypes.map(type => (
             <TouchableOpacity
               key={type}
-              onPress={() => updateField('venueType', type)}
+              onPress={() => updateField('category', type)}
               style={[
                 styles.inputWrapper3,
                 {
-                  borderColor: formData.venueType === type ? '#B2C000' : '#999',
+                  borderColor: formData.category === type ? '#B2C000' : '#999',
                   backgroundColor:
-                    formData.venueType === type ? '#1D1D1D' : '#333',
+                    formData.category === type ? '#1D1D1D' : '#333',
                 },
               ]}>
               <Text
                 style={[
                   styles.input3,
-                  {color: formData.venueType === type ? '#B2C000' : '#fff'},
+                  {color: formData.category === type ? '#B2C000' : '#fff'},
                 ]}>
                 {type}
               </Text>
@@ -102,27 +123,56 @@ const VenueDetails = () => {
         <View style={{flexDirection: 'row', width: '100%', gap: 10}}>
           <View style={{width: '50%', flexDirection: 'column', gap: 10}}>
             <Text style={styles.label}>Opening Time</Text>
-            <View style={styles.inputWrapper4}>
+            <TouchableOpacity
+              style={styles.inputWrapper4}
+              onPress={() => setShowOpeningPicker(true)}>
               <Icon
                 name="clock-time-ten"
                 size={20}
                 color="#888888"
                 style={styles.icon}
               />
-              <Text style={styles.input2}>06.00 am</Text>
-            </View>
+              <Text style={styles.input2}>{formatTime(openingTime)}</Text>
+            </TouchableOpacity>
+            <DatePicker
+              modal
+              mode="time"
+              open={showOpeningPicker}
+              date={openingTime}
+              onConfirm={date => {
+                setShowOpeningPicker(false);
+                setOpeningTime(date);
+                updateField('openingTime', date.toISOString());
+              }}
+              onCancel={() => setShowOpeningPicker(false)}
+            />
           </View>
+
           <View style={{width: '50%', flexDirection: 'column', gap: 10}}>
             <Text style={styles.label}>Closing Time</Text>
-            <View style={styles.inputWrapper4}>
+            <TouchableOpacity
+              style={styles.inputWrapper4}
+              onPress={() => setShowClosingPicker(true)}>
               <Icon
                 name="clock-time-three"
                 size={20}
                 color="#888888"
                 style={styles.icon}
               />
-              <Text style={styles.input2}>01.00 pm</Text>
-            </View>
+              <Text style={styles.input2}>{formatTime(closingTime)}</Text>
+            </TouchableOpacity>
+            <DatePicker
+              modal
+              mode="time"
+              open={showClosingPicker}
+              date={closingTime}
+              onConfirm={date => {
+                setShowClosingPicker(false);
+                setClosingTime(date);
+                updateField('closingTime', date.toISOString());
+              }}
+              onCancel={() => setShowClosingPicker(false)}
+            />
           </View>
         </View>
       </View>

@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     borderColor: '#333',
     borderWidth: 1,
     borderRadius: 4,
-    padding: 10,
+    paddingHorizontal: 10,
     marginRight: 10,
     flexDirection: 'row',
     alignItems: 'center',

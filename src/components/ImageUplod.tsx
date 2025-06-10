@@ -13,12 +13,15 @@ import {
 import {Asset, launchImageLibrary} from 'react-native-image-picker';
 import {useVenueStore} from '../store/useVenueStore';
 import {styles} from '../styles/ImageUploadStyles';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const MAX_IMAGES = 10;
 
 const ImageUpload = () => {
   const [images, setImages] = useState<Asset[]>([]);
   const updateField = useVenueStore(state => state.updateField);
+  const {formData} = useVenueStore();
+  console.log('fomrdata>>><<', formData);
 
   const requestPermission = async () => {
     if (Platform.OS === 'android') {
@@ -78,7 +81,8 @@ const ImageUpload = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.heading}>Images</Text>
+      <Text style={styles.head}>Image</Text>
+      <Text style={styles.label}>venue Image</Text>
       <View style={styles.imageGrid}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageWrapper}>
@@ -91,9 +95,23 @@ const ImageUpload = () => {
           </View>
         ))}
         {images.length < MAX_IMAGES && (
-          <Pressable onPress={pickImage} style={styles.addButton}>
-            <Text style={styles.plusIcon}>+</Text>
-          </Pressable>
+          <View style={styles.card}>
+            <View
+              style={{
+                width: '100%',
+                backgroundColor: '#323232',
+                padding: 80,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderWidth: 1,
+                borderStyle: 'dashed',
+                borderColor: '#202020',
+              }}>
+              <Pressable onPress={pickImage} style={styles.backButton}>
+                <Icon name="plus" size={24} color="#000" />
+              </Pressable>
+            </View>
+          </View>
         )}
       </View>
     </ScrollView>

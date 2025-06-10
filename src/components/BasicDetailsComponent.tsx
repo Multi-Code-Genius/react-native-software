@@ -6,7 +6,7 @@ import {useVenueStore} from '../store/useVenueStore';
 
 const BasicDetailsComponent = () => {
   const {formData, updateField} = useVenueStore();
-
+  console.log('updateField>>>', formData);
   return (
     <ScrollView
       contentContainerStyle={styles.content}
@@ -39,7 +39,7 @@ const BasicDetailsComponent = () => {
             placeholder="Enter Area"
             placeholderTextColor="#717171"
             onChangeText={text => updateField('area', text)}
-            value={formData?.location?.city || ''}
+            value={formData?.location?.area || ''}
           />
         </View>
       </View>
