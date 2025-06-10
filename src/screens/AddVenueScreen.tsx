@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -10,21 +11,20 @@ import {
 import {ActivityIndicator} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import StepIndicator from 'react-native-step-indicator';
-import {useAddVenue} from '../api/vanue';
 import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import VenueDetails from '../components/VenueDetails';
 import {useVenueStore} from '../store/useVenueStore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import VenueGround from '../components/VenueGround';
-import VenueImage from '../components/VenueImage';
 import LinearGradient from 'react-native-linear-gradient';
 import ImageUpload from '../components/ImageUplod';
+import {useVenueMutations} from '../api/vanue';
 
 const AddVenueScreen = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const formData = useVenueStore(state => state.formData);
-  const {mutate, isPending} = useAddVenue();
+  const {formData: form} = useVenueStore();
+  const {createVenueMutation, uploadImagesMutation} = useVenueMutations();
   const navigation = useNavigation();
   const labels = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
   const customStyles = {
@@ -56,14 +56,29 @@ const AddVenueScreen = () => {
     <ImageUpload key="step4" />,
   ];
 
-  const goNext = () => {
+  const goNext = async () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {
-      console.log('All steps completed', formData);
-      mutate(formData);
+      console.log('form', form);
 
-      console.log('formData', formData);
+      const images = form.images || [];
+      try {
+        const result = await createVenueMutation.mutateAsync(form);
+        const venueId = result.venue?.id;
+
+        if (venueId && images.length > 0) {
+          const result2 = await uploadImagesMutation.mutateAsync({
+            venueId,
+            images,
+          });
+          console.log('Image Upload Success:', result2);
+        }
+
+        console.log('Venue Created:', result);
+      } catch (error) {
+        console.error('Error:', error.message);
+      }
     }
   };
 
@@ -119,29 +134,17 @@ const AddVenueScreen = () => {
                   <Text style={styles.text1}>Previous</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.input}
-                  onPress={goNext}
-                  disabled={isPending}>
-                  {isPending ? (
-                    <ActivityIndicator color="#fff" />
-                  ) : (
-                    <Text style={styles.text}>
-                      {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
-                    </Text>
-                  )}
+                <TouchableOpacity style={styles.input} onPress={goNext}>
+                  <Text style={styles.text}>
+                    {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+                  </Text>
                 </TouchableOpacity>
               </>
             ) : (
               <TouchableOpacity
                 style={[styles.input, {width: '100%'}]}
-                onPress={goNext}
-                disabled={isPending}>
-                {isPending ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.text}>Next</Text>
-                )}
+                onPress={goNext}>
+                <Text style={styles.text}>Next</Text>
               </TouchableOpacity>
             )}
           </View>

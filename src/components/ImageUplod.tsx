@@ -6,11 +6,10 @@ import {
   Platform,
   Pressable,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from 'react-native';
-import {Asset, launchImageLibrary} from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import {useVenueStore} from '../store/useVenueStore';
 import {styles} from '../styles/ImageUploadStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -18,10 +17,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const MAX_IMAGES = 10;
 
 const ImageUpload = () => {
-  const [images, setImages] = useState<Asset[]>([]);
+  const [images, setImages] = useState<any[]>([]);
   const updateField = useVenueStore(state => state.updateField);
-  const {formData} = useVenueStore();
-  console.log('fomrdata>>><<', formData);
 
   const requestPermission = async () => {
     if (Platform.OS === 'android') {
@@ -49,27 +46,35 @@ const ImageUpload = () => {
       return;
     }
 
-    launchImageLibrary(
-      {
+    try {
+      ImagePicker.openPicker({
+        width: 800,
+        height: 600,
+        cropping: false,
+        multiple: false,
         mediaType: 'photo',
-        quality: 1,
-      },
-      response => {
-        if (response.didCancel) {
-          console.log('User cancelled image picker');
-        } else if (response.errorMessage) {
-          Alert.alert('Error', response.errorMessage);
-        } else if (response.assets && response.assets.length > 0) {
-          const asset = response.assets[0];
-          if (asset.uri && images.length < MAX_IMAGES) {
-            const newImages = [...images, asset];
+        compressImageQuality: 1,
+      })
+        .then(image => {
+          const newImage = {
+            uri: image.path,
+            width: image.width,
+            height: image.height,
+            mime: image.mime,
+          };
 
-            setImages(newImages);
-            updateField('images', newImages);
-          }
-        }
-      },
-    );
+          const newImages = [...images, newImage];
+          setImages(newImages);
+          updateField('images', newImages);
+        })
+        .catch(err => {
+          console.log('Image pick error:', err);
+        });
+    } catch (error: any) {
+      if (error.message !== 'User cancelled image selection') {
+        Alert.alert('Error', error.message || 'Failed to pick image');
+      }
+    }
   };
 
   const removeImage = (index: number) => {
@@ -82,7 +87,7 @@ const ImageUpload = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.head}>Image</Text>
-      <Text style={styles.label}>venue Image</Text>
+      <Text style={styles.label}>Venue Image</Text>
       <View style={styles.imageGrid}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageWrapper}>

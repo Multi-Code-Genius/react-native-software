@@ -3,6 +3,9 @@ import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
+import {Platform} from 'react-native';
+import {useAuthStore} from '../store/authStore';
+import axios from 'axios';
 
 export const getVanues = async () => {
   try {
@@ -111,7 +114,6 @@ export const addVenue = async (data: Partial<VenueFormData>) => {
   try {
     const response = await api('/venue/create-venue', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
       body: JSON.stringify(data),
     });
@@ -163,4 +165,62 @@ export const useDeleteVenue = (
     },
     onError,
   });
+};
+
+const submitVenueData = async form => {
+  const clonedForm = JSON.parse(JSON.stringify(form));
+  delete clonedForm.images;
+
+  const formData = new FormData();
+  formData.append('data', JSON.stringify(clonedForm));
+
+  const response = await fetch(
+    'https://golang-backend-0xhw.onrender.com/api/v2/venue/create-venue',
+    {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${useAuthStore.getState().token}`,
+      },
+      body: formData,
+    },
+  );
+
+  if (!response.ok) throw new Error('Failed to create venue');
+  return response.json();
+};
+
+const uploadVenueImages = async ({venueId, images}) => {
+  const formData = new FormData();
+  images.forEach((img, index) => {
+    formData.append('images', {
+      uri: img.uri,
+      type: img.mime,
+      name: `image_${index}.jpg`,
+    });
+  });
+
+  const response = await axios.post(
+    `https://golang-backend-0xhw.onrender.com/api/v2/venue/images/${venueId}`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${useAuthStore.getState().token}`,
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  );
+
+  return response.data;
+};
+
+export const useVenueMutations = () => {
+  const createVenueMutation = useMutation({
+    mutationFn: submitVenueData,
+  });
+
+  const uploadImagesMutation = useMutation({
+    mutationFn: uploadVenueImages,
+  });
+
+  return {createVenueMutation, uploadImagesMutation};
 };
