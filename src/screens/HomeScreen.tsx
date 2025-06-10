@@ -1,5 +1,5 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useState} from 'react';
 import {
   ImageBackground,
   RefreshControl,
@@ -10,115 +10,87 @@ import {
 import {ActivityIndicator, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
-import {useAccountLogic} from '../hooks/useAccountLogic';
-import {useGetVenue} from '../api/vanue';
 import {styles} from '../styles/HomeScreenStyles';
 import AppHeader from '../components/AppHeader';
-import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BookingStatusChart from '../components/BookingStatusChart';
 import DashboardBarChart from '../components/DashboardBarChart';
+import MonthPicker from 'react-native-month-year-picker';
+import moment from 'moment';
 
 const HomeScreen = () => {
-  const {account, isLoading: accountLoading} = useAccountLogic();
-  const [selectedVenue, setSelectedVenue] = useState<string>('');
   const [refreshing, setRefreshing] = useState(false);
-  const {data: venuedata, refetch: refetchVenue} = useGetVenue();
   const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false);
-  const hasVenues =
-    Array.isArray(venuedata?.venues) && venuedata.venues.length > 0;
+  const [show, setShow] = useState(false);
+  const monthName = moment(date).format('MMMM').toLowerCase();
 
-  useEffect(() => {
-    if (account?.games?.length > 0) {
-      setSelectedVenue(account.games[0].id);
-    }
-  }, [account]);
+  const showPicker = useCallback((value: any) => setShow(value), []);
 
   const {
     data,
     refetch: refetchDashboard,
     isLoading,
-  } = useDashboardData(selectedVenue, account?.id || '');
-  const navigation = useNavigation();
+  } = useDashboardData(monthName, '');
 
-  useEffect(() => {
-    if (selectedVenue) {
+  const onValueChange = useCallback(
+    (_: any, newDate: any) => {
+      const selectedDate = newDate || date;
+      showPicker(false);
+      setDate(selectedDate);
       refetchDashboard();
-    }
-  }, [selectedVenue, refetchDashboard]);
+    },
+    [date, showPicker, refetchDashboard],
+  );
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetchVenue(), refetchDashboard()]);
+    await Promise.all([refetchDashboard()]);
     setRefreshing(false);
   };
+
   useFocusEffect(
     useCallback(() => {
       if (!isLoading) {
         refetchDashboard();
-        refetchVenue();
       }
-    }, [refetchDashboard, refetchVenue]),
+    }, [refetchDashboard, monthName]),
   );
 
   const monthsBookingCount = data?.ThisMonthBookings.length ?? 0;
+  const thisMonthBookings = data?.ThisMonthBookings ?? [];
+  const lastSevenDaysBookings = data?.lastSevenDaysBookings ?? [];
   const monthTotalAmount = data?.MonthTotalBookingAmount ?? 0;
   const bookingsToday = data?.todaysBookings.length ?? 0;
   const newuserCount = data?.NewCustomers.length ?? 0;
-
-  const statusData = [
-    {
-      name: 'Cancelled',
-      population: data?.statusCounts?.CANCELLED ?? 0,
-      color: '#6e722d',
-      legendFontColor: '#ffffff',
-      legendFontSize: 12,
-    },
-    {
-      name: 'Pending',
-      population: data?.statusCounts?.PENDING ?? 0,
-      color: '#c8be2e',
-      legendFontColor: '#ffffff',
-      legendFontSize: 12,
-    },
-    {
-      name: 'Confirmed',
-      population: data?.statusCounts?.CONFIRMED ?? 0,
-      color: '#d2e403',
-      legendFontColor: '#ffffff',
-      legendFontSize: 12,
-    },
-  ];
 
   const analyticsData = [
     {
       id: '1',
       title: "Today's Booking",
-      count: `${newuserCount}`,
+      count: `${bookingsToday}`,
       icon: 'calendar',
     },
     {
       id: '2',
       title: 'Total Income This Month',
-      count: `${monthsBookingCount}`,
+      count: `${monthTotalAmount}`,
       icon: 'cash',
     },
     {
       id: '3',
       title: 'Total Booking this Month',
-      count: `${monthTotalAmount}`,
+      count: `${monthsBookingCount}`,
       icon: 'calendar',
     },
     {
       id: '4',
       title: 'New Customer This Month',
-      count: `${bookingsToday}`,
+      count: `${newuserCount}`,
       icon: 'people-outline',
     },
   ];
 
-  if (accountLoading) {
+  if (isLoading) {
     return (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator />
@@ -129,8 +101,6 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <AppHeader />
-
-      {/* {!hasVenues ? ( */}
 
       <ScrollView
         style={styles.container}
@@ -158,14 +128,11 @@ const HomeScreen = () => {
                 }}>
                 <Text style={styles.heading}>ANALYTICS</Text>
                 <TouchableOpacity
-                  onPress={() => setOpen(true)}
+                  onPress={() => showPicker(true)}
                   style={styles.dateButton}>
                   <Icon name="calendar" size={20} color="white" />
                   <Text style={styles.dateText}>
-                    {date.toLocaleDateString('en-GB', {
-                      day: '2-digit',
-                      month: 'short',
-                    })}
+                    {moment(date).format('MM-YYYY')}
                   </Text>
                   <Icon name="chevron-down" size={16} color="white" />
                 </TouchableOpacity>
@@ -199,7 +166,7 @@ const HomeScreen = () => {
                       <Text style={styles.dateText}>Booking Status</Text>
                     </View>
                   </View>
-                  <BookingStatusChart />
+                  <BookingStatusChart thisMonthBookings={thisMonthBookings} />
                 </View>
               </View>
             </View>
@@ -218,7 +185,9 @@ const HomeScreen = () => {
                       <Text style={styles.dateText}>Weekly Booking</Text>
                     </View>
                   </View>
-                  <DashboardBarChart />
+                  <DashboardBarChart
+                    lastSevenDaysBookings={lastSevenDaysBookings}
+                  />
                 </View>
               </View>
             </View>
@@ -228,22 +197,9 @@ const HomeScreen = () => {
           </View>
         </ImageBackground>
       </ScrollView>
-      <DatePicker
-        modal
-        open={open}
-        date={date}
-        mode="date"
-        onConfirm={selectedDate => {
-          setOpen(false);
-          setDate(selectedDate);
-        }}
-        onCancel={() => setOpen(false)}
-        theme="dark"
-      />
-
-      {/* ) : (
-        <WelcomeTab />
-      )} */}
+      {show && (
+        <MonthPicker onChange={onValueChange} value={date} mode="short" />
+      )}
     </SafeAreaView>
   );
 };

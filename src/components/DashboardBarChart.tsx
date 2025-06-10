@@ -1,22 +1,35 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Svg, {Rect} from 'react-native-svg';
+import {isSameDay, subDays} from 'date-fns';
 
-const data = [
-  {day: 'Mon', value: 2},
-  {day: 'Tue', value: 4},
-  {day: 'Wed', value: 1},
-  {day: 'Thu', value: 3},
-  {day: 'Fri', value: 1},
-  {day: 'Sat', value: 5},
-  {day: 'Sun', value: 6},
-];
+const generatePastWeekBookingData = (bookings: any[]) => {
+  const today = new Date();
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const result: {day: string; value: number}[] = [];
+
+  for (let i = 6; i >= 0; i--) {
+    const currentDate = subDays(today, i);
+    const dayIndex = currentDate.getDay();
+    const dayName = daysOfWeek[dayIndex];
+
+    const count = bookings.filter(booking =>
+      isSameDay(new Date(booking.date), currentDate),
+    ).length;
+
+    result.push({day: dayName, value: count});
+  }
+
+  return result;
+};
 
 const MAX_VALUE = 6;
 const BAR_WIDTH = 18;
 const CHART_HEIGHT = 150;
 
-export default function DashboardBarChart() {
+export default function DashboardBarChart({lastSevenDaysBookings}: any) {
+  const data = generatePastWeekBookingData(lastSevenDaysBookings);
+
   return (
     <View style={styles.container}>
       <View style={styles.chartArea}>

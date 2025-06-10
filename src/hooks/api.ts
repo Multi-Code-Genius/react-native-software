@@ -55,10 +55,11 @@ export const api = async (endpoint: string, config: any = {}) => {
   }
 
   try {
-    const apiUrl = BASE_URL;
+    // const apiUrl = BASE_URL;
+
+    const apiUrl = 'http://192.168.21.140:1008';
 
     const response = await fetch(`${apiUrl}/api/v2${endpoint}`, requestConfig);
-    console.log('response', response);
 
     if (!response.ok) {
       const errorData = await response

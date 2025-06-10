@@ -1,9 +1,9 @@
 import {useQuery} from '@tanstack/react-query';
 import {api} from '../hooks/api';
 
-const getDashboardData = async (venueId: string) => {
+const getDashboardData = async (month: string) => {
   try {
-    const response = await api(`/dashboard/data/${venueId}`, {
+    const response = await api(`/dashboard/native/dashboard/${month}`, {
       method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
@@ -15,14 +15,14 @@ const getDashboardData = async (venueId: string) => {
   }
 };
 
-export const useDashboardData = (venueId: string, userId: string) => {
+export const useDashboardData = (month: string, userId: string) => {
   return useQuery({
-    queryKey: ['dashboard', venueId],
-    queryFn: () => getDashboardData(venueId),
+    queryKey: ['dashboard', month],
+    queryFn: () => getDashboardData(month),
     staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     retry: 0,
-    enabled: !!venueId && !!userId,
+    // enabled: !!month && !!userId,
   });
 };
