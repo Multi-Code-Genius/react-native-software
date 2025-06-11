@@ -1,4 +1,3 @@
-import {useRoute} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Alert,
@@ -7,17 +6,21 @@ import {
   ScrollView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {useUpdateAccountInfo} from '../api/account';
+import {useAccountInfo, useUpdateAccountInfo} from '../api/account';
 import {styles} from '../styles/ProfileScreenStyles';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {useToast} from '../context/ToastContext';
+import {ActivityIndicator} from 'react-native-paper';
 
 const ProfileInfoScreen = () => {
-  const [pressed, setPressed] = useState(false);
+  const {data} = useAccountInfo();
   const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
+  const {showToast} = useToast();
   const [formData, setFormData] = useState({
     email: 'example@test.com',
     name: 'Hit Wicket Turf & Sports Club',
@@ -28,19 +31,19 @@ const ProfileInfoScreen = () => {
     zip_code: '',
   });
 
-  // useEffect(() => {
-  //   if (data) {
-  //     setFormData({
-  //       email: data?.user?.email || '',
-  //       name: data?.user?.name || '',
-  //       phone: data?.user?.phone || '',
-  //       address: data?.user?.address || '',
-  //       city: data?.user?.city || '',
-  //       state: data?.user?.state || '',
-  //       zip_code: data?.user?.zip_code || '',
-  //     });
-  //   }
-  // }, []);
+  useEffect(() => {
+    if (data) {
+      setFormData({
+        email: data?.user?.email || '',
+        name: data?.user?.name || '',
+        phone: data?.user?.phone || '',
+        address: data?.user?.address || '',
+        city: data?.user?.city || '',
+        state: data?.user?.state || '',
+        zip_code: data?.user?.zip_code || '',
+      });
+    }
+  }, [data]);
 
   const handleChange = (key: string, value: string) => {
     setFormData(prev => ({
@@ -49,32 +52,41 @@ const ProfileInfoScreen = () => {
     }));
   };
 
-  // const handleSubmit = () => {
-  //   const updateFields: Partial<typeof formData> = {};
+  const handleSubmit = () => {
+    const updateFields: Partial<typeof formData> = {};
 
-  //   (Object.keys(formData) as (keyof typeof formData)[]).forEach(key => {
-  //     if (formData[key] !== data?.user?.[key]) {
-  //       updateFields[key] = formData[key];
-  //     }
-  //   });
+    (Object.keys(formData) as (keyof typeof formData)[]).forEach(key => {
+      if (formData[key] !== data?.user?.[key]) {
+        updateFields[key] = formData[key];
+      }
+    });
 
-  //   const userId = data?.user?.id;
+    const userId = data?.user?.id;
 
-  //   if (!userId) {
-  //     Alert.alert('Error', 'User ID not found.');
-  //     return;
-  //   }
+    if (!userId) {
+      Alert.alert('Error', 'User ID not found.');
+      return;
+    }
 
-  //   updateInfo(
-  //     {id: userId, data: updateFields},
-  //     {
-  //       onSuccess: () =>
-  //         Alert.alert('Success', 'Profile updated successfully!'),
-  //       onError: (error: any) =>
-  //         Alert.alert('Error', error?.message || 'Failed to update.'),
-  //     },
-  //   );
-  // };
+    updateInfo(
+      {id: userId, data: updateFields},
+      {
+        onSuccess: () => {
+          showToast({
+            message: 'Profile updated successfully',
+            showIcon: true,
+            type: 'success',
+          });
+        },
+        onError: (error: any) =>
+          showToast({
+            message: error.message,
+            showIcon: true,
+            type: 'error',
+          }),
+      },
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
@@ -141,6 +153,19 @@ const ProfileInfoScreen = () => {
                 </View>
               </View>
             </View>
+          </View>
+
+          <View style={styles.buttoncontainer}>
+            <TouchableOpacity
+              disabled={isPending}
+              style={styles.buttonBottom}
+              onPress={handleSubmit}>
+              {isPending ? (
+                <ActivityIndicator />
+              ) : (
+                <Text style={styles.buttonText}>Save</Text>
+              )}
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

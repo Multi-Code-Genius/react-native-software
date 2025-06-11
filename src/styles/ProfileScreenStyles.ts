@@ -106,4 +106,38 @@ export const styles = StyleSheet.create({
     fontWeight: 'medium',
     fontFamily: 'Montserrat-Regular',
   },
+
+  buttonBottom: {
+    backgroundColor: '#B2C000',
+    paddingVertical: 16,
+
+    paddingHorizontal: 40,
+    width: '100%',
+  },
+  button2: {
+    backgroundColor: '#242600',
+    paddingVertical: 16,
+    paddingHorizontal: 40,
+    width: '100%',
+  },
+
+  buttonText: {
+    color: 'black',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  buttonText2: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  buttoncontainer: {
+    marginTop: 20,
+    position: 'absolute',
+    bottom: 10,
+    width: '100%',
+    gap: 10,
+  },
 });

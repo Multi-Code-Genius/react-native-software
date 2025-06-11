@@ -1,4 +1,3 @@
-// This is a test comment to trigger type re-evaluation
 import {
   useFocusEffect,
   useNavigation,

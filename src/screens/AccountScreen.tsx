@@ -22,6 +22,8 @@ const AccountScreen = () => {
   const [visible, setVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 
+  console.log('data', data.user.name);
+
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -95,13 +97,9 @@ const AccountScreen = () => {
               gap: 10,
               justifyContent: 'center',
             }}>
-            <Text style={styles.userEmail}>
-              {data?.user?.email || 'example@email.com'}
-            </Text>
+            <Text style={styles.userEmail}>{data.user.name}</Text>
             <Text style={styles.userEmail}>|</Text>
-            <Text style={styles.userName}>
-              {data?.user?.phoneNumber || '8745874574'}
-            </Text>
+            <Text style={styles.userName}>{data.user.phone}</Text>
           </View>
           <TouchableOpacity
             style={styles.editProfile}
