@@ -5,6 +5,7 @@ import {
 } from '@react-navigation/native';
 import React, {useCallback, useState, useRef, useMemo} from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   ImageBackground,
@@ -28,7 +29,7 @@ import {RootStackParamList} from '../navigation/routes';
 
 const VenueScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {data, refetch} = useGetVenue();
+  const {data, refetch, isLoading} = useGetVenue();
   const deleteVenue = useDeleteVenue();
   const hasVenues = Array.isArray(data?.venues) && data.venues.length > 0;
   const sheetRef = useRef<BottomSheetModal>(null);
@@ -125,24 +126,37 @@ const VenueScreen = () => {
       <BottomSheetModalProvider>
         <SafeAreaView style={styles.safeArea} edges={[]}>
           <AppHeader />
-          {hasVenues ? (
-            <View style={{flex: 1, backgroundColor: '#000'}}>
-              <ImageBackground
-                source={require('../assets/ScreenShaded.png')}
-                style={styles.headerGlow}
-                resizeMode="cover">
-                <View style={styles.venueListContainer}>
-                  <View style={styles.header}>
-                    <Text variant="headlineLarge" style={styles.headerText}>
-                      Your Listed Venue
-                    </Text>
-                    <TouchableOpacity
-                      style={styles.addvenuebutton}
-                      onPress={() => navigation.navigate('Addvenue')}>
-                      <Text style={styles.text}>Add Venue</Text>
-                      <Icon name="add-circle" size={20} color={'#fff'} />
-                    </TouchableOpacity>
+
+          <View style={{flex: 1, backgroundColor: '#000'}}>
+            <ImageBackground
+              source={require('../assets/ScreenShaded.png')}
+              style={styles.headerGlow}
+              resizeMode="cover">
+              <View style={styles.venueListContainer}>
+                <View style={styles.header}>
+                  <Text variant="headlineLarge" style={styles.headerText}>
+                    Your Listed Venue
+                  </Text>
+                  <TouchableOpacity
+                    style={styles.addvenuebutton}
+                    onPress={() => navigation.navigate('Addvenue')}>
+                    <Text style={styles.text}>Add Venue</Text>
+                    <Icon name="add-circle" size={20} color={'#fff'} />
+                  </TouchableOpacity>
+                </View>
+
+                {isLoading ? (
+                  <View
+                    style={{
+                      width: '100%',
+                      height: '90%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <ActivityIndicator />
                   </View>
+                ) : hasVenues ? (
                   <FlatList
                     data={data?.venues}
                     renderItem={renderItem}
@@ -151,23 +165,35 @@ const VenueScreen = () => {
                     }
                     showsVerticalScrollIndicator={false}
                   />
-                </View>
-              </ImageBackground>
-            </View>
-          ) : (
-            <WelcomeTab />
-          )}
+                ) : (
+                  <View
+                    style={{
+                      width: '100%',
+                      height: '90%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <Text
+                      style={{
+                        color: 'white',
+                        fontFamily: 'Montserrat-Regular',
+                      }}>
+                      No Venue Found
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </ImageBackground>
+          </View>
+
           <BottomSheetModal
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
             backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}>
             <BottomSheetView style={{padding: 16}}>
-              <TouchableOpacity
-                style={styles.menu}
-                onPress={() => {
-                  /* edit navigation */
-                }}>
+              <TouchableOpacity style={styles.menu} onPress={() => {}}>
                 <Icon name="create" size={20} color={'#fff'} />
                 <Text style={styles.bottomtext}>Edit Venue</Text>
               </TouchableOpacity>
@@ -391,7 +417,7 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 16,
-    fontWeight: '700',
+    // fontWeight: '500',
     fontFamily: 'Montserrat-Regular',
     color: '#fff',
   },
