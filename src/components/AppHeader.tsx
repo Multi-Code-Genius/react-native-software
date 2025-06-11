@@ -4,10 +4,12 @@ import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 
-const AppHeader = () => {
+type AppHeaderProps = {
+  isApp?: boolean;
+};
+const AppHeader: React.FC<AppHeaderProps> = ({isApp = false}) => {
   const navigation = useNavigation();
   const route = useRoute();
-
   const screenTitles: Record<string, string> = {
     Home: 'Turfkeeper',
     Bookings: 'Turfkeeper',
@@ -25,56 +27,93 @@ const AppHeader = () => {
           backgroundColor: '#191919',
           flexDirection: 'row',
           alignItems: 'center',
-          justifyContent: 'space-between',
+          justifyContent: isApp ? 'center' : 'space-between',
           paddingHorizontal: 24,
         }}>
-        <Text
-          style={{
-            color: '#F5F5F5',
-            fontSize: 24,
-            fontWeight: '500',
-            fontFamily: 'ClashGrotesk-Regular',
-            lineHeight: 30,
-            letterSpacing: 2,
-          }}>
-          {title}
-        </Text>
-
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-          <View style={{position: 'relative'}}>
-            <Icon name="notifications-outline" size={24} color="#fff" />
-            <View
-              style={{
-                position: 'absolute',
-                width: 8,
-                height: 8,
-                borderRadius: 4,
-                backgroundColor: 'red',
-                top: 0,
-                right: 0,
-              }}
-            />
-          </View>
-
-          <TouchableOpacity
+        {isApp && (
+          <View
             style={{
-              backgroundColor: '#B2C000',
-              paddingHorizontal: 8,
-              paddingVertical: 4,
-              borderRadius: 4,
-            }}
-            onPress={() => console.log('Book Venue')}>
+              width: '100%',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{position: 'absolute', left: 0}}>
+              <Icon name="arrow-back-outline" size={24} color={'#fff'} />
+            </TouchableOpacity>
+
             <Text
               style={{
-                fontSize: 10,
-                fontWeight: '600',
-                fontFamily: 'Montserrat-Regular',
-                color: '#000',
+                color: '#F5F5F5',
+                fontSize: 24,
+                fontWeight: '500',
+                fontFamily: 'ClashGrotesk-Regular',
+                lineHeight: 30,
+                letterSpacing: 2,
+                textAlign: 'center',
               }}>
-              Book Venue
+              Edit Profile
             </Text>
-          </TouchableOpacity>
-        </View>
+          </View>
+        )}
+
+        {!isApp && (
+          <Text
+            style={{
+              color: '#F5F5F5',
+              fontSize: 24,
+              fontWeight: '500',
+              fontFamily: 'ClashGrotesk-Regular',
+              lineHeight: 30,
+              letterSpacing: 2,
+            }}>
+            {title}
+          </Text>
+        )}
+
+        {!isApp && (
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              gap: 12,
+            }}>
+            <View style={{position: 'relative'}}>
+              <Icon name="notifications-outline" size={24} color="#fff" />
+              <View
+                style={{
+                  position: 'absolute',
+                  width: 8,
+                  height: 8,
+                  borderRadius: 4,
+                  backgroundColor: 'red',
+                  top: 0,
+                  right: 0,
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#B2C000',
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 4,
+              }}
+              onPress={() => console.log('Book Venue')}>
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontWeight: '600',
+                  fontFamily: 'Montserrat-Regular',
+                  color: '#000',
+                }}>
+                Book Venue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <LinearGradient
         colors={['transparent', '#B2C000', 'transparent']}
@@ -92,7 +131,7 @@ const styles = StyleSheet.create({
   glowBorder: {
     position: 'absolute',
     bottom: 0,
-    width: '90%',
+    width: '100%',
     height: 2,
     alignSelf: 'center',
     zIndex: 2,

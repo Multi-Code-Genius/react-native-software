@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     width: '100%',
-    height: '100%',
+    // height: '30%',
   },
   stepIndicatorWrapper: {
     position: 'relative',
@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
   shadow: {
     position: 'absolute',
     width: '80%',
-    bottom: -40,
+    bottom: -30,
     resizeMode: 'stretch',
     zIndex: 0,
   },

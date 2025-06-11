@@ -23,6 +23,7 @@ export type MainTabsParamList = {
   Booking: undefined;
   History: undefined;
   Profile: undefined;
+  ProfileInfo: undefined;
 };
 export type RootStackParamList = {
   MainTabs: {screen: keyof MainTabsParamList} | undefined;
@@ -31,11 +32,11 @@ export type RootStackParamList = {
   payment: undefined;
   bookingDateTimeDetails: undefined;
   BookingDetail: undefined;
-  MyProfile: undefined;
   newcard: undefined;
   Settings: undefined;
   Help: undefined;
   Privacy: undefined;
+  Profile: undefined;
   about: undefined;
   ground: undefined;
   BookingByID: {id: string};
@@ -61,7 +62,11 @@ const AuthStack = () => (
       component={AddVenueScreen}
       options={{headerShown: false}}
     />
-    <Stack.Screen name="Profile" component={ProfileInfoScreen} />
+    <Stack.Screen
+      name="ProfileInfo"
+      component={ProfileInfoScreen}
+      options={{headerShown: false}}
+    />
     <Stack.Screen
       name="bookingData"
       component={BookingCalenderScreen}

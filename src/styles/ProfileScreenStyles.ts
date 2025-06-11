@@ -3,24 +3,17 @@ import {StyleSheet} from 'react-native';
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f9f9f9',
   },
   container: {
     flexGrow: 1,
     alignItems: 'center',
-    padding: 24,
+    padding: 20,
+    backgroundColor: '#000',
   },
   card: {
     width: '100%',
     maxWidth: 420,
-    padding: 24,
-    backgroundColor: '#fff',
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 4},
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
-    elevation: 6,
   },
   profileImageWrapper: {
     width: 140,
@@ -57,11 +50,15 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   form: {
-    gap: 16,
+    gap: 30,
   },
-  input: {
-    backgroundColor: '#f9f9f9',
+  label: {
+    color: '#B8B8B8',
+    fontSize: 12,
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: '700',
   },
+
   inputcontainer: {
     width: '100%',
     gap: 10,
@@ -89,5 +86,24 @@ export const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     fontWeight: 'bold',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderColor: '#323232',
+    borderWidth: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: '#272727',
+  },
+  icon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'medium',
+    fontFamily: 'Montserrat-Regular',
   },
 });

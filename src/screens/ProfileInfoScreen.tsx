@@ -5,41 +5,42 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
+  TextInput,
   View,
 } from 'react-native';
-import {ActivityIndicator, Button, Text, TextInput} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useUpdateAccountInfo} from '../api/account';
 import {styles} from '../styles/ProfileScreenStyles';
+import AppHeader from '../components/AppHeader';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const ProfileInfoScreen = () => {
-  const {params} = useRoute();
-  const {data} = params as {data: any};
   const [pressed, setPressed] = useState(false);
   const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
   const [formData, setFormData] = useState({
-    email: '',
-    name: '',
-    phone: '',
+    email: 'example@test.com',
+    name: 'Hit Wicket Turf & Sports Club',
+    phone: '847412357',
     address: '',
     city: '',
     state: '',
     zip_code: '',
   });
 
-  useEffect(() => {
-    if (data) {
-      setFormData({
-        email: data?.user?.email || '',
-        name: data?.user?.name || '',
-        phone: data?.user?.phone || '',
-        address: data?.user?.address || '',
-        city: data?.user?.city || '',
-        state: data?.user?.state || '',
-        zip_code: data?.user?.zip_code || '',
-      });
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (data) {
+  //     setFormData({
+  //       email: data?.user?.email || '',
+  //       name: data?.user?.name || '',
+  //       phone: data?.user?.phone || '',
+  //       address: data?.user?.address || '',
+  //       city: data?.user?.city || '',
+  //       state: data?.user?.state || '',
+  //       zip_code: data?.user?.zip_code || '',
+  //     });
+  //   }
+  // }, []);
 
   const handleChange = (key: string, value: string) => {
     setFormData(prev => ({
@@ -48,131 +49,97 @@ const ProfileInfoScreen = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    const updateFields: Partial<typeof formData> = {};
+  // const handleSubmit = () => {
+  //   const updateFields: Partial<typeof formData> = {};
 
-    (Object.keys(formData) as (keyof typeof formData)[]).forEach(key => {
-      if (formData[key] !== data?.user?.[key]) {
-        updateFields[key] = formData[key];
-      }
-    });
+  //   (Object.keys(formData) as (keyof typeof formData)[]).forEach(key => {
+  //     if (formData[key] !== data?.user?.[key]) {
+  //       updateFields[key] = formData[key];
+  //     }
+  //   });
 
-    const userId = data?.user?.id;
+  //   const userId = data?.user?.id;
 
-    if (!userId) {
-      Alert.alert('Error', 'User ID not found.');
-      return;
-    }
+  //   if (!userId) {
+  //     Alert.alert('Error', 'User ID not found.');
+  //     return;
+  //   }
 
-    updateInfo(
-      {id: userId, data: updateFields},
-      {
-        onSuccess: () =>
-          Alert.alert('Success', 'Profile updated successfully!'),
-        onError: (error: any) =>
-          Alert.alert('Error', error?.message || 'Failed to update.'),
-      },
-    );
-  };
+  //   updateInfo(
+  //     {id: userId, data: updateFields},
+  //     {
+  //       onSuccess: () =>
+  //         Alert.alert('Success', 'Profile updated successfully!'),
+  //       onError: (error: any) =>
+  //         Alert.alert('Error', error?.message || 'Failed to update.'),
+  //     },
+  //   );
+  // };
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
+      <AppHeader isApp />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}>
         <ScrollView contentContainerStyle={styles.container}>
           <View style={styles.card}>
-            <View style={styles.profileImageWrapper}></View>
-
-            <Text style={styles.title}>Profile Information</Text>
-
             <View style={styles.form}>
-              <TextInput
-                label="Email"
-                mode="outlined"
-                keyboardType="email-address"
-                style={styles.input}
-                value={formData?.email}
-                placeholder="Enter your email"
-                onChangeText={text => handleChange('email', text)}
-                left={<TextInput.Icon icon="mail" size={20} />}
-              />
-
-              <TextInput
-                label="Name"
-                mode="outlined"
-                style={styles.input}
-                value={formData?.name}
-                placeholder="Enter your name"
-                onChangeText={text => handleChange('name', text)}
-                left={<TextInput.Icon icon="person" size={20} />}
-              />
-
-              <TextInput
-                label="Phone Number"
-                mode="outlined"
-                keyboardType="phone-pad"
-                style={styles.input}
-                value={formData?.phone}
-                placeholder="Enter your phone number"
-                onChangeText={text => handleChange('phone', text)}
-                left={<TextInput.Icon icon="call" size={20} />}
-              />
-              <TextInput
-                label="Address"
-                mode="outlined"
-                style={styles.input}
-                value={formData?.address}
-                placeholder="Enter your address"
-                onChangeText={text => handleChange('address', text)}
-                left={<TextInput.Icon icon="locate" size={20} />}
-              />
-              <TextInput
-                label="City"
-                mode="outlined"
-                style={styles.input}
-                value={formData?.city}
-                placeholder="Enter your city"
-                onChangeText={text => handleChange('city', text)}
-                left={<TextInput.Icon icon="location" size={20} />}
-              />
-              <View style={styles.inputcontainer}>
-                <TextInput
-                  label="State"
-                  mode="outlined"
-                  style={styles.input2}
-                  value={formData?.state}
-                  placeholder="Enter your State"
-                  onChangeText={text => handleChange('state', text)}
-                  left={<TextInput.Icon icon="map" size={20} />}
-                />
-                <TextInput
-                  label="Zipcode"
-                  mode="outlined"
-                  style={styles.input2}
-                  value={formData?.zip_code}
-                  placeholder="Enter your zipcode"
-                  onChangeText={text => handleChange('zip_code', text)}
-                  left={<TextInput.Icon icon="pin" size={20} />}
-                />
+              <View style={{flexDirection: 'column', gap: 10, width: '100%'}}>
+                <Text style={styles.label}>Name</Text>
+                <View style={styles.inputContainer}>
+                  <Icon
+                    name="person-outline"
+                    size={20}
+                    color="#fff"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your name"
+                    placeholderTextColor="#888"
+                    value={formData?.name}
+                    onChangeText={text => handleChange('name', text)}
+                  />
+                </View>
               </View>
-
-              <Button
-                mode="contained"
-                onPressIn={() => setPressed(true)}
-                onPressOut={() => setPressed(false)}
-                style={[styles.button, pressed && styles.buttonPressed]}
-                labelStyle={styles.buttonLabel}
-                onPress={handleSubmit}
-                disabled={isPending}
-                rippleColor="rgba(255, 255, 255, 0.3)">
-                {isPending ? (
-                  <ActivityIndicator color="#fff" />
-                ) : (
-                  <Text style={styles.text}>Submit Info</Text>
-                )}
-              </Button>
+              <View style={{flexDirection: 'column', gap: 10}}>
+                <Text style={styles.label}>Mobile</Text>
+                <View style={styles.inputContainer}>
+                  <Icon
+                    name="phone-portrait"
+                    size={20}
+                    color="#fff"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholderTextColor="#888"
+                    value={formData?.phone}
+                    placeholder="Enter your phone number"
+                    onChangeText={text => handleChange('phone', text)}
+                  />
+                </View>
+              </View>
+              <View style={{flexDirection: 'column', gap: 10}}>
+                <Text style={styles.label}>Email</Text>
+                <View style={styles.inputContainer}>
+                  <Icon
+                    name="mail-outline"
+                    size={20}
+                    color="#fff"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholderTextColor="#888"
+                    value={formData?.email}
+                    placeholder="Enter your email"
+                    onChangeText={text => handleChange('email', text)}
+                  />
+                </View>
+              </View>
             </View>
           </View>
         </ScrollView>
