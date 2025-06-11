@@ -1,11 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  FlatList,
-  Image,
-  ImageBackground,
-  TouchableOpacity,
-} from 'react-native';
+import {View, FlatList, ImageBackground, TouchableOpacity} from 'react-native';
 import {
   Text,
   Dialog,
@@ -134,8 +128,12 @@ const AccountScreen = () => {
               <Text style={styles.Text}>Are you sure you want to logout?</Text>
             </Dialog.Content>
             <Dialog.Actions style={styles.buttons}>
-              <Button onPress={hideDialog} style={styles.cancel}>Cancel</Button>
-              <Button onPress={handleLogout} style={styles.logout}>Logout</Button>
+              <Button onPress={hideDialog} style={styles.cancel}>
+                Cancel
+              </Button>
+              <Button onPress={handleLogout} style={styles.logout}>
+                Logout
+              </Button>
             </Dialog.Actions>
           </Dialog>
         </Portal>
