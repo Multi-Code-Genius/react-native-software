@@ -27,6 +27,8 @@ export const api = async (endpoint: string, config: any = {}) => {
   const isFormData =
     body && typeof body === 'object' && typeof body.append === 'function';
 
+  console.log('isFormData', isFormData);
+
   const requestConfig: RequestInit = {
     method: config.method ?? 'GET',
     headers: {
@@ -57,7 +59,7 @@ export const api = async (endpoint: string, config: any = {}) => {
   try {
     const apiUrl = BASE_URL;
 
-    // const apiUrl = 'http://192.168.21.140:1008';
+    // const apiUrl = 'http://192.168.1.17:1008';
 
     const response = await fetch(`${apiUrl}/api/v2${endpoint}`, requestConfig);
 

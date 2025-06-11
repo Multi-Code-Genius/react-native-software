@@ -40,6 +40,7 @@ type VenueStore = {
 
 export const useVenueStore = create<VenueStore>(set => ({
   formData: {
+    description: '',
     ground_details: [
       {
         ground: 1,
