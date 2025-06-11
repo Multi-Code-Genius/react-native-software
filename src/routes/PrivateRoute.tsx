@@ -6,8 +6,9 @@ import HomeIcon from '../components/assets/HomeIcon';
 import ProfileIcon from '../components/assets/ProfileIcon';
 import VenueIcon from '../components/assets/VenueIcon';
 import AccountScreen from '../screens/AccountScreen';
-import BookingScreen from '../screens/BookingScreen';
+import BookingScreen from '../screens/VenueScreen';
 import HomeScreen from '../screens/HomeScreen';
+import VenueScreen from '../screens/VenueScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,7 +53,7 @@ export function PrivateRoute() {
       />
       <Tab.Screen
         name="Venue"
-        component={BookingScreen}
+        component={VenueScreen}
         options={{
           tabBarIcon: ({color}) => <VenueIcon color={color} />,
         }}

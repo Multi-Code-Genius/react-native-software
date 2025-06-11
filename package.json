@@ -55,6 +55,7 @@
     "react-native-toast-message": "^2.3.0",
     "react-native-vector-icons": "^10.2.0",
     "react-native-walkthrough-tooltip": "^1.6.0",
+    "rn-fetch-blob": "^0.12.0",
     "tailwind-merge": "^3.2.0",
     "tailwind-variants": "^1.0.0",
     "zustand": "^5.0.4"
@@ -73,6 +74,7 @@
     "@types/jest": "^29.5.13",
     "@types/lodash": "^4.17.16",
     "@types/lodash.debounce": "^4.0.9",
+    "@types/mime": "^3.0.4",
     "@types/react": "^19.1.2",
     "@types/react-native-onboarding-swiper": "^1.1.9",
     "@types/react-native-vector-icons": "^6.4.18",

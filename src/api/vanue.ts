@@ -3,9 +3,12 @@ import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
 import {api} from '../hooks/api';
 import {useVenueStore, VenueFormData} from '../store/useVenueStore';
-import {Platform} from 'react-native';
 import {useAuthStore} from '../store/authStore';
-import axios from 'axios';
+import {readFile} from 'react-native-fs';
+import {BASE_URL} from '@env';
+import {useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/types';
+import {NavigationProp} from '@react-navigation/native';
 
 export const getVanues = async () => {
   try {
@@ -167,59 +170,76 @@ export const useDeleteVenue = (
   });
 };
 
-const submitVenueData = async form => {
+const submitVenueData = async (form: Partial<VenueFormData>) => {
   const clonedForm = JSON.parse(JSON.stringify(form));
   delete clonedForm.images;
 
   const formData = new FormData();
   formData.append('data', JSON.stringify(clonedForm));
 
-  const response = await fetch(
-    'https://golang-backend-0xhw.onrender.com/api/v2/venue/create-venue',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${useAuthStore.getState().token}`,
-      },
-      body: formData,
+  const response = await fetch(`${BASE_URL}/api/v2/venue/create-venue`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${useAuthStore.getState().token}`,
     },
-  );
-
-  if (!response.ok) throw new Error('Failed to create venue');
-  return response.json();
-};
-
-const uploadVenueImages = async ({venueId, images}) => {
-  const formData = new FormData();
-  images.forEach((img, index) => {
-    formData.append('images', {
-      uri: img.uri,
-      type: img.mime,
-      name: `image_${index}.jpg`,
-    });
+    body: formData,
   });
 
-  const response = await axios.post(
-    `https://golang-backend-0xhw.onrender.com/api/v2/venue/images/${venueId}`,
-    formData,
-    {
-      headers: {
-        Authorization: `Bearer ${useAuthStore.getState().token}`,
-        'Content-Type': 'multipart/form-data',
-      },
-    },
+  if (!response.ok) {
+    throw new Error('Failed to create venue');
+  }
+  return response.json();
+};
+export const imageuploading = async (id: number, images: any[]) => {
+  const base64Images = await Promise.all(
+    images.map(async img => {
+      const base64 = await readFile(img.uri, 'base64');
+      return `data:${img.mime};base64,${base64}`;
+    }),
   );
 
-  return response.data;
-};
+  const response = await fetch(`${BASE_URL}/api/v2/venue/images/${id}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${useAuthStore.getState().token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({images: base64Images}),
+  });
 
+  const result = await response.json();
+  return result;
+};
 export const useVenueMutations = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {showToast} = useToast();
+
   const createVenueMutation = useMutation({
     mutationFn: submitVenueData,
   });
 
   const uploadImagesMutation = useMutation({
-    mutationFn: uploadVenueImages,
+    mutationFn: async ({venueId, images}: {venueId: number; images: any[]}) => {
+      return await imageuploading(venueId, images);
+    },
+    onSuccess: _data => {
+      showToast({
+        message: 'Venue Created successfully!',
+        showIcon: true,
+        type: 'success',
+      });
+
+      setTimeout(() => {
+        navigation.goBack();
+      }, 1500);
+    },
+    onError: (_error: any) => {
+      showToast({
+        message: 'Image upload failed',
+        showIcon: true,
+        type: 'error',
+      });
+    },
   });
 
   return {createVenueMutation, uploadImagesMutation};

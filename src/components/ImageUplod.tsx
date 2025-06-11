@@ -20,32 +20,7 @@ const ImageUpload = () => {
   const [images, setImages] = useState<any[]>([]);
   const updateField = useVenueStore(state => state.updateField);
 
-  const requestPermission = async () => {
-    if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES ||
-          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
-        {
-          title: 'Image Permission',
-          message: 'App needs access to your images',
-          buttonPositive: 'OK',
-        },
-      );
-      return granted === PermissionsAndroid.RESULTS.GRANTED;
-    }
-    return true;
-  };
-
   const pickImage = async () => {
-    const hasPermission = await requestPermission();
-    if (!hasPermission) {
-      Alert.alert(
-        'Permission denied',
-        'You need to allow permission to pick images.',
-      );
-      return;
-    }
-
     try {
       ImagePicker.openPicker({
         width: 800,

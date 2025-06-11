@@ -11,22 +11,16 @@ import {
 } from 'react-native';
 import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
-import {StackNavigationProp} from '@react-navigation/stack';
-import {RootStackParamList} from '../navigation/types';
-
-type LoginScreenNavigationProp = StackNavigationProp<
-  RootStackParamList,
-  'Login'
->;
+import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 const LoginScreen = () => {
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const {mutate: requestOtp, isPending} = useRequestOtp();
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const isFormValid = phone.length === 10;
+  const isFormValid = phone.length === 10 && name.length > 0;
 
   const sendOtp = () => {
     if (!isFormValid) {
@@ -139,7 +133,6 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 12,
     fontWeight: '300',
-    color: '#4C4C4C',
     fontFamily: 'Montserrat-Regular',
     color: '#FFFFFF',
   },
@@ -147,7 +140,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 4,
     color: '#fff',
-    fontWeight: 'semibold',
     fontWeight: 'semibold',
     fontFamily: 'Montserrat-Regular',
   },

@@ -41,6 +41,9 @@ export type RootStackParamList = {
   ground: undefined;
   BookingByID: {id: string};
   Notifications: undefined;
+  Addvenue: undefined;
+  Login: undefined;
+  OtpVerify: {phone: string};
 };
 
 const Stack = createNativeStackNavigator();

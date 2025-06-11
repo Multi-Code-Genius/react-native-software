@@ -1,4 +1,9 @@
-import {useFocusEffect, useNavigation} from '@react-navigation/native';
+// This is a test comment to trigger type re-evaluation
+import {
+  useFocusEffect,
+  useNavigation,
+  NavigationProp,
+} from '@react-navigation/native';
 import React, {useCallback, useState, useRef, useMemo} from 'react';
 import {
   FlatList,
@@ -20,9 +25,10 @@ import {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {RootStackParamList} from '../navigation/routes';
 
-const BookingScreen = () => {
-  const navigation = useNavigation();
+const VenueScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {data, refetch} = useGetVenue();
   const deleteVenue = useDeleteVenue();
   const hasVenues = Array.isArray(data?.venues) && data.venues.length > 0;
@@ -30,6 +36,8 @@ const BookingScreen = () => {
   const snapPoints = useMemo(() => ['25%'], []);
   const [selectedVenue, setSelectedVenue] = useState<any>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
+
+  console.log('data', data);
 
   const onDismissDialog = () => {
     setDialogVisible(false);
@@ -49,7 +57,7 @@ const BookingScreen = () => {
   const onConfirmDelete = async () => {
     if (!selectedVenue?.id) return;
     try {
-      await deleteVenue(selectedVenue.id);
+      await deleteVenue.mutate(selectedVenue.id);
       onDismissDialog();
       refetch();
     } catch (err) {
@@ -63,49 +71,55 @@ const BookingScreen = () => {
     }, [refetch]),
   );
 
-  const renderItem = ({item}: any) => (
-    <Card
-      style={[styles.card, styles.shadow]}
-      mode="elevated"
-      onPress={() =>
-        (navigation as any).navigate('bookingData', {
-          venueId: item.id,
-          price: item.hourlyPrice,
-        })
-      }>
-      <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
-        <View style={styles.headContainer}>
-          <Text style={styles.heading}>VENUE</Text>
-          <Icon
-            name="ellipsis-vertical"
-            size={20}
-            color={'#888'}
-            onPress={() => openMenu(item)}
-          />
-        </View>
-        <Image
-          source={require('../assets/background1.png')}
-          style={styles.image}
-        />
-        <Text style={styles.name1}>{item.name}</Text>
-        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={styles.name}>
-            ₹ {item.ground_details?.[0]?.hourly_price} / Per Hour
-          </Text>
-          <View style={styles.detail}>
-            <Icon name="location" size={20} color={'#888'} />
-            <Text style={styles.name}>
-              {item.location.area}, {item.location.city}
-            </Text>
+  const renderItem = ({item}: any) => {
+    console.log('item', item.images[0]);
+
+    return (
+      <Card
+        style={[styles.card, styles.shadow]}
+        mode="elevated"
+        onPress={() =>
+          (navigation as any).navigate('bookingData', {
+            venueId: item.id,
+            price: item.hourlyPrice,
+          })
+        }>
+        <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
+          <View style={styles.headContainer}>
+            <Text style={styles.heading}>VENUE</Text>
+            <Icon
+              name="ellipsis-vertical"
+              size={20}
+              color={'#888'}
+              onPress={() => openMenu(item)}
+            />
           </View>
-        </View>
-        <View style={styles.category}>
-          <Text style={styles.type}>Cricket</Text>
-          <Text style={styles.type1}>Football</Text>
-        </View>
-      </Card.Content>
-    </Card>
-  );
+          <Image
+            source={{
+              uri: `${item.images[0]}`,
+            }}
+            style={styles.image}
+          />
+          <Text style={styles.name1}>{item.name}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={styles.name}>
+              ₹ {item.ground_details?.[0]?.hourly_price} / Per Hour
+            </Text>
+            <View style={styles.detail}>
+              <Icon name="location" size={20} color={'#888'} />
+              <Text style={styles.name}>
+                {item?.location?.area}, {item?.location?.city}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.category}>
+            <Text style={styles.type}>Cricket</Text>
+            <Text style={styles.type1}>Football</Text>
+          </View>
+        </Card.Content>
+      </Card>
+    );
+  };
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -191,7 +205,7 @@ const BookingScreen = () => {
   );
 };
 
-export default BookingScreen;
+export default VenueScreen;
 
 const styles = StyleSheet.create({
   safeArea: {

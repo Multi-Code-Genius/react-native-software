@@ -134,10 +134,18 @@ const AddVenueScreen = () => {
                   <Text style={styles.text1}>Previous</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.input} onPress={goNext}>
-                  <Text style={styles.text}>
-                    {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
-                  </Text>
+                <TouchableOpacity
+                  disabled={uploadImagesMutation.isPending}
+                  style={styles.input}
+                  onPress={goNext}>
+                  {currentStep === steps.length - 1 &&
+                  uploadImagesMutation.isPending ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <Text style={styles.text}>
+                      {currentStep === steps.length - 1 ? 'Submit' : 'Next'}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               </>
             ) : (
