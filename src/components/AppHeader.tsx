@@ -6,8 +6,12 @@ import LinearGradient from 'react-native-linear-gradient';
 
 type AppHeaderProps = {
   isApp?: boolean;
+  title?: string;
 };
-const AppHeader: React.FC<AppHeaderProps> = ({isApp = false}) => {
+const AppHeader: React.FC<AppHeaderProps> = ({
+  isApp = false,
+  title: customTitle,
+}) => {
   const navigation = useNavigation();
   const route = useRoute();
   const screenTitles: Record<string, string> = {
@@ -17,7 +21,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({isApp = false}) => {
     Profile: 'Turfkeeper',
   };
 
-  const title = screenTitles[route.name] || 'App';
+  const title = customTitle || screenTitles[route.name] || 'Turfkeeper';
 
   return (
     <View>
@@ -53,7 +57,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({isApp = false}) => {
                 letterSpacing: 2,
                 textAlign: 'center',
               }}>
-              Edit Profile
+              {title}
             </Text>
           </View>
         )}

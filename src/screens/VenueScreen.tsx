@@ -16,7 +16,6 @@ import {
 import {Button, Card, Dialog, Divider, Portal, Text} from 'react-native-paper';
 import {useGetVenue, useDeleteVenue} from '../api/vanue';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import WelcomeTab from '../components/WelcomeTab';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
@@ -37,11 +36,8 @@ const VenueScreen = () => {
   const [selectedVenue, setSelectedVenue] = useState<any>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
 
-  console.log('data', data);
-
   const onDismissDialog = () => {
     setDialogVisible(false);
-    // setSelectedVenue(null);
   };
 
   const openMenu = (venue: any) => {
@@ -72,8 +68,6 @@ const VenueScreen = () => {
   );
 
   const renderItem = ({item}: any) => {
-    console.log('item', item.images[0]);
-
     return (
       <Card
         style={[styles.card, styles.shadow]}
@@ -96,7 +90,7 @@ const VenueScreen = () => {
           </View>
           <Image
             source={{
-              uri: `${item.images[0]}`,
+              uri: `${item?.images?.[0]}`,
             }}
             style={styles.image}
           />

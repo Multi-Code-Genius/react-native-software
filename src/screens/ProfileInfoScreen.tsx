@@ -90,7 +90,7 @@ const ProfileInfoScreen = () => {
 
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
-      <AppHeader isApp />
+      <AppHeader isApp title="Edit Profile" />
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={{flex: 1}}
