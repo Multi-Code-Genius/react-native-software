@@ -90,14 +90,6 @@ const HomeScreen = () => {
     },
   ];
 
-  if (isLoading) {
-    return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.safeArea} edges={[]}>
       <AppHeader />
@@ -112,89 +104,102 @@ const HomeScreen = () => {
           source={require('../assets/ScreenShaded.png')}
           style={styles.headerGlow}
           resizeMode="cover">
-          <View>
+          {isLoading ? (
             <View
               style={{
-                padding: 15,
-                borderBottomColor: '#252525',
-                borderBottomWidth: 1,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}>
+              <ActivityIndicator />
+            </View>
+          ) : (
+            <View>
               <View
                 style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  alignItems: 'flex-end',
+                  padding: 15,
+                  borderBottomColor: '#252525',
+                  borderBottomWidth: 1,
                 }}>
-                <Text style={styles.heading}>ANALYTICS</Text>
-                <TouchableOpacity
-                  onPress={() => showPicker(true)}
-                  style={styles.dateButton}>
-                  <Icon name="calendar" size={20} color="white" />
-                  <Text style={styles.dateText}>
-                    {moment(date).format('MM-YYYY')}
-                  </Text>
-                  <Icon name="chevron-down" size={16} color="white" />
-                </TouchableOpacity>
-              </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingVertical: 20,
+                    alignItems: 'flex-end',
+                  }}>
+                  <Text style={styles.heading}>ANALYTICS</Text>
+                  <TouchableOpacity
+                    onPress={() => showPicker(true)}
+                    style={styles.dateButton}>
+                    <Icon name="calendar" size={20} color="white" />
+                    <Text style={styles.dateText}>
+                      {moment(date).format('MM-YYYY')}
+                    </Text>
+                    <Icon name="chevron-down" size={16} color="white" />
+                  </TouchableOpacity>
+                </View>
 
-              <View style={styles.analyticsGrid}>
-                {analyticsData.map(item => (
-                  <View key={item.id} style={styles.analyticsBox}>
-                    <Text style={styles.analyticsLabel}>{item.title}</Text>
-                    <View style={styles.iconWrap}>
-                      <Icon name={item.icon} size={22} color="#fff" />
-                      <Text style={styles.analyticsValue}>{item.count}</Text>
+                <View style={styles.analyticsGrid}>
+                  {analyticsData.map(item => (
+                    <View key={item.id} style={styles.analyticsBox}>
+                      <Text style={styles.analyticsLabel}>{item.title}</Text>
+                      <View style={styles.iconWrap}>
+                        <Icon name={item.icon} size={22} color="#fff" />
+                        <Text style={styles.analyticsValue}>{item.count}</Text>
+                      </View>
                     </View>
-                  </View>
-                ))}
-              </View>
-            </View>
-            <View style={styles.chartcontainer}>
-              <View style={{padding: 20, gap: 16}}>
-                <Text style={styles.heading}>ACTIVITY</Text>
-                <View style={styles.ChartCard}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-end',
-                      paddingBottom: 16,
-                    }}>
-                    <View style={{gap: 10, flexDirection: 'row'}}>
-                      <Icon name="calendar" size={20} color="white" />
-                      <Text style={styles.dateText}>Booking Status</Text>
-                    </View>
-                  </View>
-                  <BookingStatusChart thisMonthBookings={thisMonthBookings} />
+                  ))}
                 </View>
               </View>
-            </View>
-            <View style={styles.chartcontainer}>
-              <View style={{padding: 20, gap: 16}}>
-                <View style={styles.ChartCard}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'flex-end',
-                      paddingBottom: 16,
-                    }}>
-                    <View style={{gap: 10, flexDirection: 'row'}}>
-                      <Icon name="calendar" size={20} color="white" />
-                      <Text style={styles.dateText}>Weekly Booking</Text>
+              <View style={styles.chartcontainer}>
+                <View style={{padding: 20, gap: 16}}>
+                  <Text style={styles.heading}>ACTIVITY</Text>
+                  <View style={styles.ChartCard}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                        paddingBottom: 16,
+                      }}>
+                      <View style={{gap: 10, flexDirection: 'row'}}>
+                        <Icon name="calendar" size={20} color="white" />
+                        <Text style={styles.dateText}>Booking Status</Text>
+                      </View>
                     </View>
+                    <BookingStatusChart thisMonthBookings={thisMonthBookings} />
                   </View>
-                  <DashboardBarChart
-                    lastSevenDaysBookings={lastSevenDaysBookings}
-                  />
                 </View>
               </View>
+              <View style={styles.chartcontainer}>
+                <View style={{padding: 20, gap: 16}}>
+                  <View style={styles.ChartCard}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'flex-end',
+                        paddingBottom: 16,
+                      }}>
+                      <View style={{gap: 10, flexDirection: 'row'}}>
+                        <Icon name="calendar" size={20} color="white" />
+                        <Text style={styles.dateText}>Weekly Booking</Text>
+                      </View>
+                    </View>
+                    <DashboardBarChart
+                      lastSevenDaysBookings={lastSevenDaysBookings}
+                    />
+                  </View>
+                </View>
+              </View>
+              <View style={{paddingVertical: 40, paddingHorizontal: 20}}>
+                <Text style={styles.bottomText}>
+                  With Love {'\n'} TurfKeeper
+                </Text>
+              </View>
             </View>
-            <View style={{paddingVertical: 40, paddingHorizontal: 20}}>
-              <Text style={styles.bottomText}>With Love {'\n'} TurfKeeper</Text>
-            </View>
-          </View>
+          )}
         </ImageBackground>
       </ScrollView>
       {show && (

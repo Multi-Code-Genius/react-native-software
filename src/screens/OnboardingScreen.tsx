@@ -1,8 +1,9 @@
 import React from 'react';
+import LottieView from 'lottie-react-native';
+
 import {
   View,
   Text,
-  Image,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
@@ -22,9 +23,12 @@ const OnboardingScreen = () => {
       source={require('../assets/SplashScreen.png')}
       style={styles.container}
       resizeMode="cover">
-      <View style={styles.imageWrapper}>
-        <Image source={require('../assets/Group6.png')} style={styles.image} />
-      </View>
+      <LottieView
+        source={require('../assets/animation.json')}
+        autoPlay
+        loop
+        style={styles.lottie}
+      />
 
       <View style={styles.textContainer}>
         <View style={styles.badge}>
@@ -53,6 +57,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
   },
+
+  lottie: {
+    position: 'absolute',
+    top: -40,
+    alignSelf: 'center',
+    width: 400,
+    height: 844,
+    zIndex: 2,
+  },
+
   imageWrapper: {
     flex: 1,
     justifyContent: 'center',
@@ -64,10 +78,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   textContainer: {
+    marginTop: 370,
     alignItems: 'flex-start',
     paddingHorizontal: 10,
     width: '100%',
     paddingBottom: 10,
+    zIndex: 100,
   },
   badge: {
     backgroundColor: '#FFFFFF1A',

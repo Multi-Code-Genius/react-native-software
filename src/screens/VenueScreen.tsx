@@ -186,7 +186,7 @@ const VenueScreen = () => {
             index={0}
             snapPoints={snapPoints}
             backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}>
-            <BottomSheetView style={{padding: 16}}>
+            <BottomSheetView style={styles.bottomSheetContent}>
               <TouchableOpacity style={styles.menu} onPress={() => {}}>
                 <Icon name="create" size={20} color={'#fff'} />
                 <Text style={styles.bottomtext}>Edit Venue</Text>
@@ -230,6 +230,9 @@ const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  bottomSheetContent: {
+    padding: 16,
   },
   headContainer: {
     flexDirection: 'row',
