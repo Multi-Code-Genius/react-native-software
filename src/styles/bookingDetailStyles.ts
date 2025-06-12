@@ -48,7 +48,7 @@ export const styles = StyleSheet.create({
   },
   type: {
     borderColor: '#FF9EEC',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderWidth: 1,
     borderRadius: 20,
@@ -59,7 +59,7 @@ export const styles = StyleSheet.create({
   },
   type1: {
     borderColor: '#F9FFB5',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
     paddingVertical: 4,
     borderWidth: 1,
     borderRadius: 20,
@@ -127,7 +127,7 @@ export const styles = StyleSheet.create({
   },
   username: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
     fontFamily: 'Montserrat-Regular',
   },

@@ -6,9 +6,9 @@ import HomeIcon from '../components/assets/HomeIcon';
 import ProfileIcon from '../components/assets/ProfileIcon';
 import VenueIcon from '../components/assets/VenueIcon';
 import AccountScreen from '../screens/AccountScreen';
-import BookingScreen from '../screens/VenueScreen';
 import HomeScreen from '../screens/HomeScreen';
 import VenueScreen from '../screens/VenueScreen';
+import BookingScreen from '../screens/BookingScreen';
 
 const Tab = createBottomTabNavigator();
 

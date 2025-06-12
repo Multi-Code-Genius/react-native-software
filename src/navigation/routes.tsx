@@ -9,7 +9,7 @@ import EditVenueDetailsScreen from '../screens/EditVenueDetailsScreen';
 import VenueManageScreen from '../screens/VenueManageScreen';
 import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
 import BookingByIdScreen from '../screens/BookingByIdScreen';
-import BookingCalenderScreen from '../screens/BookingCalenderScreen';
+import BookingCalenderScreen from '../screens/VenueByIdScreen';
 import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 import AddVenueScreen from '../screens/AddVenueScreen';
 import {PrivateRoute} from '../routes/PrivateRoute';
@@ -17,6 +17,7 @@ import LoginScreen from '../screens/LoginScreen';
 import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
+import VenueByIdScreen from '../screens/VenueByIdScreen';
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -72,7 +73,7 @@ const AuthStack = () => (
     />
     <Stack.Screen
       name="bookingData"
-      component={BookingCalenderScreen}
+      component={VenueByIdScreen}
       options={{
         headerShown: false,
       }}
