@@ -1,0 +1,153 @@
+import React from 'react';
+import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import AppHeader from '../components/AppHeader';
+import {Card} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
+import {useGetVenue} from '../api/vanue';
+import {FlatList} from 'react-native-gesture-handler';
+
+const BookingVenuesScreen = () => {
+  const {data, refetch, isLoading} = useGetVenue();
+
+  const renderItem = ({item, index}: {item: any; index: number}) => {
+    console.log('item>>>', item);
+    return (
+      <Card style={[styles.card, styles.shadow]} mode="elevated">
+        <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
+          <Text style={styles.heading}>{`Venue ${index + 1}`}</Text>
+          <Image
+            source={{
+              uri: `${item?.images?.[0]}`,
+            }}
+            style={styles.image}
+          />
+          <Text style={styles.name1}>{item.name}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+            <Text style={styles.name}>
+              ₹ {item.ground_details?.[0]?.hourly_price} / Per Hour
+            </Text>
+            <View style={styles.detail}>
+              <Icon name="location" size={20} color={'#888'} />
+              <Text style={styles.name}>
+                {item?.location?.area}, {item?.location?.city}
+              </Text>
+            </View>
+          </View>
+          <View style={styles.category}>
+            <Text style={styles.type}>Cricket</Text>
+            <Text style={styles.type1}>Football</Text>
+          </View>
+        </Card.Content>
+      </Card>
+    );
+  };
+  return (
+    <View style={styles.container}>
+      <AppHeader title="Book Venue" isApp />
+      <ImageBackground
+        source={require('../assets/ScreenShaded.png')}
+        style={styles.headerGlow}
+        resizeMode="cover">
+        <View style={styles.subcontainer}>
+          <FlatList
+            data={data?.venues}
+            renderItem={renderItem}
+            keyExtractor={(item: any) =>
+              item.id?.toString() ?? Math.random().toString()
+            }
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
+      </ImageBackground>
+    </View>
+  );
+};
+
+export default BookingVenuesScreen;
+
+const styles = StyleSheet.create({
+  headerGlow: {
+    width: '100%',
+    height: '50%',
+    flex: 1,
+  },
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
+  subcontainer: {
+    padding: 15,
+  },
+  card: {
+    borderRadius: 0,
+    overflow: 'hidden',
+    flex: 1,
+    margin: 8,
+    backgroundColor: '#272727',
+  },
+  shadow: {
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 3},
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    elevation: 4,
+  },
+  headContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  name1: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Montserrat-Regular',
+    color: '#fff',
+  },
+  detail: {
+    flexDirection: 'row',
+    gap: 5,
+  },
+  name: {
+    fontSize: 16,
+    fontWeight: '600',
+    fontFamily: 'Montserrat-Regular',
+    color: '#888888',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: '100%',
+    height: 150,
+  },
+  heading: {
+    color: '#B2C000',
+    fontSize: 12,
+    fontWeight: '700',
+    fontFamily: 'Montserrat-Regular',
+  },
+  category: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  type: {
+    borderColor: '#FF9EEC',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderRadius: 20,
+    color: '#FF9EEC',
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: 'medium',
+    fontSize: 10,
+  },
+  type1: {
+    borderColor: '#F9FFB5',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderWidth: 1,
+    borderRadius: 20,
+    color: '#F9FFB5',
+    fontFamily: 'Montserrat-Regular',
+    fontWeight: 'medium',
+    fontSize: 10,
+  },
+});

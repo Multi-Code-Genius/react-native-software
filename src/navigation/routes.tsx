@@ -18,6 +18,7 @@ import OtpVerificationScreen from '../screens/OtpVerificationScreen';
 import OnboardingScreen from '../screens/OnboardingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import VenueByIdScreen from '../screens/VenueByIdScreen';
+import BookingVenuesScreen from '../screens/BookingVenuesScreen';
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -44,6 +45,7 @@ export type RootStackParamList = {
   Notifications: undefined;
   Addvenue: undefined;
   Login: undefined;
+  BookingVenues: undefined;
   OtpVerify: {phone: string};
 };
 
@@ -84,6 +86,11 @@ const AuthStack = () => (
       options={{
         headerShown: false,
       }}
+    />
+    <Stack.Screen
+      name="BookingVenues"
+      component={BookingVenuesScreen}
+      options={{headerShown: false}}
     />
     <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
 

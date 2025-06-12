@@ -1,8 +1,13 @@
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import {RootStackParamList} from '../navigation/routes';
 
 type AppHeaderProps = {
   isApp?: boolean;
@@ -12,7 +17,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   isApp = false,
   title: customTitle,
 }) => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
   const screenTitles: Record<string, string> = {
     Home: 'Turfkeeper',
@@ -105,7 +110,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                 paddingVertical: 4,
                 borderRadius: 4,
               }}
-              onPress={() => console.log('Book Venue')}>
+              onPress={() => navigation.navigate('BookingVenues')}>
               <Text
                 style={{
                   fontSize: 10,
