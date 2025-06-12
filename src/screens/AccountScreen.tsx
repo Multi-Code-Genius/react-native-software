@@ -1,5 +1,11 @@
 import React, {useState} from 'react';
-import {View, FlatList, ImageBackground, TouchableOpacity} from 'react-native';
+import {
+  View,
+  FlatList,
+  ImageBackground,
+  TouchableOpacity,
+  ActivityIndicator,
+} from 'react-native';
 import {
   Text,
   Dialog,
@@ -21,8 +27,6 @@ const AccountScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = React.useState(false);
-
-  console.log('data', data.user.name);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const showDialog = () => setVisible(true);
@@ -88,35 +92,51 @@ const AccountScreen = () => {
         source={require('../assets/ScreenShaded.png')}
         style={styles.headerGlow}
         resizeMode="cover">
-        <View style={styles.header}>
-          <Text style={styles.title1}>Hit Wicket Turf & Sports Club</Text>
+        {isPending ? (
           <View
             style={{
-              flexDirection: 'row',
+              width: '100%',
+              height: '90%',
+              display: 'flex',
               alignItems: 'center',
-              gap: 10,
               justifyContent: 'center',
             }}>
-            <Text style={styles.userEmail}>{data.user.name}</Text>
-            <Text style={styles.userEmail}>|</Text>
-            <Text style={styles.userName}>{data.user.phone}</Text>
+            <ActivityIndicator />
           </View>
-          <TouchableOpacity
-            style={styles.editProfile}
-            onPress={() => {
-              console.log('Edit Profile Pressed');
-              navigation.navigate('ProfileInfo' as never);
-            }}>
-            <Icon name={'create'} size={20} color={'#fff'} />
-            <Text style={styles.edit}>Edit Profile</Text>
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={menuItems}
-          renderItem={renderItem}
-          keyExtractor={item => item.id.toString()}
-          contentContainerStyle={styles.menuList}
-        />
+        ) : (
+          <>
+            <View style={styles.header}>
+              <Text style={styles.title1}>Hit Wicket Turf & Sports Club</Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 10,
+                  justifyContent: 'center',
+                }}>
+                <Text style={styles.userEmail}>{data?.user?.name}</Text>
+                <Text style={styles.userEmail}>|</Text>
+                <Text style={styles.userName}>{data?.user?.phone}</Text>
+              </View>
+              <TouchableOpacity
+                style={styles.editProfile}
+                onPress={() => {
+                  console.log('Edit Profile Pressed');
+                  navigation.navigate('ProfileInfo' as never);
+                }}>
+                <Icon name={'create'} size={20} color={'#fff'} />
+                <Text style={styles.edit}>Edit Profile</Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={menuItems}
+              renderItem={renderItem}
+              keyExtractor={item => item.id.toString()}
+              contentContainerStyle={styles.menuList}
+            />
+          </>
+        )}
+
         <Portal>
           <Dialog
             visible={visible}

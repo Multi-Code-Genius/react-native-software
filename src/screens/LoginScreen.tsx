@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
+import {useToast} from '../context/ToastContext';
 
 const LoginScreen = () => {
   const [phone, setPhone] = useState('');
@@ -20,14 +20,18 @@ const LoginScreen = () => {
   const {mutate: requestOtp, isPending} = useRequestOtp();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const isFormValid = phone.length === 10 && name.length > 0;
+  const {showToast} = useToast();
+
+  const isFormValid = phone.length === 10;
 
   const sendOtp = () => {
     if (!isFormValid) {
-      Alert.alert(
-        'Missing Info',
-        'Please enter your name and a valid 10-digit number.',
-      );
+      showToast({
+        message: 'Please enter a valid 10-digit number',
+        showIcon: true,
+        type: 'error',
+      });
+
       return;
     }
 
@@ -89,7 +93,7 @@ const LoginScreen = () => {
               },
             ]}
             onPress={sendOtp}
-            disabled={!isFormValid || isPending}>
+            disabled={isPending}>
             {isPending ? (
               <ActivityIndicator color="#fff" />
             ) : (

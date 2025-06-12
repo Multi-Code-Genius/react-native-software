@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
-  ImageBackground,
 } from 'react-native';
 import {useTheme} from 'react-native-paper';
 import {OtpInput} from 'react-native-otp-entry';
@@ -42,23 +41,16 @@ const OtpVerificationScreen = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground
-        source={require('../assets/SplashScreen.png')}
-        style={styles.topcontainer}
-        resizeMode="cover">
-        <View style={styles.overlay}>
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={styles.backButton}>
-            <Icon name="arrow-back" size={24} color="#fff" />
-          </TouchableOpacity>
+      <View style={styles.topcontainer}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
 
-          <Text style={styles.head}>OTP Verification</Text>
-          <Text style={styles.subtext}>
-            Quick verify and you're in the zone!
-          </Text>
-        </View>
-      </ImageBackground>
+        <Text style={styles.head}>OTP Verification</Text>
+        <Text style={styles.subtext}>Quick verify and you're in the zone!</Text>
+      </View>
 
       <View style={styles.contentContainer}>
         <View style={styles.formContainer}>
@@ -133,13 +125,11 @@ const styles = StyleSheet.create({
   },
   topcontainer: {
     height: '40%',
-  },
-  overlay: {
-    flex: 1,
-    // backgroundColor: 'rgba(0,0,0,0.6)',
     justifyContent: 'flex-end',
-    padding: 24,
+    alignItems: 'flex-start',
+    backgroundColor: 'black',
     gap: 2,
+    padding: 24,
   },
   contentContainer: {
     flex: 1,
@@ -160,24 +150,48 @@ const styles = StyleSheet.create({
     fontWeight: '300',
     color: '#FFFFFF',
   },
+  input: {
+    flex: 1,
+    paddingVertical: 8,
+    backgroundColor: 'white',
+  },
   label: {
     fontSize: 12,
     marginBottom: 8,
     fontWeight: '600',
     color: '#000',
   },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    borderRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginBottom: 16,
+  },
+  icon: {
+    marginRight: 8,
+  },
   buttonContainer: {
     paddingBottom: 14,
   },
   button: {
     paddingVertical: 18,
-    borderRadius: 8,
+    backgroundColor: '#000',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+  },
+  note: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: '#A0A0A0',
   },
   resend: {
     textAlign: 'center',
