@@ -8,6 +8,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {RootStackParamList} from '../navigation/routes';
+import {useTheme} from '../context/ThemeContext';
 
 type AppHeaderProps = {
   isApp?: boolean;
@@ -27,6 +28,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   };
 
   const title = customTitle || screenTitles[route.name] || 'Turfkeeper';
+  const {toggleTheme} = useTheme();
 
   return (
     <View>
@@ -80,6 +82,25 @@ const AppHeader: React.FC<AppHeaderProps> = ({
             {title}
           </Text>
         )}
+
+        <TouchableOpacity
+          style={{
+            backgroundColor: '#B2C000',
+            paddingHorizontal: 8,
+            paddingVertical: 4,
+            borderRadius: 4,
+          }}
+          onPress={() => toggleTheme()}>
+          <Text
+            style={{
+              fontSize: 10,
+              fontWeight: '600',
+              fontFamily: 'Montserrat-Regular',
+              color: '#000',
+            }}>
+            theme changer
+          </Text>
+        </TouchableOpacity>
 
         {!isApp && (
           <View

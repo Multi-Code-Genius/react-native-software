@@ -1,14 +1,23 @@
 import React from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Svg, {Circle, G} from 'react-native-svg';
+import {useTheme} from '../context/ThemeContext';
 
 const SIZE = 250;
 const STROKE_WIDTH = 30;
 const RADIUS = (SIZE - STROKE_WIDTH) / 2;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-export default function RoundedDonutChart({thisMonthBookings}: []) {
+interface RoundedDonutChartProps {
+  thisMonthBookings: any[];
+}
+
+export default function RoundedDonutChart({
+  thisMonthBookings,
+}: RoundedDonutChartProps) {
   let offset = 0;
+
+  const {theme} = useTheme();
 
   let cancel = 0;
   let confirm = 0;
@@ -29,15 +38,15 @@ export default function RoundedDonutChart({thisMonthBookings}: []) {
   const chartdata = [
     {
       value: total > 0 ? (cancel / total) * 100 : 0,
-      color: '#B2C000',
+      color: theme.colors.brandYellow,
     },
     {
       value: total > 0 ? (pending / total) * 100 : 0,
-      color: '#5E6600',
+      color: theme.colors.brandGreen,
     },
     {
       value: total > 0 ? (confirm / total) * 100 : 0,
-      color: '#383C1D',
+      color: theme.colors.brandViolet,
     },
   ];
 
@@ -51,7 +60,7 @@ export default function RoundedDonutChart({thisMonthBookings}: []) {
               cx={SIZE / 2}
               cy={SIZE / 2}
               r={RADIUS}
-              stroke="#2e2e2e"
+              stroke={theme.colors.border}
               strokeWidth={STROKE_WIDTH}
               fill="none"
             />
@@ -86,29 +95,37 @@ export default function RoundedDonutChart({thisMonthBookings}: []) {
       </View>
       <View style={styles.legendContainer}>
         <View style={styles.legendItem}>
-          <Text style={[styles.legendCount, {color: '#B2C000'}]}>{cancel}</Text>
+          <Text style={[styles.legendCount, {color: theme.colors.brandYellow}]}>
+            {cancel}
+          </Text>
           <View style={styles.legendLabelContainer}>
-            <View style={[styles.dot, {backgroundColor: '#B2C000'}]} />
+            <View
+              style={[styles.dot, {backgroundColor: theme.colors.brandYellow}]}
+            />
             <Text style={styles.legendLabel}>Cancelled</Text>
           </View>
         </View>
 
         <View style={styles.legendItem}>
-          <Text style={[styles.legendCount, {color: '#5E6600'}]}>
+          <Text style={[styles.legendCount, {color: theme.colors.brandGreen}]}>
             {pending}
           </Text>
           <View style={styles.legendLabelContainer}>
-            <View style={[styles.dot, {backgroundColor: '#5E6600'}]} />
+            <View
+              style={[styles.dot, {backgroundColor: theme.colors.brandGreen}]}
+            />
             <Text style={styles.legendLabel}>Pending</Text>
           </View>
         </View>
 
         <View style={styles.legendItem}>
-          <Text style={[styles.legendCount, {color: '#383C1D'}]}>
+          <Text style={[styles.legendCount, {color: theme.colors.brandViolet}]}>
             {confirm}
           </Text>
           <View style={styles.legendLabelContainer}>
-            <View style={[styles.dot, {backgroundColor: '#383C1D'}]} />
+            <View
+              style={[styles.dot, {backgroundColor: theme.colors.brandViolet}]}
+            />
             <Text style={styles.legendLabel}>Confirmed</Text>
           </View>
         </View>

@@ -21,14 +21,13 @@ import {useAuthStore} from '../store/authStore';
 import {styles} from '../styles/AccountScreenStyles';
 import {RootStackParamList} from '../navigation/routes';
 import AppHeader from '../components/AppHeader';
+import {useTheme} from '../context/ThemeContext';
 
 const AccountScreen = () => {
   const {data, isPending} = useAccountInfo();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(false);
-  const [isSwitchOn, setIsSwitchOn] = React.useState(false);
 
-  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
 
@@ -46,6 +45,8 @@ const AccountScreen = () => {
     {id: '3', icon: 'moon-outline', title: 'BlackTheme'},
     {id: '4', icon: 'log-out', title: 'Logout'},
   ];
+
+  const {theme, toggleTheme} = useTheme();
 
   const handleItemPress = (title: string) => {
     switch (title) {
@@ -75,8 +76,8 @@ const AccountScreen = () => {
         )}
         {item.title === 'BlackTheme' && (
           <Switch
-            value={isSwitchOn}
-            onValueChange={onToggleSwitch}
+            value={theme.dark}
+            onValueChange={toggleTheme}
             color="#B2C000"
             trackColor={{false: '#444', true: '#737A1A'}}
           />

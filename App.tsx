@@ -11,6 +11,7 @@ import {MD3DarkTheme, PaperProvider} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {CustomToastRenderer} from './src/utils/CustomToastRenderer';
 import {ToastProvider} from './src/context/ToastContext';
+import {ThemeProvider} from './src/context/ThemeContext';
 
 export default function App() {
   const theme = {
@@ -60,10 +61,12 @@ export default function App() {
               <View>
                 <StatusBar barStyle={'light-content'} translucent={false} />
               </View>
-              <ToastProvider>
-                <AppNavigator />
-                <CustomToastRenderer />
-              </ToastProvider>
+              <ThemeProvider>
+                <ToastProvider>
+                  <AppNavigator />
+                  <CustomToastRenderer />
+                </ToastProvider>
+              </ThemeProvider>
             </SafeAreaView>
           </PaperProvider>
         </SafeAreaProvider>
