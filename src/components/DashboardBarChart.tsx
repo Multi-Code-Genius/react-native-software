@@ -2,6 +2,7 @@ import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import Svg, {Rect} from 'react-native-svg';
 import {isSameDay, subDays} from 'date-fns';
+import {useTheme} from '../context/ThemeContext';
 
 const generatePastWeekBookingData = (bookings: any[]) => {
   const today = new Date();
@@ -28,6 +29,7 @@ const BAR_WIDTH = 18;
 const CHART_HEIGHT = 150;
 
 export default function DashboardBarChart({lastSevenDaysBookings}: any) {
+  const {theme} = useTheme();
   const data = generatePastWeekBookingData(lastSevenDaysBookings);
 
   return (
@@ -44,7 +46,7 @@ export default function DashboardBarChart({lastSevenDaysBookings}: any) {
                   rx={10}
                   width={BAR_WIDTH}
                   height={CHART_HEIGHT}
-                  fill="#383C1D"
+                  fill={theme.colors.filler}
                 />
                 <Rect
                   x={0}
@@ -52,10 +54,11 @@ export default function DashboardBarChart({lastSevenDaysBookings}: any) {
                   rx={10}
                   width={BAR_WIDTH}
                   height={filledHeight}
-                  fill="#B2C000"
+                  fill={theme.colors.brandViolet}
                 />
               </Svg>
-              <Text style={styles.valueLabel}>
+              <Text
+                style={[styles.valueLabel, {color: theme.colors.brandViolet}]}>
                 {item.value > 0 ? item.value : ''}
               </Text>
               <Text style={styles.dayLabel}>{item.day}</Text>

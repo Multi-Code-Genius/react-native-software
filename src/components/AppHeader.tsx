@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
 import {RootStackParamList} from '../navigation/routes';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {useTheme} from '../context/ThemeContext';
 
 type AppHeaderProps = {
   isApp?: boolean;
@@ -28,6 +29,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
   };
 
   const title = customTitle || screenTitles[route.name] || 'Turfkeeper';
+  const {toggleTheme} = useTheme();
 
   return (
     <BottomSheetModalProvider>

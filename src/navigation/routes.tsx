@@ -9,7 +9,6 @@ import EditVenueDetailsScreen from '../screens/EditVenueDetailsScreen';
 import VenueManageScreen from '../screens/VenueManageScreen';
 import {VenueByIdDetailsScreen} from '../screens/VenueByIdDetailsScreen';
 import BookingByIdScreen from '../screens/BookingByIdScreen';
-import BookingCalenderScreen from '../screens/VenueByIdScreen';
 import ProfileInfoScreen from '../screens/ProfileInfoScreen';
 import AddVenueScreen from '../screens/AddVenueScreen';
 import {PrivateRoute} from '../routes/PrivateRoute';
@@ -22,6 +21,12 @@ import BookingVenuesScreen from '../screens/BookingVenuesScreen';
 import BookingSlotScreen from '../screens/BookingSlotScreen';
 import BookingFormScreen from '../screens/BookingFormScreen';
 import BookingSuccess from '../screens/BookingSuccess';
+
+import {
+  DefaultTheme,
+  DarkTheme as NavDarkTheme,
+} from '@react-navigation/native';
+import {useTheme} from '../context/ThemeContext';
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -145,6 +150,8 @@ const AppStack = () => (
 );
 export default function AppNavigator() {
   const {isAuthenticated, initializeAuth} = useAuthStore();
+  const {theme} = useTheme();
+  const navigationTheme = theme.dark ? NavDarkTheme : DefaultTheme;
 
   useEffect(() => {
     const initialize = async () => {
@@ -154,7 +161,7 @@ export default function AppNavigator() {
   }, [initializeAuth]);
 
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       {isAuthenticated ? <AuthStack /> : <AppStack />}
     </NavigationContainer>
   );

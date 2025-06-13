@@ -10,19 +10,22 @@ import {
 import {ActivityIndicator, Text} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDashboardData} from '../api/dashboard';
-import {styles} from '../styles/HomeScreenStyles';
+import {getStyles} from '../styles/HomeScreenStyles';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import BookingStatusChart from '../components/BookingStatusChart';
 import DashboardBarChart from '../components/DashboardBarChart';
 import MonthPicker from 'react-native-month-year-picker';
 import moment from 'moment';
+import {useTheme} from '../context/ThemeContext';
 
 const HomeScreen = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [date, setDate] = useState(new Date());
   const [show, setShow] = useState(false);
   const monthName = moment(date).format('MMMM').toLowerCase();
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
 
   const showPicker = useCallback((value: any) => setShow(value), []);
 
@@ -101,7 +104,7 @@ const HomeScreen = () => {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }>
         <ImageBackground
-          source={require('../assets/ScreenShaded.png')}
+          source={theme.dark && require('../assets/ScreenShaded.png')}
           style={styles.headerGlow}
           resizeMode="cover">
           {isLoading ? (
@@ -118,7 +121,7 @@ const HomeScreen = () => {
               <View
                 style={{
                   padding: 15,
-                  borderBottomColor: '#252525',
+                  borderBottomColor: theme.colors.border,
                   borderBottomWidth: 1,
                 }}>
                 <View
@@ -132,11 +135,15 @@ const HomeScreen = () => {
                   <TouchableOpacity
                     onPress={() => showPicker(true)}
                     style={styles.dateButton}>
-                    <Icon name="calendar" size={20} color="white" />
+                    <Icon name="calendar" size={20} color={theme.colors.text} />
                     <Text style={styles.dateText}>
                       {moment(date).format('MM-YYYY')}
                     </Text>
-                    <Icon name="chevron-down" size={16} color="white" />
+                    <Icon
+                      name="chevron-down"
+                      size={16}
+                      color={theme.colors.text}
+                    />
                   </TouchableOpacity>
                 </View>
 
@@ -145,7 +152,11 @@ const HomeScreen = () => {
                     <View key={item.id} style={styles.analyticsBox}>
                       <Text style={styles.analyticsLabel}>{item.title}</Text>
                       <View style={styles.iconWrap}>
-                        <Icon name={item.icon} size={22} color="#fff" />
+                        <Icon
+                          name={item.icon}
+                          size={22}
+                          color={theme.colors.text}
+                        />
                         <Text style={styles.analyticsValue}>{item.count}</Text>
                       </View>
                     </View>
@@ -164,7 +175,11 @@ const HomeScreen = () => {
                         paddingBottom: 16,
                       }}>
                       <View style={{gap: 10, flexDirection: 'row'}}>
-                        <Icon name="calendar" size={20} color="white" />
+                        <Icon
+                          name="calendar"
+                          size={20}
+                          color={theme.colors.text}
+                        />
                         <Text style={styles.dateText}>Booking Status</Text>
                       </View>
                     </View>
@@ -183,7 +198,11 @@ const HomeScreen = () => {
                         paddingBottom: 16,
                       }}>
                       <View style={{gap: 10, flexDirection: 'row'}}>
-                        <Icon name="calendar" size={20} color="white" />
+                        <Icon
+                          name="calendar"
+                          size={20}
+                          color={theme.colors.text}
+                        />
                         <Text style={styles.dateText}>Weekly Booking</Text>
                       </View>
                     </View>
@@ -200,11 +219,18 @@ const HomeScreen = () => {
               </View>
             </View>
           )}
+
+          {show && (
+            <MonthPicker
+              onChange={onValueChange}
+              value={date}
+              minimumDate={new Date(2020, 1)}
+              maximumDate={new Date(2025, 12)}
+              locale="en"
+            />
+          )}
         </ImageBackground>
       </ScrollView>
-      {show && (
-        <MonthPicker onChange={onValueChange} value={date} mode="short" />
-      )}
     </SafeAreaView>
   );
 };
