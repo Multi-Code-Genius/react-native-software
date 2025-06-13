@@ -19,6 +19,9 @@ import OnboardingScreen from '../screens/OnboardingScreen';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import VenueByIdScreen from '../screens/VenueByIdScreen';
 import BookingVenuesScreen from '../screens/BookingVenuesScreen';
+import BookingSlotScreen from '../screens/BookingSlotScreen';
+import BookingFormScreen from '../screens/BookingFormScreen';
+import BookingSuccess from '../screens/BookingSuccess';
 
 export type MainTabsParamList = {
   Home: undefined;
@@ -45,6 +48,9 @@ export type RootStackParamList = {
   Notifications: undefined;
   Addvenue: undefined;
   Login: undefined;
+  BookingSlot: undefined;
+  BookingForm: undefined;
+  BookingSuccess: undefined;
   BookingVenues: undefined;
   OtpVerify: {phone: string};
 };
@@ -93,7 +99,21 @@ const AuthStack = () => (
       options={{headerShown: false}}
     />
     <Stack.Screen name="VenueByID" component={VenueByIdDetailsScreen} />
-
+    <Stack.Screen
+      name="BookingSlot"
+      component={BookingSlotScreen}
+      options={{headerShown: false, gestureEnabled: true}}
+    />
+    <Stack.Screen
+      name="BookingForm"
+      component={BookingFormScreen}
+      options={{headerShown: false}}
+    />
+    <Stack.Screen
+      name="BookingSuccess"
+      component={BookingSuccess}
+      options={{headerShown: false}}
+    />
     <Stack.Screen name="VenueManage" component={VenueManageScreen} />
     {/* <Stack.Screen name="bookingData" component={BookingCalenderScreen} /> */}
     <Stack.Screen name="EditVenueDetails" component={EditVenueDetailsScreen} />

@@ -34,6 +34,7 @@ const VenueDetails = () => {
 
   const formatTime = (date: Date) =>
     date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
   return (
     <ScrollView
       style={styles.container}

@@ -5,14 +5,18 @@ import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useGetVenue} from '../api/vanue';
 import {FlatList} from 'react-native-gesture-handler';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 const BookingVenuesScreen = () => {
   const {data, refetch, isLoading} = useGetVenue();
-
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const renderItem = ({item, index}: {item: any; index: number}) => {
-    console.log('item>>>', item);
     return (
-      <Card style={[styles.card, styles.shadow]} mode="elevated">
+      <Card
+        style={[styles.card, styles.shadow]}
+        mode="elevated"
+        onPress={() => navigation.navigate('BookingSlot')}>
         <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
           <Text style={styles.heading}>{`Venue ${index + 1}`}</Text>
           <Image
