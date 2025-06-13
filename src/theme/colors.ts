@@ -14,6 +14,11 @@ export type ColorPalette = {
   brandGreen: string;
   brandViolet: string;
   filler: string;
+  orange: string;
+  violet: string;
+  green: string;
+  yellow: string;
+  secondary: string;
 };
 
 export const LightColors: ColorPalette = {
@@ -23,7 +28,7 @@ export const LightColors: ColorPalette = {
   card: '#FFFFFF',
   text: '#121212',
   textSecondary: '#898989',
-  primary: '#8D54FF',
+  primary: '#000000',
   accent: '#B2C000',
   success: '#58A883',
   warning: '#9764FD',
@@ -32,9 +37,18 @@ export const LightColors: ColorPalette = {
   brandGreen: '#58A883',
   brandViolet: '#8D54FF',
   filler: '#E8DCFF',
+  orange: '#FF8181',
+  violet: '#9764FD',
+  green: '#58A883',
+  yellow: '#000000',
+  secondary: '#888888',
 };
 
 export const DarkColors: ColorPalette = {
+  orange: '#9D595A',
+  secondary: '#3E4102',
+  green: '#398561',
+  violet: '#514A86',
   background: '#0F0F0F',
   surface: '#191919',
   border: '#323232',
@@ -50,4 +64,5 @@ export const DarkColors: ColorPalette = {
   brandGreen: '#383C1D',
   brandViolet: '#5E6600',
   filler: '#383C1D',
+  yellow: '#B2C000',
 };

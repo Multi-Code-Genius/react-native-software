@@ -9,8 +9,9 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
 
 const BookingVenuesScreen = () => {
-  const {data, refetch, isLoading} = useGetVenue();
+  const {data} = useGetVenue();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   const renderItem = ({item, index}: {item: any; index: number}) => {
     return (
       <Card

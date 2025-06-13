@@ -21,17 +21,20 @@ import {
 import {useNavigation} from '@react-navigation/native';
 import {Divider} from 'react-native-paper';
 import BookingCard from '../components/VenueScreen/BookingCard';
-import {styles} from '../styles/BookingScreenStyles';
+import {getStyles} from '../styles/BookingScreenStyles';
+import {useTheme} from '../context/ThemeContext';
 
 const BookingScreen = () => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const groundSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['25%'], []);
   const navigation = useNavigation();
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const statuses = [
-    {label: 'Completed', color: '#F27B7D'},
-    {label: 'Upcoming', color: '#9E87FF'},
-    {label: 'Available', color: '#7CDDA6'},
+    {label: 'Completed', color: theme.colors.orange},
+    {label: 'Upcoming', color: theme.colors.violet},
+    {label: 'Available', color: theme.colors.green},
   ];
   const filters = [
     'All',
@@ -65,7 +68,7 @@ const BookingScreen = () => {
         <View style={styles.container}>
           <AppHeader />
           <ImageBackground
-            source={require('../assets/ScreenShaded.png')}
+            source={theme.dark && require('../assets/ScreenShaded.png')}
             style={styles.headerGlow}
             resizeMode="cover">
             <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -145,7 +148,7 @@ const BookingScreen = () => {
                 <BookingCard
                   startTime="09:00 am"
                   endTime="11:00 am"
-                  bgColor="#784847"
+                  bgColor={theme.colors.orange}
                   name="Jaimin Kinariwala"
                   phone="98415874"
                   duration="2 Hr"
@@ -155,7 +158,7 @@ const BookingScreen = () => {
                 <BookingCard
                   startTime="11:00 am"
                   endTime="12:00 am"
-                  bgColor="#514A86"
+                  bgColor={theme.colors.violet}
                   name="Samarth Jariwala"
                   phone="98415874"
                   duration="2 Hr"
@@ -165,7 +168,7 @@ const BookingScreen = () => {
                 <BookingCard
                   startTime="12:00 pm"
                   endTime="02:00 pm"
-                  bgColor="#356850"
+                  bgColor={theme.colors.green}
                   name="Aarav Mehta"
                   phone="98415874"
                   duration="2 Hr"
@@ -176,7 +179,7 @@ const BookingScreen = () => {
                 <BookingCard
                   startTime="02:00 pm"
                   endTime="04:00 pm"
-                  bgColor="#514A86"
+                  bgColor={theme.colors.violet}
                   name="Samarth Jariwala"
                   phone="98415874"
                   duration="2 Hr"
