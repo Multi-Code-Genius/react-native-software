@@ -5,7 +5,7 @@ const BookingSuccess = () => {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('../assets/Background.png')}
+        source={require('../assets/Bg.png')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.section}>
@@ -22,17 +22,17 @@ const BookingSuccess = () => {
 export default BookingSuccess;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   image: {
     flex: 1,
     width: '100%',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: '#141414',
   },
   head: {
     fontSize: 32,
-    fontWeight: 'medium',
+    fontWeight: '600',
     lineHeight: 42,
     color: '#FFF',
     fontFamily: 'ClashGrotesk-Regular',
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
   section: {
     justifyContent: 'center',
     alignItems: 'center',
+    height: '50%',
   },
   subhead: {
     fontSize: 14,
