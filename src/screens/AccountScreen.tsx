@@ -18,7 +18,7 @@ import {NavigationProp, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useAccountInfo} from '../api/account';
 import {useAuthStore} from '../store/authStore';
-import {styles} from '../styles/AccountScreenStyles';
+import {accountStyle} from '../styles/AccountScreenStyles';
 import {RootStackParamList} from '../navigation/routes';
 import AppHeader from '../components/AppHeader';
 import {useTheme} from '../context/ThemeContext';
@@ -27,6 +27,9 @@ const AccountScreen = () => {
   const {data, isPending} = useAccountInfo();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const [visible, setVisible] = useState(false);
+
+  const {theme, toggleTheme} = useTheme();
+  const styles = accountStyle(theme);
 
   const showDialog = () => setVisible(true);
   const hideDialog = () => setVisible(false);
@@ -45,8 +48,6 @@ const AccountScreen = () => {
     {id: '3', icon: 'moon-outline', title: 'BlackTheme'},
     {id: '4', icon: 'log-out', title: 'Logout'},
   ];
-
-  const {theme, toggleTheme} = useTheme();
 
   const handleItemPress = (title: string) => {
     switch (title) {
@@ -68,7 +69,7 @@ const AccountScreen = () => {
       style={styles.menuItem}>
       <View style={styles.menuRow}>
         <View style={styles.menuLeft}>
-          <Icon name={item.icon} size={20} color="#FFF" />
+          <Icon name={item.icon} size={20} color={theme.colors.text} />
           <Text style={styles.menuTitle}>{item.title}</Text>
         </View>
         {item.title !== 'Logout' && item.title !== 'BlackTheme' && (
@@ -90,7 +91,7 @@ const AccountScreen = () => {
     <View style={styles.container}>
       <AppHeader />
       <ImageBackground
-        source={require('../assets/ScreenShaded.png')}
+        source={theme.dark && require('../assets/ScreenShaded.png')}
         style={styles.headerGlow}
         resizeMode="cover">
         {isPending ? (
@@ -125,7 +126,7 @@ const AccountScreen = () => {
                   console.log('Edit Profile Pressed');
                   navigation.navigate('ProfileInfo' as never);
                 }}>
-                <Icon name={'create'} size={20} color={'#fff'} />
+                <Icon name={'create'} size={20} color={theme.colors.text} />
                 <Text style={styles.edit}>Edit Profile</Text>
               </TouchableOpacity>
             </View>
