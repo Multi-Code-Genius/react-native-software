@@ -14,6 +14,7 @@ import {
 } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
@@ -193,7 +194,15 @@ const BookingScreen = () => {
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}>
+            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backdropComponent={props => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+                pressBehavior="close"
+              />
+            )}>
             <BottomSheetView style={{padding: 16}}>
               <View
                 style={{
@@ -246,7 +255,15 @@ const BookingScreen = () => {
             ref={groundSheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}>
+            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backdropComponent={props => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+                pressBehavior="close"
+              />
+            )}>
             <BottomSheetView style={{padding: 16}}>
               <Text style={styles.text}>Your Listed Grounds of Turf 1</Text>
 

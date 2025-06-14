@@ -19,6 +19,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
@@ -186,7 +187,15 @@ const VenueScreen = () => {
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}>
+            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backdropComponent={props => (
+              <BottomSheetBackdrop
+                {...props}
+                disappearsOnIndex={-1}
+                appearsOnIndex={0}
+                pressBehavior="close"
+              />
+            )}>
             <BottomSheetView style={styles.bottomSheetContent}>
               <TouchableOpacity style={styles.menu} onPress={() => {}}>
                 <Icon name="create" size={20} color={'#fff'} />

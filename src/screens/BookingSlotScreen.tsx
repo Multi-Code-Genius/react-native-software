@@ -15,6 +15,7 @@ import {useVenueStore} from '../store/useVenueStore';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {
+  BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
   BottomSheetView,
@@ -209,7 +210,15 @@ const BookingSlotScreen = () => {
                     index={0}
                     snapPoints={snapPoints}
                     backgroundStyle={{backgroundColor: '#0F0F0F'}}
-                    handleIndicatorStyle={{backgroundColor: '#666'}}>
+                    handleIndicatorStyle={{backgroundColor: '#666'}}
+                    backdropComponent={props => (
+                      <BottomSheetBackdrop
+                        {...props}
+                        disappearsOnIndex={-1}
+                        appearsOnIndex={0}
+                        pressBehavior="close"
+                      />
+                    )}>
                     <BottomSheetView>
                       <Text style={styles.modalTitle}>
                         Select Starting Time
@@ -257,7 +266,15 @@ const BookingSlotScreen = () => {
                     index={0}
                     snapPoints={snapPoints}
                     backgroundStyle={{backgroundColor: '#0F0F0F'}}
-                    handleIndicatorStyle={{backgroundColor: '#666'}}>
+                    handleIndicatorStyle={{backgroundColor: '#666'}}
+                    backdropComponent={props => (
+                      <BottomSheetBackdrop
+                        {...props}
+                        disappearsOnIndex={-1}
+                        appearsOnIndex={0}
+                        pressBehavior="close"
+                      />
+                    )}>
                     <BottomSheetView>
                       <Text style={styles.modalTitle}>Select Ending Time</Text>
                       <ScrollView contentContainerStyle={styles.grid}>
