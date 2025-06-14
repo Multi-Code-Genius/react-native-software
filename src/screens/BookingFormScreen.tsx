@@ -1,9 +1,14 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import CustomCheckbox from '../components/CustomCheckbox';
-import {Button} from 'react-native-paper';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
 
@@ -74,28 +79,30 @@ const BookingFormScreen = () => {
           </View>
         </View>
         <View style={styles.bottomCard}>
-          <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-            <Text style={styles.text}>Venue 1 , Vesu</Text>
-            <Text style={styles.text1}>(Ground 1)</Text>
-          </View>
-          <View style={styles.bookingdetail}>
-            <View style={styles.left}>
-              <Text style={styles.title}>Booking Time</Text>
-              <Text style={styles.subTitle}>06 am - 09 am</Text>
+          <View style={{flex: 1, gap: 20}}>
+            <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+              <Text style={styles.text}>Venue 1 , Vesu</Text>
+              <Text style={styles.text1}>(Ground 1)</Text>
             </View>
-            <View style={styles.separator} />
-            <View style={styles.right}>
-              <Text style={styles.title}>Booking Price</Text>
-              <Text style={styles.subTitle}>₹ 3,000</Text>
+
+            <View style={styles.bookingdetail}>
+              <View style={styles.left}>
+                <Text style={styles.title}>Booking Time</Text>
+                <Text style={styles.subTitle}>06 am - 09 am</Text>
+              </View>
+              <View style={styles.separator} />
+              <View style={styles.right}>
+                <Text style={styles.title}>Booking Price</Text>
+                <Text style={styles.subTitle}>₹ 3,000</Text>
+              </View>
             </View>
           </View>
-          <Button
-            mode="contained"
+
+          <TouchableOpacity
             style={styles.button}
-            onPress={() => navigation.navigate('BookingSuccess')}
-            labelStyle={{fontWeight: 'bold', color: '#000'}}>
-            Book Venue
-          </Button>
+            onPress={() => navigation.navigate('BookingSuccess')}>
+            <Text style={styles.buttonText}>Book Venue</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -111,6 +118,9 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: 10,
+  },
+  fixedButtonWrapper: {
+    backgroundColor: '#272727',
   },
   label: {
     fontSize: 12,
@@ -148,9 +158,9 @@ const styles = StyleSheet.create({
   },
   bottomCard: {
     backgroundColor: '#272727',
-    padding: 15,
-    gap: 20,
+    padding: 20,
     flex: 1,
+    justifyContent: 'space-between',
   },
   text: {
     fontSize: 14,
@@ -165,7 +175,7 @@ const styles = StyleSheet.create({
   bookingdetail: {
     flexDirection: 'row',
     width: '100%',
-    backgroundColor: '#6c669b',
+    backgroundColor: '#554d8a',
     marginVertical: 10,
   },
   title: {
@@ -194,13 +204,17 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: '#B2C000',
     borderRadius: 0,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontWeight: 'bold',
     color: '#000',
-    paddingVertical: 10,
   },
   separator: {
     width: 1,
     borderRightWidth: 1,
-    borderColor: '#fff',
+    borderColor: '#bebcbc',
     borderStyle: 'dashed',
     marginHorizontal: 10,
     alignSelf: 'stretch',

@@ -96,8 +96,18 @@ export const styles = StyleSheet.create({
   button: {
     backgroundColor: '#B2C000',
     borderRadius: 0,
+    paddingVertical: 20,
+    alignItems: 'center',
+  },
+  buttonText: {
+    fontWeight: 'bold',
     color: '#000',
+  },
+  buttonContainer: {
+    backgroundColor: '#B2C000',
+    borderRadius: 0,
     paddingVertical: 10,
+    marginVertical: 10,
   },
   container1: {
     flexDirection: 'row',

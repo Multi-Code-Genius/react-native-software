@@ -1,5 +1,6 @@
 import React, {useMemo, useRef, useState} from 'react';
 import {
+  Button,
   Image,
   ImageBackground,
   Text,
@@ -11,7 +12,6 @@ import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import DateCarousel from '../components/BookingScreen/DateCarousal';
 import {useVenueStore} from '../store/useVenueStore';
-import {Button} from 'react-native-paper';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {
@@ -298,13 +298,12 @@ const BookingSlotScreen = () => {
                     </BottomSheetView>
                   </BottomSheetModal>
                 </View>
-                <Button
-                  mode="contained"
+
+                <TouchableOpacity
                   style={styles.button}
-                  onPress={() => navigation.navigate('BookingForm')}
-                  labelStyle={{fontWeight: 'bold', color: '#000'}}>
-                  Next
-                </Button>
+                  onPress={() => navigation.navigate('BookingForm')}>
+                  <Text style={styles.buttonText}>Next</Text>
+                </TouchableOpacity>
               </View>
             </ImageBackground>
           </ScrollView>
