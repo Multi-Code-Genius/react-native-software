@@ -82,7 +82,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     borderBottomColor: '#918f8f',
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     marginTop: 20,
   },
   tabText: {

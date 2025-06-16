@@ -1,5 +1,5 @@
-import {RouteProp, useRoute} from '@react-navigation/native';
-import React, {useRef, useState, useEffect} from 'react';
+import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
+import React, { useRef, useState, useEffect, useCallback } from 'react';
 import {
   Image,
   ImageBackground,
@@ -7,17 +7,20 @@ import {
   View,
   Animated,
 } from 'react-native';
-import {Text} from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {styles} from '../styles/bookingDetailStyles';
+import { styles } from '../styles/bookingDetailStyles';
 import BookingCard from '../components/VenueScreen/BookingCard';
-import {ScrollView} from 'react-native-gesture-handler';
+import { RefreshControl, ScrollView } from 'react-native-gesture-handler';
 import PagerView from 'react-native-pager-view';
+import { useGetVenueById } from '../api/vanue';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import { getBookingByGround } from '../utils/helper';
 
-interface BookingCalenderScreenProps {
-  navigation: any;
-}
+dayjs.extend(utc);
+
 type BookingParamList = {
   BookingCalender: {
     id: string;
@@ -29,13 +32,32 @@ type BookingParamList = {
 
 const CARD_HEIGHT = 200;
 
-const VenueByIdScreen = ({navigation}: BookingCalenderScreenProps) => {
+const VenueByIdScreen = () => {
   const [activePage, setActivePage] = useState(0);
-  const [cardCounts, setCardCounts] = useState<{[key: number]: number}>({});
+  const route = useRoute<RouteProp<BookingParamList, 'BookingCalender'>>();
+  const { venueId } = route.params;
+  const { data, refetch, isLoading } = useGetVenueById(venueId);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const [cardCounts, setCardCounts] = useState<{ [key: number]: number }>({});
   const animatedHeight = useRef(new Animated.Value(CARD_HEIGHT)).current;
 
-  const route = useRoute<RouteProp<BookingParamList, 'BookingCalender'>>();
-  const {venueId} = route.params;
+  const result  = getBookingByGround(data?.venue)
+
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetch()]);
+    setRefreshing(false);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!isLoading) {
+        refetch();
+      }
+    }, [refetch]),
+  );
 
   useEffect(() => {
     const count = cardCounts[activePage] || 1;
@@ -45,19 +67,17 @@ const VenueByIdScreen = ({navigation}: BookingCalenderScreenProps) => {
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, [activePage, cardCounts]);
+  }, [activePage, cardCounts, animatedHeight]);
 
-  const registerCardCount = (index: number, count: number) => {
-    setCardCounts(prev => ({...prev, [index]: count}));
-  };
-
-  const ground1Bookings = [1, 2, 3, 4];
-  const ground2Bookings = [1, 2, 3, 4];
+  const registerCardCount = useCallback((index: number, count: number) => {
+    setCardCounts(prev => ({ ...prev, [index]: count }));
+  }, []);
 
   useEffect(() => {
-    registerCardCount(0, ground1Bookings.length);
-    registerCardCount(1, ground2Bookings.length);
-  }, []);
+    result.forEach((val, index) => {
+      registerCardCount(index, val.count);
+    })
+  }, [result.length, registerCardCount, result, activePage] );
 
   return (
     <View style={styles.container}>
@@ -66,162 +86,107 @@ const VenueByIdScreen = ({navigation}: BookingCalenderScreenProps) => {
         source={require('../assets/ScreenShaded.png')}
         style={styles.headerGlow}
         resizeMode="cover">
-        <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <ScrollView contentContainerStyle={{ flexGrow: 1 }}  refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }>
           <View style={styles.venueListContainer}>
             <View style={styles.card}>
-              <View style={{flexDirection: 'column', gap: 16}}>
+              <View style={{ flexDirection: 'column', gap: 16 }}>
                 <Image
-                  source={require('../assets/background1.png')}
+                  source={{ uri: data?.venue?.images?.[0] }}
                   style={styles.image}
                 />
-                <Text style={styles.name1}>Turf</Text>
+                <Text style={styles.name1}>{data?.venue?.name}</Text>
                 <View
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                   }}>
-                  <Text style={styles.name}>₹ 780 / Per Hour</Text>
+                  <Text style={styles.name}>
+                    ₹ {data?.venue?.ground_details?.[activePage]?.hourly_price}{' '}
+                    / Per Hour
+                  </Text>
                   <View style={styles.detail}>
                     <Icon name="location" size={20} color={'#888'} />
-                    <Text style={styles.name}>Vesu , Surat</Text>
+                    <Text style={styles.name}>  {data?.venue?.location?.area}, {data?.venue?.location?.city}</Text>
                   </View>
                 </View>
                 <View style={styles.category}>
-                  <Text style={styles.type}>Cricket</Text>
-                  <Text style={styles.type1}>Football</Text>
+                  <Text style={styles.type}>
+                    {data?.venue?.game_info?.type}
+                  </Text>
                 </View>
               </View>
 
-              {/* Tabs */}
-              <View style={styles.tabContainer}>
-                <TouchableOpacity
-                  onPress={() => setActivePage(0)}
-                  style={[styles.tabs, activePage === 0 && styles.tabActive]}>
-                  <Text
-                    style={[
-                      styles.tabText,
-                      activePage === 0 && styles.tabActiveText,
-                    ]}>
-                    Ground 1
-                  </Text>
-                  <Text style={styles.groundSize}>30 * 60 feet</Text>
-                </TouchableOpacity>
 
-                <TouchableOpacity
-                  onPress={() => setActivePage(1)}
-                  style={[styles.tabs, activePage === 1 && styles.tabActive]}>
-                  <Text
-                    style={[
-                      styles.tabText,
-                      activePage === 1 && styles.tabActiveText,
-                    ]}>
-                    Ground 2
-                  </Text>
-                  <Text style={styles.groundSize}>40 * 60 feet</Text>
-                </TouchableOpacity>
+              <View style={styles.tabContainer}>
+                {data?.venue?.ground_details?.map((g: any, i: number) => {
+                  return (
+                    <TouchableOpacity
+                      key={i}
+                      onPress={() => setActivePage(i)}
+                      style={[
+                        styles.tabs,
+                        activePage === i && styles.tabActive,
+                      ]}>
+                      <Text
+                        style={[
+                          styles.tabText,
+                          activePage === i && styles.tabActiveText,
+                        ]}>
+                        Ground {g?.ground}
+                      </Text>
+                      <Text style={styles.groundSize}>
+                        {g?.width} * {g?.height} feet
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
 
-              <Animated.View style={{height: animatedHeight}}>
+              <Animated.View style={{ height: animatedHeight }}>
                 <PagerView
                   initialPage={0}
                   onPageSelected={e => {
                     const index = e.nativeEvent.position;
                     setActivePage(index);
                   }}
-                  style={{flex: 1}}>
-                  {/* Ground 1 */}
-                  <View key="1" style={{paddingVertical: 20}}>
-                    <View style={{gap: 20}}>
-                      <BookingCard
-                        startTime="09:00 am"
-                        endTime="11:00 am"
-                        bgColor="#784847"
-                        name="Jaimin Kinariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Cricket"
-                      />
-                      <BookingCard
-                        startTime="11:00 am"
-                        endTime="12:00 am"
-                        bgColor="#514A86"
-                        name="Samarth Jariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Football"
-                      />
-                      <BookingCard
-                        startTime="12:00 pm"
-                        endTime="02:00 pm"
-                        bgColor="#356850"
-                        name="Aarav Mehta"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="1600"
-                        sport="Football"
-                        isAvailable
-                      />
-                      <BookingCard
-                        startTime="02:00 pm"
-                        endTime="04:00 pm"
-                        bgColor="#514A86"
-                        name="Samarth Jariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Football"
-                      />
-                    </View>
-                  </View>
+                  style={{ flex: 1 }}>
+                  {
+                    data?.venue?.ground_details?.map((i: any, index: number) => {
+                      return (
+                        <View key={index} style={{ paddingVertical: 20 }}>
+                          <View style={{ gap: 20 }}>
+                            {
+                              data?.venue?.bookings.map((booking: any, num: number) => {
+                                const now = dayjs();
+                                const start = dayjs(booking?.start_time);
+                                const end = dayjs(booking?.end_time);
+                                const diffInHours = end.diff(start, 'hour');
+                                if (booking?.booked_grounds !== activePage + 1) {
+                                  return;
+                                }
+                                return (
+                                  <BookingCard
+                                    key={num}
+                                    startTime={dayjs.utc(booking?.start_time).local().format('hh:mm A')}
+                                    endTime={dayjs.utc(booking?.end_time).local().format('hh:mm A')}
+                                    bgColor=  {  dayjs(booking?.start_time)?.isBefore(now) ? "#784847" : "#514A86"} 
+                                    name={booking?.customer?.name ?? "jay"}
+                                    phone={booking?.customer?.mobile ?? "9998887770"}
+                                    duration={diffInHours.toString()}
+                                    price={booking?.total_amount}
+                                    sport={data?.venue?.game_info?.type}
+                                  />
+                                )
+                              })
+                            }
+                          </View>
+                        </View>
 
-                  {/* Ground 2 */}
-                  <View key="2" style={{paddingVertical: 20}}>
-                    <View style={{gap: 20}}>
-                      <BookingCard
-                        startTime="09:00 am"
-                        endTime="11:00 am"
-                        bgColor="#784847"
-                        name="Jaimin Kinariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Cricket"
-                      />
-                      <BookingCard
-                        startTime="11:00 am"
-                        endTime="12:00 am"
-                        bgColor="#514A86"
-                        name="Samarth Jariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Football"
-                      />
-                      <BookingCard
-                        startTime="12:00 pm"
-                        endTime="02:00 pm"
-                        bgColor="#356850"
-                        name="Aarav Mehta"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="1600"
-                        sport="Football"
-                        isAvailable
-                      />
-                      <BookingCard
-                        startTime="02:00 pm"
-                        endTime="04:00 pm"
-                        bgColor="#514A86"
-                        name="Samarth Jariwala"
-                        phone="98415874"
-                        duration="2 Hr"
-                        price="2000"
-                        sport="Football"
-                      />
-                    </View>
-                  </View>
+                      )
+                    })
+                  }
                 </PagerView>
               </Animated.View>
             </View>
