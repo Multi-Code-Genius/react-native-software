@@ -136,6 +136,10 @@ export const getStyles = (theme: any) =>
       fontWeight: '600',
       color: theme.colors.text,
     },
+    bottommodal: {
+      backgroundColor: theme.colors.background,
+      borderRadius: 8,
+    },
     venueLocation: {
       fontSize: 13,
       color: '#888',

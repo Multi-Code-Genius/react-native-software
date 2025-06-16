@@ -202,7 +202,7 @@ const BookingScreen = () => {
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backgroundStyle={styles.bottommodal}
             backdropComponent={props => (
               <BottomSheetBackdrop
                 {...props}

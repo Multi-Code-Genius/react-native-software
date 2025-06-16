@@ -25,6 +25,7 @@ export type ColorPalette = {
   labelBorder2: string;
   text1: string;
   labeltext: string;
+  violettext: string;
 };
 
 export const LightColors: ColorPalette = {
@@ -54,6 +55,7 @@ export const LightColors: ColorPalette = {
   labelBorder1: '#7861CB',
   labelBorder2: '#F1A10E',
   labeltext: '#121212',
+  violettext: '#CBB2FE',
 };
 
 export const DarkColors: ColorPalette = {
@@ -83,4 +85,5 @@ export const DarkColors: ColorPalette = {
   labelBorder1: '#FF9EEC',
   labelBorder2: '#F9FFB5',
   labeltext: '#B8B8B8',
+  violettext: '#B8B8B8',
 };

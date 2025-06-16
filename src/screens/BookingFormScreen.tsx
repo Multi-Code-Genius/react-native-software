@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,39 +6,48 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { ActivityIndicator } from 'react-native-paper';
+import {ActivityIndicator} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useCreateBooking } from '../api/booking';
+import {useCreateBooking} from '../api/booking';
 import AppHeader from '../components/AppHeader';
 import CustomCheckbox from '../components/CustomCheckbox';
-import { useBookingFormStore } from '../store/useBookingFormStore';
+import {useBookingFormStore} from '../store/useBookingFormStore';
+import {useTheme} from '../context/ThemeContext';
 
 const BookingFormScreen = () => {
   const [isChecked, setIsChecked] = useState(false);
-  const {name, phone, setName, setPhone,date, startTime, endTime, venueId, bookedGrounds, hourlyPrice } = useBookingFormStore()
+  const {
+    name,
+    phone,
+    setName,
+    setPhone,
+    date,
+    startTime,
+    endTime,
+    venueId,
+    bookedGrounds,
+    hourlyPrice,
+  } = useBookingFormStore();
 
-  const { mutate, isPending} = useCreateBooking()
-
-    const duration = endTime.diff(startTime, 'hour');
-    let totalAmount = duration * hourlyPrice
-
-
-
-    console.log('totalAmount', totalAmount, duration, hourlyPrice)
-
+  const {mutate, isPending} = useCreateBooking();
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
+  const duration = endTime.diff(startTime, 'hour');
+  let totalAmount = duration * hourlyPrice;
+  console.log('totalAmount', totalAmount, duration, hourlyPrice);
 
   const handlerBooking = () => {
     mutate({
       phone: phone,
-        name: name,
-        venueId:venueId ,
-        date: date,
-        startTime: startTime,
-        endTime: endTime,
-        bookedGrounds: bookedGrounds,
-        totalAmount: totalAmount,
-    })
-  }
+      name: name,
+      venueId: venueId,
+      date: date,
+      startTime: startTime,
+      endTime: endTime,
+      bookedGrounds: bookedGrounds,
+      totalAmount: totalAmount,
+    });
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -111,13 +120,15 @@ const BookingFormScreen = () => {
           <View style={{flex: 1, gap: 20}}>
             <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
               <Text style={styles.text}>Venue 1 , Vesu</Text>
-              <Text style={styles.text1}>{bookedGrounds}</Text>
+              <Text style={styles.text1}>( Ground {bookedGrounds})</Text>
             </View>
 
             <View style={styles.bookingdetail}>
               <View style={styles.left}>
                 <Text style={styles.title}>Booking Time</Text>
-                <Text style={styles.subTitle}>{startTime?.format('h:mm A')} to {endTime?.format('h:mm A')}</Text>
+                <Text style={styles.subTitle}>
+                  {startTime.format('h a')} to {endTime.format('h a')}
+                </Text>
               </View>
               <View style={styles.separator} />
               <View style={styles.right}>
@@ -131,8 +142,11 @@ const BookingFormScreen = () => {
             disabled={isPending}
             style={styles.button}
             onPress={() => handlerBooking()}>
-               {isPending ? <ActivityIndicator /> : <Text style={styles.buttonText}>Book Venue</Text> }
-           
+            {isPending ? (
+              <ActivityIndicator />
+            ) : (
+              <Text style={styles.buttonText}>Book Venue</Text>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -142,112 +156,113 @@ const BookingFormScreen = () => {
 
 export default BookingFormScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000',
-    flex: 1,
-  },
-  card: {
-    padding: 10,
-  },
-  fixedButtonWrapper: {
-    backgroundColor: '#272727',
-  },
-  label: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#B8B8B8',
-  },
-  form: {
-    gap: 15,
-    padding: 15,
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    backgroundColor: '#272727',
-  },
-  icon: {
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    color: 'white',
-    paddingVertical: 20,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  checkboxLabel: {
-    color: '#B8B8B8',
-    fontSize: 14,
-  },
-  bottomCard: {
-    backgroundColor: '#272727',
-    padding: 20,
-    flex: 1,
-    justifyContent: 'space-between',
-  },
-  text: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FFF',
-  },
-  text1: {
-    fontSize: 12,
-    fontWeight: 'medium',
-    color: '#888888',
-  },
-  bookingdetail: {
-    flexDirection: 'row',
-    width: '100%',
-    backgroundColor: '#554d8a',
-    marginVertical: 10,
-  },
-  title: {
-    fontSize: 10,
-    fontWeight: 'medium',
-    color: '#B8B8B8',
-    fontFamily: 'Montserrat-Regular',
-  },
-  subTitle: {
-    fontSize: 16,
-    color: '#FFF',
-    fontWeight: 'semibold',
-  },
-  left: {
-    width: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  right: {
-    width: '50%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 40,
-  },
-  button: {
-    backgroundColor: '#B2C000',
-    borderRadius: 0,
-    paddingVertical: 20,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  separator: {
-    width: 1,
-    borderRightWidth: 1,
-    borderColor: '#bebcbc',
-    borderStyle: 'dashed',
-    marginHorizontal: 10,
-    alignSelf: 'stretch',
-  },
-});
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      flex: 1,
+    },
+    card: {
+      padding: 10,
+    },
+    fixedButtonWrapper: {
+      backgroundColor: '#272727',
+    },
+    label: {
+      fontSize: 12,
+      fontWeight: '600',
+      marginBottom: 8,
+      color: theme.colors.labeltext,
+    },
+    form: {
+      gap: 15,
+      padding: 15,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 15,
+      backgroundColor: theme.colors.card,
+    },
+    icon: {
+      marginRight: 8,
+    },
+    input: {
+      flex: 1,
+      fontSize: 14,
+      color: 'white',
+      paddingVertical: 20,
+    },
+    checkboxContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 8,
+    },
+    checkboxLabel: {
+      color: '#B8B8B8',
+      fontSize: 14,
+    },
+    bottomCard: {
+      backgroundColor: theme.colors.card,
+      padding: 20,
+      flex: 1,
+      justifyContent: 'space-between',
+    },
+    text: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    text1: {
+      fontSize: 12,
+      fontWeight: 'medium',
+      color: '#888888',
+    },
+    bookingdetail: {
+      flexDirection: 'row',
+      width: '100%',
+      backgroundColor: theme.colors.violet,
+      marginVertical: 10,
+    },
+    title: {
+      fontSize: 11,
+      fontWeight: '500',
+      color: '#CBB2FE',
+      fontFamily: 'Montserrat-Regular',
+    },
+    subTitle: {
+      fontSize: 16,
+      color: '#FFF',
+      fontWeight: '600',
+    },
+    left: {
+      width: '50%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 40,
+    },
+    right: {
+      width: '50%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 40,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: 0,
+      paddingVertical: 20,
+      alignItems: 'center',
+    },
+    buttonText: {
+      fontWeight: 'bold',
+      color: theme.colors.surface,
+    },
+    separator: {
+      width: 1,
+      borderRightWidth: 1,
+      borderColor: '#bebcbc',
+      borderStyle: 'dashed',
+      marginHorizontal: 10,
+      alignSelf: 'stretch',
+    },
+  });
