@@ -1,25 +1,31 @@
-import React, { useCallback } from 'react';
+import React, {useCallback} from 'react';
 import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
 import AppHeader from '../components/AppHeader';
 import {Card} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useGetVenue} from '../api/vanue';
 import {FlatList} from 'react-native-gesture-handler';
-import {NavigationProp, useFocusEffect, useNavigation} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
+import {useTheme} from '../context/ThemeContext';
 
 const BookingVenuesScreen = () => {
   const {data, refetch, isLoading} = useGetVenue();
 
-useFocusEffect(
-  useCallback(() => {
-    if (!isLoading) {
-      refetch();
-    }
-  }, [refetch]),
-);
+  useFocusEffect(
+    useCallback(() => {
+      if (!isLoading) {
+        refetch();
+      }
+    }, [refetch]),
+  );
 
-
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const renderItem = ({item, index}: {item: any; index: number}) => {
@@ -27,8 +33,7 @@ useFocusEffect(
       <Card
         style={[styles.card, styles.shadow]}
         mode="elevated"
-        onPress={() => navigation.navigate('BookingSlot', { venueId: item?.id })}>
-
+        onPress={() => navigation.navigate('BookingSlot', {venueId: item?.id})}>
         <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
           <Text style={styles.heading}>{`Venue ${index + 1}`}</Text>
           <Image
@@ -61,7 +66,7 @@ useFocusEffect(
     <View style={styles.container}>
       <AppHeader title="Book Venue" isApp />
       <ImageBackground
-        source={require('../assets/ScreenShaded.png')}
+        source={theme.dark && require('../assets/ScreenShaded.png')}
         style={styles.headerGlow}
         resizeMode="cover">
         <View style={styles.subcontainer}>
@@ -81,89 +86,90 @@ useFocusEffect(
 
 export default BookingVenuesScreen;
 
-const styles = StyleSheet.create({
-  headerGlow: {
-    width: '100%',
-    height: '50%',
-    flex: 1,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-  },
-  subcontainer: {
-    padding: 15,
-  },
-  card: {
-    borderRadius: 0,
-    overflow: 'hidden',
-    flex: 1,
-    margin: 8,
-    backgroundColor: '#272727',
-  },
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 3},
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 4,
-  },
-  headContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  name1: {
-    fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Montserrat-Regular',
-    color: '#fff',
-  },
-  detail: {
-    flexDirection: 'row',
-    gap: 5,
-  },
-  name: {
-    fontSize: 16,
-    fontWeight: '600',
-    fontFamily: 'Montserrat-Regular',
-    color: '#888888',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: 150,
-  },
-  heading: {
-    color: '#B2C000',
-    fontSize: 12,
-    fontWeight: '700',
-    fontFamily: 'Montserrat-Regular',
-  },
-  category: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  type: {
-    borderColor: '#FF9EEC',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderWidth: 1,
-    borderRadius: 20,
-    color: '#FF9EEC',
-    fontFamily: 'Montserrat-Regular',
-    fontWeight: 'medium',
-    fontSize: 10,
-  },
-  type1: {
-    borderColor: '#F9FFB5',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderWidth: 1,
-    borderRadius: 20,
-    color: '#F9FFB5',
-    fontFamily: 'Montserrat-Regular',
-    fontWeight: 'medium',
-    fontSize: 10,
-  },
-});
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    headerGlow: {
+      width: '100%',
+      height: '50%',
+      flex: 1,
+    },
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    subcontainer: {
+      padding: 15,
+    },
+    card: {
+      borderRadius: 0,
+      overflow: 'hidden',
+      flex: 1,
+      margin: 8,
+      backgroundColor: theme.colors.card,
+    },
+    shadow: {
+      shadowColor: '#000',
+      shadowOffset: {width: 0, height: 3},
+      shadowOpacity: 0.1,
+      shadowRadius: 6,
+      elevation: 4,
+    },
+    headContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
+    name1: {
+      fontSize: 16,
+      fontWeight: '700',
+      fontFamily: 'Montserrat-Regular',
+      color: theme.colors.text,
+    },
+    detail: {
+      flexDirection: 'row',
+      gap: 5,
+    },
+    name: {
+      fontSize: 16,
+      fontWeight: '600',
+      fontFamily: 'Montserrat-Regular',
+      color: '#888888',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    image: {
+      width: '100%',
+      height: 150,
+    },
+    heading: {
+      color: theme.colors.text1,
+      fontSize: 12,
+      fontWeight: '700',
+      fontFamily: 'Montserrat-Regular',
+    },
+    category: {
+      flexDirection: 'row',
+      gap: 10,
+    },
+    type: {
+      borderColor: theme.colors.labelBorder1,
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      borderWidth: 1,
+      borderRadius: 20,
+      color: theme.colors.labelBorder1,
+      fontFamily: 'Montserrat-Regular',
+      fontWeight: 'medium',
+      fontSize: 10,
+    },
+    type1: {
+      borderColor: theme.colors.labelBorder2,
+      paddingHorizontal: 12,
+      paddingVertical: 4,
+      borderWidth: 1,
+      borderRadius: 20,
+      color: theme.colors.labelBorder2,
+      fontFamily: 'Montserrat-Regular',
+      fontWeight: 'medium',
+      fontSize: 10,
+    },
+  });

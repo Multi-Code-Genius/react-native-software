@@ -23,13 +23,14 @@ const OnboardingScreen = () => {
       source={require('../assets/SplashScreen.png')}
       style={styles.container}
       resizeMode="cover">
-      <LottieView
-        source={require('../assets/animation.json')}
-        autoPlay
-        loop
-        style={styles.lottie}
-      />
-
+      <View style={styles.imageWrapper}>
+        <LottieView
+          source={require('../assets/animation.json')}
+          autoPlay
+          loop
+          style={styles.lottie}
+        />
+      </View>
       <View style={styles.textContainer}>
         <View style={styles.badge}>
           <Text style={styles.badgeText}>
@@ -78,12 +79,12 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   textContainer: {
-    marginTop: 370,
+    // marginTop: 400,
     alignItems: 'flex-start',
     paddingHorizontal: 10,
     width: '100%',
     paddingBottom: 10,
-    zIndex: 100,
+    // zIndex: 100,
   },
   badge: {
     backgroundColor: '#FFFFFF1A',

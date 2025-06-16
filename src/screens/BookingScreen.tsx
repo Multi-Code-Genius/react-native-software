@@ -1,10 +1,5 @@
 import React, {useMemo, useRef, useState} from 'react';
-import {
-  ImageBackground,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {ImageBackground, Text, TouchableOpacity, View} from 'react-native';
 import AppHeader from '../components/AppHeader';
 import {
   FlatList,
@@ -30,7 +25,10 @@ const BookingScreen = () => {
   const snapPoints = useMemo(() => ['25%'], []);
   const navigation = useNavigation();
   const {theme} = useTheme();
+  console.log('theme>>>', theme.dark);
+  const isDark = theme.dark;
   const styles = getStyles(theme);
+  const colors = useTheme();
   const statuses = [
     {label: 'Completed', color: theme.colors.orange},
     {label: 'Upcoming', color: theme.colors.violet},
@@ -94,16 +92,32 @@ const BookingScreen = () => {
               <View style={styles.filterContainer}>
                 <TouchableOpacity style={styles.pill} onPress={openMenu}>
                   <Text style={styles.pillText}>Venue 1</Text>
-                  <Icon name="chevron-down" color="#FFF" size={14} />
+                  <Icon
+                    name="chevron-down"
+                    color={isDark ? '#fff' : '#000'}
+                    size={14}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.pill} onPress={openGround}>
                   <Text style={styles.pillText}>Ground 1</Text>
-                  <Icon name="chevron-down" color="#FFF" size={14} />
+                  <Icon
+                    name="chevron-down"
+                    color={isDark ? '#fff' : '#000'}
+                    size={14}
+                  />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.pill}>
-                  <Icon name="calendar-outline" color="#FFF" size={14} />
+                  <Icon
+                    name="calendar-outline"
+                    color={isDark ? '#fff' : '#000'}
+                    size={14}
+                  />
                   <Text style={styles.pillText}>01 Jun</Text>
-                  <Icon name="chevron-down" color="#FFF" size={14} />
+                  <Icon
+                    name="chevron-down"
+                    color={isDark ? '#fff' : '#000'}
+                    size={14}
+                  />
                 </TouchableOpacity>
               </View>
               <Divider style={{marginVertical: 5, borderColor: '#fff'}} />
@@ -118,24 +132,19 @@ const BookingScreen = () => {
                     return (
                       <TouchableOpacity
                         onPress={() => setSelectedFilter(item)}
-                        style={{
-                          paddingHorizontal: 16,
-                          height: 36,
-                          borderRadius: 20,
-                          backgroundColor: isSelected
-                            ? '#1F1F1F'
-                            : 'transparent',
-                          borderWidth: isSelected ? 1 : 0,
-                          borderColor: isSelected ? '#fff' : 'transparent',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          marginRight: 10,
-                        }}>
+                        style={[
+                          styles.filterItem,
+                          isSelected
+                            ? styles.filterItemSelected
+                            : styles.filterItemUnselected,
+                        ]}>
                         <Text
-                          style={{
-                            color: isSelected ? '#fff' : '#ccc',
-                            fontSize: 14,
-                          }}>
+                          style={[
+                            styles.filterItemText,
+                            isSelected
+                              ? styles.filterItemTextSelected
+                              : styles.filterItemTextUnselected,
+                          ]}>
                           {item}
                         </Text>
                       </TouchableOpacity>

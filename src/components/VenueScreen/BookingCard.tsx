@@ -1,7 +1,8 @@
 import React from 'react';
 import {Text, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {styles} from '../../styles/bookingDetailStyles';
+import {getStyles} from '../../styles/bookingDetailStyles';
+import {useTheme} from '../../context/ThemeContext';
 
 interface BookingCardProps {
   startTime: string;
@@ -26,6 +27,9 @@ const BookingCard: React.FC<BookingCardProps> = ({
   sport,
   isAvailable,
 }) => {
+  const {theme} = useTheme();
+  const isDark = theme.dark;
+  const styles = getStyles(theme);
   return (
     <View style={styles.booking}>
       <View style={[styles.left, {backgroundColor: bgColor}]}>
@@ -37,7 +41,11 @@ const BookingCard: React.FC<BookingCardProps> = ({
       {isAvailable ? (
         <View style={styles.available}>
           <Text style={styles.username}>Available</Text>
-          <Icon name="add-circle-outline" size={20} color={'#fff'} />
+          <Icon
+            name="add-circle-outline"
+            size={20}
+            color={isDark ? '#FFF' : '#000'}
+          />
         </View>
       ) : (
         <View style={styles.right}>

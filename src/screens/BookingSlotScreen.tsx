@@ -11,7 +11,12 @@ import AppHeader from '../components/AppHeader';
 import {GestureHandlerRootView, ScrollView} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateCarousel from '../components/BookingScreen/DateCarousal';
-import {NavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import {
   BottomSheetBackdrop,
@@ -20,35 +25,51 @@ import {
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
 import LinearGradient from 'react-native-linear-gradient';
-import {styles} from '../styles/BookingSlotStyles';
 import {RootStackParamList} from '../navigation/routes';
-import { useGetVenueById } from '../api/vanue';
-import { useBookingFormStore } from '../store/useBookingFormStore';
-import { BookingFormState } from '../store/useBookingFormStore';
+import {useGetVenueById} from '../api/vanue';
+import {useBookingFormStore} from '../store/useBookingFormStore';
+import {BookingFormState} from '../store/useBookingFormStore';
+import {useTheme} from '../context/ThemeContext';
+import {getStyles} from '../styles/BookingSlotStyles';
 
 const BookingSlotScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'BookingSlot'>>();
-  const { venueId } = route.params;
+  const {venueId} = route.params;
   const {data, isLoading} = useGetVenueById(venueId);
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(0);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const {setBookedGrounds, setEndTime, setStartTime, endTime, startTime, bookedGrounds, setVenueId, setHourlyPrice} = useBookingFormStore() as BookingFormState;
+  const {
+    setBookedGrounds,
+    setEndTime,
+    setStartTime,
+    endTime,
+    startTime,
+    bookedGrounds,
+    setVenueId,
+    setHourlyPrice,
+  } = useBookingFormStore() as BookingFormState;
 
   useEffect(() => {
-    setVenueId(Number(venueId))
-    setBookedGrounds(data?.venue?.ground_details[index]?.ground)
+    setVenueId(Number(venueId));
+    setBookedGrounds(data?.venue?.ground_details[index]?.ground);
+  }, [venueId, setVenueId, setBookedGrounds, data, index]);
 
-  }, [venueId, setVenueId, setBookedGrounds, data, index])
-
-
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
+  const sportTypes = ['Cricket', 'Football'];
+  const Grounds = ['Ground 1', 'Ground 2'];
+  const [selectedGround, setSelectedGround] = useState('Ground 1');
+  console.log('Selected Ground:', selectedGround);
+  const currentHour = useMemo(() => dayjs().startOf('hour'), []);
   const startSheetRef = useRef<BottomSheetModal>(null);
   const endSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['50%'], []);
   const duration = endTime.diff(startTime, 'hour');
 
-
   const timeSlots = useMemo(() => {
-    return Array.from({length: 24}, (_, i) => dayjs().startOf('hour').add(i, 'hour'));
+    return Array.from({length: 24}, (_, i) =>
+      dayjs().startOf('hour').add(i, 'hour'),
+    );
   }, []);
 
   const endTimeSlots = useMemo(() => {
@@ -68,11 +89,9 @@ const BookingSlotScreen = () => {
     endSheetRef.current?.close();
   };
 
-
-  if (isLoading){
-    return <ActivityIndicator />
+  if (isLoading) {
+    return <ActivityIndicator />;
   }
-
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
@@ -81,14 +100,14 @@ const BookingSlotScreen = () => {
           <AppHeader title="Venue" isApp />
           <ScrollView contentContainerStyle={{flexGrow: 1}}>
             <ImageBackground
-              source={require('../assets/ScreenShaded.png')}
+              source={theme.dark && require('../assets/ScreenShaded.png')}
               style={styles.headerGlow}
               resizeMode="cover">
               <View style={styles.venueListContainer}>
                 <View style={styles.card}>
                   <View style={{flexDirection: 'column', gap: 16}}>
                     <Image
-                      source={{ uri: data?.venue?.images?.[0]}}
+                      source={{uri: data?.venue?.images?.[0]}}
                       style={styles.image}
                     />
                     <Text style={styles.name1}>{data?.venue?.name}</Text>
@@ -97,18 +116,22 @@ const BookingSlotScreen = () => {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                       }}>
-                      <Text style={styles.name}>₹ {data?.venue?.ground_details[index]?.hourly_price} / Per Hour</Text>
+                      <Text style={styles.name}>
+                        ₹ {data?.venue?.ground_details[index]?.hourly_price} /
+                        Per Hour
+                      </Text>
                       <View style={styles.detail}>
                         <Icon name="location" size={20} color={'#888'} />
-                        <Text style={styles.name}>{data?.venue?.location?.area }, { data?.venue?.location?.city}</Text>
+                        <Text style={styles.name}>
+                          {data?.venue?.location?.area},{' '}
+                          {data?.venue?.location?.city}
+                        </Text>
                       </View>
                     </View>
                     <View style={styles.category}>
-  
-                        <Text style={styles.type}>
-                          {data?.venue?.game_info?.type}
-                        </Text>
-           
+                      <Text style={styles.type}>
+                        {data?.venue?.game_info?.type}
+                      </Text>
                     </View>
                   </View>
                 </View>
@@ -164,41 +187,37 @@ const BookingSlotScreen = () => {
                 <View style={styles.card}>
                   <Text style={styles.label}>Select Ground</Text>
                   <View style={{flexDirection: 'row', gap: 10}}>
-                    {data?.venue?.ground_details?.map((ground :any, index : number) => (
-                      <TouchableOpacity
-                        key={ground.ground
-                        }
-                        onPress={() => {
-                          setIndex(index)
-                          setBookedGrounds(ground?.ground)
-                          setHourlyPrice(ground?.hourly_price)
-      
-                        }}
-                        style={[
-                          styles.inputWrapper2,
-                          {
-                            borderColor:
-                            bookedGrounds === ground.ground
-                              ? '#fff' : '#999',
-                            backgroundColor:
-                            bookedGrounds === ground.ground
-                              ? '#1D1D1D' : '#333',
-                          },
-                        ]}>
-                        <Text
-                          style={[
-                            styles.input2,
-                            {
-                              color:
-                              bookedGrounds === ground.ground
-                                ? '#fff' : '#717171',
-                            },
-                          ]}>
-                          {ground.ground
-                          }
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
+                    {data?.venue?.ground_details?.map(
+                      (ground: any, index: number) => {
+                        const isSelected = bookedGrounds === ground.ground;
+
+                        return (
+                          <TouchableOpacity
+                            key={ground.ground}
+                            onPress={() => {
+                              setIndex(index);
+                              setBookedGrounds(ground?.ground);
+                              setHourlyPrice(ground?.hourly_price);
+                            }}
+                            style={[
+                              styles.inputWrapper2,
+                              isSelected
+                                ? styles.inputWrapper2Selected
+                                : styles.inputWrapper2Unselected,
+                            ]}>
+                            <Text
+                              style={[
+                                styles.input2,
+                                isSelected
+                                  ? styles.input2Selected
+                                  : styles.input2Unselected,
+                              ]}>
+                              Ground {ground.ground}
+                            </Text>
+                          </TouchableOpacity>
+                        );
+                      },
+                    )}
                   </View>
                 </View>
                 <View style={styles.container1}>

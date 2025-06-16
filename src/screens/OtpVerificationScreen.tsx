@@ -92,10 +92,13 @@ const OtpVerificationScreen = () => {
               },
             }}
           />
+          <Text style={styles.text}>we have sent the otp on +1216546</Text>
         </View>
 
         <View style={styles.buttonContainer}>
-          <Text style={styles.resend}>Resend OTP in 00:30</Text>
+          <Text style={styles.resend}>
+            <Text style={styles.bold}>Resend</Text> OTP in 00:30
+          </Text>
 
           <TouchableOpacity
             style={[
@@ -130,6 +133,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
     gap: 2,
     padding: 24,
+  },
+  text: {
+    fontSize: 12,
+    fontWeight: '500',
+    fontFamily: 'Montserrat-Regular',
+    color: '#888888',
   },
   contentContainer: {
     flex: 1,
@@ -198,6 +207,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 8,
+    color: '#888888',
+  },
+  bold: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#000',
   },
   backButton: {
     position: 'absolute',

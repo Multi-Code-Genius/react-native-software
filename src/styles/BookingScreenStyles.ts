@@ -22,12 +22,14 @@ export const getStyles = (theme: any) =>
     },
 
     types: {
-      backgroundColor: theme.colors.background,
+      backgroundColor: theme.colors.surface,
       width: '90%',
       marginHorizontal: 'auto',
       marginVertical: 15,
       flexDirection: 'row',
       gap: 55,
+      borderColor: theme.colors.border,
+      borderWidth: 1,
       paddingVertical: 16,
       borderRadius: 25,
       alignItems: 'center',
@@ -79,16 +81,19 @@ export const getStyles = (theme: any) =>
     pill: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#191919',
+      backgroundColor: theme.colors.surface,
       paddingHorizontal: 19,
       paddingVertical: 8,
       borderRadius: 25,
+      borderColor: theme.colors.border1,
+      borderWidth: 1,
       gap: 5,
     },
     pillText: {
       color: theme.colors.text,
       fontSize: 12,
       fontFamily: 'Montserrat-Regular',
+      fontWeight: '700',
     },
     sheetContent: {
       padding: 20,
@@ -140,5 +145,32 @@ export const getStyles = (theme: any) =>
       height: 40,
       paddingHorizontal: 16,
       marginTop: 10,
+    },
+    filterItem: {
+      paddingHorizontal: 16,
+      height: 36,
+      borderRadius: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginRight: 10,
+    },
+    filterItemSelected: {
+      backgroundColor: theme.colors.surface,
+      borderWidth: 1,
+      borderColor: theme.colors.border1,
+    },
+    filterItemUnselected: {
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+      borderColor: 'transparent',
+    },
+    filterItemText: {
+      fontSize: 14,
+    },
+    filterItemTextSelected: {
+      color: theme.colors.text,
+    },
+    filterItemTextUnselected: {
+      color: '#888888',
     },
   });

@@ -13,8 +13,11 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
 import {useToast} from '../context/ToastContext';
+import {useTheme} from '../context/ThemeContext';
 
 const LoginScreen = () => {
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
   const {mutate: requestOtp, isPending} = useRequestOtp();
@@ -86,12 +89,7 @@ const LoginScreen = () => {
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[
-              styles.button,
-              {
-                backgroundColor: isFormValid ? '#B2C000' : '#B2C000',
-              },
-            ]}
+            style={[styles.button]}
             onPress={sendOtp}
             disabled={isPending}>
             {isPending ? (
@@ -106,89 +104,92 @@ const LoginScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  topcontainer: {
-    height: '40%',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    gap: 2,
-    padding: 24,
-    borderBottomColor: '#3f3f3f',
-    borderBottomWidth: 1,
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-  },
-  formContainer: {
-    flex: 1,
-  },
-  head: {
-    color: 'white',
-    fontFamily: 'ClashGrotesk-Regular',
-    fontSize: 32,
-    fontWeight: 'medium',
-    lineHeight: 46,
-  },
-  subtext: {
-    fontSize: 12,
-    fontWeight: '300',
-    fontFamily: 'Montserrat-Regular',
-    color: '#FFFFFF',
-  },
-  label: {
-    fontSize: 12,
-    marginBottom: 4,
-    color: '#fff',
-    fontWeight: 'semibold',
-    fontFamily: 'Montserrat-Regular',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#323232',
-    borderWidth: 1,
-    borderColor: '#3f3e3e',
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 8,
-    backgroundColor: '#323232',
-    color: '#fff',
-    fontFamily: 'Montserrat-Regular',
-  },
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    topcontainer: {
+      height: '40%',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-start',
+      gap: 2,
+      padding: 24,
+      borderBottomColor: '#3f3f3f',
+      borderBottomWidth: 1,
+    },
+    contentContainer: {
+      flex: 1,
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      backgroundColor: theme.colors.background,
+    },
+    formContainer: {
+      flex: 1,
+    },
+    head: {
+      color: 'white',
+      fontFamily: 'ClashGrotesk-Regular',
+      fontSize: 32,
+      fontWeight: 'medium',
+      lineHeight: 46,
+    },
+    subtext: {
+      fontSize: 12,
+      fontWeight: '300',
+      fontFamily: 'Montserrat-Regular',
+      color: '#FFFFFF',
+    },
+    label: {
+      fontSize: 12,
+      marginBottom: 4,
+      color: theme.colors.text,
+      fontWeight: '700',
+      fontFamily: 'Montserrat-Regular',
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: theme.colors.surfcae,
+      borderWidth: 1,
+      borderColor: theme.colors.textSecondary,
+      borderRadius: 4,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      marginBottom: 16,
+    },
+    input: {
+      flex: 1,
+      paddingVertical: 8,
+      backgroundColor: theme.colors.surfcae,
+      color: '#000',
+      fontFamily: 'Montserrat-Regular',
+    },
 
-  icon: {
-    marginRight: 8,
-  },
-  note: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#A0A0A0',
-    fontFamily: 'Montserrat-Regular',
-  },
-  buttonContainer: {
-    paddingBottom: 14,
-  },
-  button: {
-    paddingVertical: 18,
-    borderRadius: 4,
-  },
-  buttonText: {
-    color: 'black',
-    fontFamily: 'Montserrat-Regular',
-    fontSize: 16,
-    fontWeight: 'semibold',
-    textAlign: 'center',
-  },
-});
+    icon: {
+      marginRight: 8,
+    },
+    note: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: '#A0A0A0',
+      fontFamily: 'Montserrat-Regular',
+    },
+    buttonContainer: {
+      paddingBottom: 14,
+    },
+    button: {
+      paddingVertical: 18,
+      borderRadius: 4,
+      backgroundColor: theme.colors.primary,
+    },
+    buttonText: {
+      color: theme.colors.background,
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 16,
+      fontWeight: '700',
+      textAlign: 'center',
+    },
+  });
 
 export default LoginScreen;
