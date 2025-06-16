@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,15 +6,40 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import AppHeader from '../components/AppHeader';
+import { ActivityIndicator } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useCreateBooking } from '../api/booking';
+import AppHeader from '../components/AppHeader';
 import CustomCheckbox from '../components/CustomCheckbox';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../navigation/routes';
+import { useBookingFormStore } from '../store/useBookingFormStore';
 
 const BookingFormScreen = () => {
   const [isChecked, setIsChecked] = useState(false);
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {name, phone, setName, setPhone,date, startTime, endTime, venueId, bookedGrounds, hourlyPrice } = useBookingFormStore()
+
+  const { mutate, isPending} = useCreateBooking()
+
+    const duration = endTime.diff(startTime, 'hour');
+    let totalAmount = duration * hourlyPrice
+
+
+
+    console.log('totalAmount', totalAmount, duration, hourlyPrice)
+
+
+  const handlerBooking = () => {
+    mutate({
+      phone: phone,
+        name: name,
+        venueId:venueId ,
+        date: date,
+        startTime: startTime,
+        endTime: endTime,
+        bookedGrounds: bookedGrounds,
+        totalAmount: totalAmount,
+    })
+  }
+
   return (
     <View style={{flex: 1}}>
       <AppHeader isApp title="23 may 2025" />
@@ -33,6 +58,8 @@ const BookingFormScreen = () => {
                 style={styles.input}
                 placeholder="Enter Booking Name"
                 placeholderTextColor="#717171"
+                value={name}
+                onChangeText={setName}
               />
             </View>
           </View>
@@ -49,6 +76,8 @@ const BookingFormScreen = () => {
                 style={styles.input}
                 placeholder="Enter Booking Number"
                 placeholderTextColor="#717171"
+                value={phone}
+                onChangeText={setPhone}
               />
             </View>
           </View>
@@ -82,26 +111,28 @@ const BookingFormScreen = () => {
           <View style={{flex: 1, gap: 20}}>
             <View style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
               <Text style={styles.text}>Venue 1 , Vesu</Text>
-              <Text style={styles.text1}>(Ground 1)</Text>
+              <Text style={styles.text1}>{bookedGrounds}</Text>
             </View>
 
             <View style={styles.bookingdetail}>
               <View style={styles.left}>
                 <Text style={styles.title}>Booking Time</Text>
-                <Text style={styles.subTitle}>06 am - 09 am</Text>
+                <Text style={styles.subTitle}>{startTime?.format('h:mm A')} to {endTime?.format('h:mm A')}</Text>
               </View>
               <View style={styles.separator} />
               <View style={styles.right}>
                 <Text style={styles.title}>Booking Price</Text>
-                <Text style={styles.subTitle}>₹ 3,000</Text>
+                <Text style={styles.subTitle}>₹ {totalAmount}</Text>
               </View>
             </View>
           </View>
 
           <TouchableOpacity
+            disabled={isPending}
             style={styles.button}
-            onPress={() => navigation.navigate('BookingSuccess')}>
-            <Text style={styles.buttonText}>Book Venue</Text>
+            onPress={() => handlerBooking()}>
+               {isPending ? <ActivityIndicator /> : <Text style={styles.buttonText}>Book Venue</Text> }
+           
           </TouchableOpacity>
         </View>
       </View>

@@ -3,6 +3,10 @@ import queryClient from '../config/queryClient';
 import {useToast} from '../context/ToastContext';
 import {api} from '../hooks/api';
 
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
+import {useBookingFormStore} from '../store/useBookingFormStore';
+
 const fetchBooking = async (data: any) => {
   try {
     const response = await api(
@@ -55,7 +59,6 @@ const createBooking = async (data: any) => {
 
     return resp;
   } catch (error) {
-    console.log('error>>', error);
     throw new Error(error instanceof Error ? error.message : 'Data Not Found');
   }
 };
@@ -65,6 +68,7 @@ export const useCreateBooking = (
   _onError?: () => void,
 ) => {
   const {showToast} = useToast();
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return useMutation({
     mutationFn: (data: any) => createBooking(data),
@@ -73,6 +77,10 @@ export const useCreateBooking = (
         message: 'Booking Done!',
         type: 'success',
       });
+      setTimeout(() => {
+        navigation.navigate('BookingSuccess');
+      }, 1500);
+      useBookingFormStore.getState().resetForm();
     },
     onError: (err: any) => {
       showToast({

@@ -7,8 +7,9 @@ import {useAuthStore} from '../store/authStore';
 import {readFile} from 'react-native-fs';
 import {BASE_URL} from '@env';
 import {useNavigation} from '@react-navigation/native';
-import {RootStackParamList} from '../navigation/types';
+
 import {NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 export const getVanues = async () => {
   try {

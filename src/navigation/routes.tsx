@@ -53,7 +53,7 @@ export type RootStackParamList = {
   Notifications: undefined;
   Addvenue: undefined;
   Login: undefined;
-  BookingSlot: undefined;
+  BookingSlot: { venueId: string };
   BookingForm: undefined;
   BookingSuccess: undefined;
   BookingVenues: undefined;

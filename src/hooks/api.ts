@@ -27,8 +27,6 @@ export const api = async (endpoint: string, config: any = {}) => {
   const isFormData =
     body && typeof body === 'object' && typeof body.append === 'function';
 
-  console.log('isFormData', isFormData);
-
   const requestConfig: RequestInit = {
     method: config.method ?? 'GET',
     headers: {
@@ -58,17 +56,11 @@ export const api = async (endpoint: string, config: any = {}) => {
 
   try {
     const apiUrl = BASE_URL;
-
-    // const apiUrl = 'http://192.168.1.17:1008';
-
     const response = await fetch(`${apiUrl}/api/v2${endpoint}`, requestConfig);
 
     if (!response.ok) {
-      const errorData = await response
-        .json()
-        .catch(() => ({message: 'Something went wrong'}));
-
-      const message = errorData.message || 'Something went wrong';
+      const errorData = await response.json().catch(e => ({message: e}));
+      const message = errorData.error || 'Something went wrong';
 
       if ([401, 414].includes(response.status)) {
         await removeToken('accessToken');

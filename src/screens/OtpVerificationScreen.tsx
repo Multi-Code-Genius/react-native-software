@@ -25,7 +25,7 @@ const OtpVerificationScreen = () => {
 
   const handleVerifyOtp = () => {
     verifyOtp(
-      {phone, otp},
+      {number: phone, otp},
       {
         onSuccess: async ({token}: {token: string}) => {
           if (token) {

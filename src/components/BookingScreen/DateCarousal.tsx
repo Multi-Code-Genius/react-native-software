@@ -1,11 +1,13 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import {FlatList, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import dayjs from 'dayjs';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useBookingFormStore } from '../../store/useBookingFormStore';
 
 const DateCarousel = () => {
   const [selectedDate, setSelectedDate] = useState(dayjs());
   const [currentMonth, setCurrentMonth] = useState(dayjs());
+  const {setDate} = useBookingFormStore()
 
   const daysInMonth = useMemo(() => {
     const start = currentMonth.startOf('month');
@@ -14,6 +16,12 @@ const DateCarousel = () => {
       start.add(i, 'day'),
     ).filter(date => !date.isBefore(today, 'day'));
   }, [currentMonth]);
+  useEffect(() => {
+    if (selectedDate) {
+      setDate(selectedDate.toISOString());
+    }
+  }, [selectedDate, setDate]);
+  
 
   const renderItem = ({item}: any) => {
     const isSelected = item.isSame(selectedDate, 'date');
