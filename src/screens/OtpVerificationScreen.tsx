@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import {
-  Alert,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -25,16 +24,13 @@ const OtpVerificationScreen = () => {
 
   const handleVerifyOtp = () => {
     verifyOtp(
-      {number: phone, otp},
+      {phone, otp},
       {
         onSuccess: async ({token}: {token: string}) => {
           if (token) {
             await saveToken(token);
           }
-        },
-        onError: (error: any) => {
-          Alert.alert('Verification Failed', error?.message || 'Try again.');
-        },
+        }
       },
     );
   };
@@ -62,9 +58,18 @@ const OtpVerificationScreen = () => {
             autoFocus
             onTextChange={text => {
               setOtp(text);
-              if (text.length === 4) {
-                handleVerifyOtp();
-              }
+              // if (text.length === 4) {
+              //   verifyOtp(
+              //     {phone, otp},
+              //     {
+              //       onSuccess: async ({token}: {token: string}) => {
+              //         if (token) {
+              //           await saveToken(token);
+              //         }
+              //       }
+              //     },
+              //   );
+              // }
             }}
             theme={{
               containerStyle: {

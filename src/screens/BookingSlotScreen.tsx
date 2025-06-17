@@ -56,11 +56,6 @@ const BookingSlotScreen = () => {
 
   const {theme} = useTheme();
   const styles = getStyles(theme);
-  const sportTypes = ['Cricket', 'Football'];
-  const Grounds = ['Ground 1', 'Ground 2'];
-  const [selectedGround, setSelectedGround] = useState('Ground 1');
-  console.log('Selected Ground:', selectedGround);
-  const currentHour = useMemo(() => dayjs().startOf('hour'), []);
   const startSheetRef = useRef<BottomSheetModal>(null);
   const endSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['50%'], []);
@@ -138,54 +133,9 @@ const BookingSlotScreen = () => {
               </View>
               <View style={styles.slotContainer}>
                 <DateCarousel />
-                {/* <View style={styles.card}>
-                  <Text style={styles.label}>Sport Type</Text>
-                  <View style={{flexDirection: 'row', gap: 10}}>
-                    {sportTypes.map(type => (
-                      <TouchableOpacity
-                        key={type}
-                        onPress={() => updateField('type', type)}
-                        style={[
-                          styles.inputWrapper2,
-                          {
-                            borderColor:
-                              formData.gameInfo?.type === type
-                                ? '#fff'
-                                : '#999',
-                            backgroundColor:
-                              formData.gameInfo?.type === type
-                                ? '#1D1D1D'
-                                : '#333',
-                          },
-                        ]}>
-                        <Icon
-                          name={type === 'Cricket' ? 'cricket' : 'football'}
-                          size={20}
-                          color={
-                            formData.gameInfo?.type === type
-                              ? '#fff'
-                              : '#717171'
-                          }
-                          style={styles.icon}
-                        />
-                        <Text
-                          style={[
-                            styles.input2,
-                            {
-                              color:
-                                formData.gameInfo?.type === type
-                                  ? '#fff'
-                                  : '#717171',
-                            },
-                          ]}>
-                          {type}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View> */}
+            
                 <View style={styles.card}>
-                  <Text style={styles.label}>Select Ground</Text>
+                  <Text style={styles.label}>Selected Ground</Text>
                   <View style={{flexDirection: 'row', gap: 10}}>
                     {data?.venue?.ground_details?.map(
                       (ground: any, index: number) => {

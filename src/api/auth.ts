@@ -42,20 +42,16 @@ export const useRequestOtp = (
   });
 };
 
-export const verifyOtp = async (data: {number: string; otp: string}) => {
-  try {
-    console.log('data', data);
+export const verifyOtp = async (data: {phone: string; otp: string}) => {
 
     const response = await api('/auth/verify-otp', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(data),
     });
-    const resp = await response;
-    return resp;
-  } catch (error: any) {
-    console.log('login Errror', error.message);
-  }
+  
+    return response
+  
 };
 
 export const useVerifyOtp = (
@@ -64,7 +60,7 @@ export const useVerifyOtp = (
 ) => {
   const {showToast} = useToast();
   return useMutation({
-    mutationFn: (data: {number: string; otp: string}) => verifyOtp(data),
+    mutationFn: (data: {phone: string; otp: string}) => verifyOtp(data),
     onSuccess: () => {
       showToast({
         message: 'OTP verified successfully',
