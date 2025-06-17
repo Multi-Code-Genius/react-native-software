@@ -3,8 +3,11 @@ import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {useVenueStore} from '../store/useVenueStore';
+import {useTheme} from '../context/ThemeContext';
 
 const BasicDetailsComponent = () => {
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const {formData, updateField} = useVenueStore();
   console.log('updateField>>>', formData);
   return (
@@ -63,7 +66,7 @@ const BasicDetailsComponent = () => {
           />
           <TextInput
             style={[styles.textareaInput]}
-            placeholder="Enter Your Address"
+            placeholder="Enter Your Turf Detailed Address"
             placeholderTextColor="#717171"
             multiline
             numberOfLines={16}
@@ -78,51 +81,52 @@ const BasicDetailsComponent = () => {
 
 export default BasicDetailsComponent;
 
-const styles = StyleSheet.create({
-  content: {
-    paddingVertical: 10,
-  },
-  head: {
-    fontSize: 16,
-    fontWeight: '500',
-    paddingVertical: 15,
-    borderBottomColor: '#252525',
-    borderBottomWidth: 1,
-    paddingLeft: 15,
-    color: '#fff',
-  },
-  card: {
-    padding: 16,
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#e2dede',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    backgroundColor: '#272727',
-  },
-  icon: {
-    marginRight: 8,
-  },
-  newIcon: {
-    paddingTop: 8,
-    marginRight: 8,
-  },
-  input: {
-    flex: 1,
-    fontSize: 14,
-    color: 'white',
-    paddingVertical: 20,
-  },
-  textareaInput: {
-    flex: 1,
-    color: 'white',
-    fontSize: 14,
-  },
-});
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    content: {
+      paddingVertical: 10,
+    },
+    head: {
+      fontSize: 16,
+      fontWeight: '500',
+      paddingVertical: 15,
+      borderBottomColor: theme.colors.border,
+      borderBottomWidth: 1,
+      paddingLeft: 15,
+      color: theme.colors.text,
+    },
+    card: {
+      padding: 16,
+      marginBottom: 16,
+    },
+    label: {
+      fontSize: 16,
+      fontWeight: '600',
+      marginBottom: 8,
+      color: theme.colors.labeltext,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      backgroundColor: theme.colors.card,
+    },
+    icon: {
+      marginRight: 8,
+    },
+    newIcon: {
+      paddingTop: 8,
+      marginRight: 8,
+    },
+    input: {
+      flex: 1,
+      fontSize: 14,
+      color: theme.colors.text,
+      paddingVertical: 20,
+    },
+    textareaInput: {
+      flex: 1,
+      color: theme.colors.text,
+      fontSize: 14,
+    },
+  });

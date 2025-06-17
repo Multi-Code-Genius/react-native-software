@@ -8,12 +8,16 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
-import {styles} from '../styles/VenueDetailsStyles';
+import {getStyles} from '../styles/VenueDetailsStyles';
 import DatePicker from 'react-native-date-picker';
+import {useTheme} from '../context/ThemeContext';
 
 const VenueDetails = () => {
   const updateField = useVenueStore(state => state.updateField);
   const formData = useVenueStore(state => state.formData);
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
+  const isdark = theme.dark;
   console.log('formdata>>', formData);
   const sportTypes = ['Cricket', 'Football'];
   const venueTypes = ['Outdoor', 'Indoor', 'Roof'];
@@ -67,15 +71,21 @@ const VenueDetails = () => {
                 styles.inputWrapper2,
                 {
                   borderColor:
-                    formData.gameInfo?.type === type ? '#B2C000' : '#999',
+                    formData.gameInfo?.type === type
+                      ? theme.colors.text
+                      : theme.colors.border,
                   backgroundColor:
-                    formData.gameInfo?.type === type ? '#1D1D1D' : '#333',
+                    formData.gameInfo?.type === type
+                      ? theme.colors.card
+                      : theme.colors.card,
                 },
               ]}>
               <Icon
                 name={type === 'Cricket' ? 'cricket' : 'football'}
                 size={20}
-                color="#fff"
+                color={
+                  formData.gameInfo?.type === type ? theme.colors.text : '#888'
+                }
                 style={styles.icon}
               />
               <Text
@@ -83,7 +93,9 @@ const VenueDetails = () => {
                   styles.input2,
                   {
                     color:
-                      formData.gameInfo?.type === type ? '#B2C000' : '#fff',
+                      formData.gameInfo?.type === type
+                        ? theme.colors.text
+                        : '#888',
                   },
                 ]}>
                 {type}
@@ -103,15 +115,23 @@ const VenueDetails = () => {
               style={[
                 styles.inputWrapper3,
                 {
-                  borderColor: formData.category === type ? '#B2C000' : '#999',
+                  borderColor:
+                    formData.category === type
+                      ? theme.colors.text
+                      : theme.colors.border,
                   backgroundColor:
-                    formData.category === type ? '#1D1D1D' : '#333',
+                    formData.category === type
+                      ? theme.colors.card
+                      : theme.colors.card,
                 },
               ]}>
               <Text
                 style={[
                   styles.input3,
-                  {color: formData.category === type ? '#B2C000' : '#fff'},
+                  {
+                    color:
+                      formData.category === type ? theme.colors.text : '#888',
+                  },
                 ]}>
                 {type}
               </Text>
@@ -130,7 +150,7 @@ const VenueDetails = () => {
               <Icon
                 name="clock-time-ten"
                 size={20}
-                color="#888888"
+                color={theme.colors.timetext}
                 style={styles.icon}
               />
               <Text style={styles.input2}>{formatTime(openingTime)}</Text>
@@ -157,7 +177,7 @@ const VenueDetails = () => {
               <Icon
                 name="clock-time-three"
                 size={20}
-                color="#888888"
+                color={theme.colors.timetext}
                 style={styles.icon}
               />
               <Text style={styles.input2}>{formatTime(closingTime)}</Text>

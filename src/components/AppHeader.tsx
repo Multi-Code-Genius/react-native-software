@@ -165,6 +165,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 2,
     alignSelf: 'center',
-    zIndex: 2,
+    // zIndex: 1,
   },
 });

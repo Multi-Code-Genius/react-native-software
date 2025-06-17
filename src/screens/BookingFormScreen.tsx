@@ -192,7 +192,7 @@ const getStyles = (theme: any) =>
     input: {
       flex: 1,
       fontSize: 14,
-      color: 'white',
+      color: theme.colors.text,
       paddingVertical: 20,
     },
     checkboxContainer: {

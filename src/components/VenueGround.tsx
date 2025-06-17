@@ -6,14 +6,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {styles} from '../styles/VenueDetailsStyles';
+import {getStyles} from '../styles/VenueDetailsStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useVenueStore} from '../store/useVenueStore';
+import {useTheme} from '../context/ThemeContext';
 
 const VenueGround = () => {
   const {formData, updateGroundField, addGround} = useVenueStore();
   const grounds = formData.ground_details || [];
-
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   console.log('formdata>>>', formData);
   const [expandedIds, setExpandedIds] = React.useState<number[]>([1]);
 
@@ -56,7 +58,7 @@ const VenueGround = () => {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
-              backgroundColor: '#272727',
+              backgroundColor: theme.colors.card,
               padding: 10,
             }}>
             <Text style={styles.head1}>Ground {ground.ground}</Text>
@@ -65,62 +67,79 @@ const VenueGround = () => {
                 expandedIds.includes(ground.ground) ? 'arrow-up' : 'arrow-down'
               }
               size={24}
-              color="#fff"
+              color={theme.colors.text}
             />
           </TouchableOpacity>
 
           {expandedIds.includes(ground.ground) && (
-            <View style={{backgroundColor: '#272727'}}>
+            <View style={{backgroundColor: theme.colors.card}}>
               <View style={styles.row}>
-                <View style={styles.inputBox}>
-                  <Icon name="arrow-split-vertical" size={20} color="#fff" />
-
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter Width"
-                    placeholderTextColor="#717171"
-                    keyboardType="numeric"
-                    value={ground.width?.toString() || ''}
-                    onChangeText={text => handleChange(index, 'width', text)}
-                  />
+                <View style={styles.input}>
+                  <Text>Width of feet</Text>
+                  <View style={styles.inputBox}>
+                    <Icon name="arrow-split-vertical" size={20} color="#fff" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter Width"
+                      placeholderTextColor="#717171"
+                      keyboardType="numeric"
+                      value={ground.width?.toString() || ''}
+                      onChangeText={text => handleChange(index, 'width', text)}
+                    />
+                  </View>
                 </View>
-                <View style={styles.inputBox}>
-                  <Icon name="arrow-split-horizontal" size={20} color="#fff" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter Height"
-                    placeholderTextColor="#717171"
-                    keyboardType="numeric"
-                    value={ground.height?.toString() || ''}
-                    onChangeText={text => handleChange(index, 'height', text)}
-                  />
+                <View style={styles.input}>
+                  <Text>height of feet</Text>
+                  <View style={styles.inputBox}>
+                    <Icon
+                      name="arrow-split-horizontal"
+                      size={20}
+                      color="#fff"
+                    />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter Height"
+                      placeholderTextColor="#717171"
+                      keyboardType="numeric"
+                      value={ground.height?.toString() || ''}
+                      onChangeText={text => handleChange(index, 'height', text)}
+                    />
+                  </View>
                 </View>
               </View>
 
               <View style={styles.row}>
-                <View style={styles.inputBox}>
-                  <Icon name="account-group-outline" size={20} color="#fff" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter Capacity"
-                    placeholderTextColor="#717171"
-                    keyboardType="numeric"
-                    value={ground.capacity?.toString() || ''}
-                    onChangeText={text => handleChange(index, 'capacity', text)}
-                  />
+                <View style={styles.input}>
+                  <Text>Player Capacity</Text>
+                  <View style={styles.inputBox}>
+                    <Icon name="account-group-outline" size={20} color="#fff" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter Capacity"
+                      placeholderTextColor="#717171"
+                      keyboardType="numeric"
+                      value={ground.capacity?.toString() || ''}
+                      onChangeText={text =>
+                        handleChange(index, 'capacity', text)
+                      }
+                    />
+                  </View>
                 </View>
-                <View style={styles.inputBox}>
-                  <Icon name="currency-rupee" size={20} color="#fff" />
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Enter Price"
-                    placeholderTextColor="#717171"
-                    keyboardType="numeric"
-                    value={ground.hourly_price?.toString() || ''}
-                    onChangeText={text =>
-                      handleChange(index, 'hourly_price', text)
-                    }
-                  />
+                <View style={styles.input}>
+                  <Text>Hourly Price</Text>
+                  <View style={styles.inputBox}>
+                    <Icon name="currency-rupee" size={20} color="#fff" />
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter Price"
+                      placeholderTextColor="#717171"
+                      keyboardType="numeric"
+                      value={ground.hourly_price?.toString() || ''}
+                      onChangeText={text =>
+                        handleChange(index, 'hourly_price', text)
+                      }
+                    />
+                  </View>
                 </View>
               </View>
             </View>

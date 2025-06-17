@@ -167,7 +167,9 @@ const BookingScreen = () => {
               <Text style={styles.Head}>BOOKING</Text>
               <View style={styles.filterContainer}>
                 <TouchableOpacity style={styles.pill} onPress={openMenu}>
-                  <Text style={styles.pillText}>{selectedVenueName}</Text>
+                  <Text style={styles.pillText}>
+                    {selectedVenueName || 'Venue'}
+                  </Text>
                   <Icon
                     name="chevron-down"
                     color={isDark ? '#fff' : '#000'}
