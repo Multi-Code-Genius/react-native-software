@@ -249,3 +249,30 @@ export const useSuggestedCustomer = (number: string) => {
     enabled: !!number,
   });
 };
+
+const getBookingByFilter = async(payload : any) => {
+
+    const response = await api(`/booking/filter/${payload.venueId}/${payload.ground}/${payload.date}`, {
+      method : 'GET',
+      headers: {'Content-Type': 'application/json'},
+      cache: 'no-store',
+
+    })
+
+    return response;
+
+
+}
+
+export const useBookingFilter = (payload : any) => {
+  return useQuery({
+    queryKey : ['booking-filter', payload.venueId, payload.ground, payload.date],
+    queryFn: () => getBookingByFilter(payload),
+    staleTime : 0,
+    refetchOnMount: true,
+    refetchOnWindowFocus: true,
+    retry: 0,
+    enabled: !!payload.venueId,
+  })
+}
+
