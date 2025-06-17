@@ -81,6 +81,10 @@ const BookingScreen = () => {
     setRefreshing(false);
   };
 
+  const openMenu = () => {
+    sheetRef.current?.present();
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       bookingRefetch();
@@ -332,7 +336,7 @@ const BookingScreen = () => {
                 </TouchableOpacity>
               </View>
 
-              {data?.venues?.map((venue, index) => (
+              {data?.venues?.map((venue: any, index: number) => (
                 <TouchableOpacity
                   key={venue.id}
                   style={[
