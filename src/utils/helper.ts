@@ -53,86 +53,123 @@ export type ParamsTypes = {
 }[];
 
 export interface AvailableSlot {
+  type: 'available';
   start_time: Date;
   end_time: Date;
   isAvailable: true;
 }
 
+export interface BookingSlot {
+  type: 'booking';
+  id: string;
+  user_id: number;
+  venue_id: number;
+  date: Date;
+  start_time: Date;
+  end_time: Date;
+  status: string;
+  is_cancel: boolean;
+  booked_grounds: number;
+  total_amount: number;
+  customer_id: string;
+  customer: {
+    id: string;
+    name: string;
+    mobile: string;
+    user_id: number;
+    owner_id: number;
+    venue_id: number;
+    total_spent: number;
+    created_at: Date;
+    updated_at: Date;
+  };
+  created_at: Date;
+  updated_at: Date;
+}
+
+export type MergedSlot = AvailableSlot | BookingSlot;
+
 interface ResultData {
-  all: (ParamsTypes[number] | AvailableSlot)[];
-  upComing: ParamsTypes;
+  all: MergedSlot[];
+  upComing: BookingSlot[];
   available: AvailableSlot[];
-  completed: ParamsTypes;
+  completed: BookingSlot[];
 }
 
 export const A = (data: ParamsTypes): ResultData => {
-  let result: ResultData = {
-    all: [],
-    upComing: [],
-    available: [],
-    completed: [],
-  };
-
   const now = dayjs();
-  const slots = Array.from({length: 24}, (_, i) =>
-    dayjs().startOf('day').add(i, 'hour'),
+
+  const validBookings: BookingSlot[] =
+    Array.isArray(data) && data.length > 0
+      ? data
+          .filter(b => b && !b.is_cancel)
+          .map(b => ({
+            ...b,
+            type: 'booking' as const,
+          }))
+      : [];
+
+  const sorted = [...(Array.isArray(validBookings) ? validBookings : [])].sort(
+    (a, b) =>
+      new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
   );
 
-  const bookedRanges = data?.map(booking => ({
-    start: dayjs(booking.start_time),
-    end: dayjs(booking.end_time),
-  }));
+  const available: AvailableSlot[] = [];
 
-  const availableSlots = slots.filter(slot => {
-    return !bookedRanges?.some(
-      range => slot.isSameOrAfter(range.start) && slot.isBefore(range.end),
-    );
-  });
+  const dayStart = dayjs().startOf('day');
+  const dayEnd = dayStart.add(24, 'hour');
 
-  let currentBlock: Dayjs[] = [];
-  for (let i = 0; i < availableSlots.length; i++) {
-    const current = availableSlots[i];
-    const next = availableSlots[i + 1];
+  if (sorted.length > 0 && dayjs(sorted[0].start_time).isAfter(dayStart)) {
+    available.push({
+      type: 'available',
+      start_time: dayStart.toDate(),
+      end_time: dayjs(sorted[0].start_time).toDate(),
+      isAvailable: true,
+    });
+  }
 
-    currentBlock.push(current);
-    const expectedNext = current.add(1, 'hour');
-
-    if (!next || !next.isSame(expectedNext)) {
-      const start = currentBlock[0];
-      const end = current.add(currentBlock.length, 'hour');
-
-      const availableSlot: AvailableSlot = {
-        start_time: start.toDate(),
-        end_time: end.toDate(),
+  for (let i = 0; i < sorted.length - 1; i++) {
+    const currentEnd = dayjs(sorted[i].end_time);
+    const nextStart = dayjs(sorted[i + 1].start_time);
+    if (currentEnd.isBefore(nextStart)) {
+      available.push({
+        type: 'available',
+        start_time: currentEnd.toDate(),
+        end_time: nextStart.toDate(),
         isAvailable: true,
-      };
-
-      result.available.push(availableSlot);
-      currentBlock = [];
+      });
     }
   }
 
-  const mergedAll = [
-    ...(Array.isArray(data) ? data.filter(b => !b.is_cancel) : []),
-    ...(Array.isArray(result.available) ? result.available : []),
+  if (
+    sorted.length > 0 &&
+    dayjs(sorted[sorted.length - 1].end_time).isBefore(dayEnd)
+  ) {
+    available.push({
+      type: 'available',
+      start_time: dayjs(sorted[sorted.length - 1].end_time).toDate(),
+      end_time: dayEnd.toDate(),
+      isAvailable: true,
+    });
+  }
+
+  const upComing = sorted.filter(b => dayjs(b.start_time).isSameOrAfter(now));
+
+  const completed = sorted.filter(b => dayjs(b.start_time).isBefore(now));
+
+  const all: MergedSlot[] = [
+    ...(Array.isArray(sorted) ? sorted : []),
+    ...(Array.isArray(available) ? available : []),
   ].sort((a, b) => {
-    const aTime = 'isAvailable' in a ? a.start_time : a.start_time;
-    const bTime = 'isAvailable' in b ? b.start_time : b.start_time;
-    return new Date(aTime).getTime() - new Date(bTime).getTime();
+    const aTime = new Date(a.start_time).getTime();
+    const bTime = new Date(b.start_time).getTime();
+    return aTime - bTime;
   });
 
-  for (const item of mergedAll) {
-    result.all.push(item);
-
-    if ('isAvailable' in item) continue;
-
-    const isPast = dayjs(item.start_time).isBefore(now);
-    if (isPast) {
-      result.completed.push(item);
-    } else {
-      result.upComing.push(item);
-    }
-  }
-
-  return result;
+  return {
+    all,
+    upComing,
+    completed,
+    available,
+  };
 };
