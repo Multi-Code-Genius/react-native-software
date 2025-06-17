@@ -232,4 +232,12 @@ export const getStyles = (theme: any) =>
     bottomSheetContent: {
       padding: 16,
     },
+
+    bookedSlot: {
+      backgroundColor: '#864A4B',
+      borderColor: '#864A4B',
+    },
+    bookedSlotText: {
+      color: '#fff',
+    },
   });

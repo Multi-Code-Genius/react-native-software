@@ -31,6 +31,7 @@ import {useBookingFormStore} from '../store/useBookingFormStore';
 import {BookingFormState} from '../store/useBookingFormStore';
 import {useTheme} from '../context/ThemeContext';
 import {getStyles} from '../styles/BookingSlotStyles';
+import {useBookingFilter} from '../api/booking';
 
 const BookingSlotScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'BookingSlot'>>();
@@ -47,12 +48,19 @@ const BookingSlotScreen = () => {
     bookedGrounds,
     setVenueId,
     setHourlyPrice,
+    date,
   } = useBookingFormStore() as BookingFormState;
 
   useEffect(() => {
     setVenueId(Number(venueId));
     setBookedGrounds(data?.venue?.ground_details[index]?.ground);
   }, [venueId, setVenueId, setBookedGrounds, data, index]);
+
+  const {data: bookingData} = useBookingFilter({
+    venueId: venueId,
+    ground: bookedGrounds,
+    date: dayjs(date).format('YYYY-MM-DD'),
+  });
 
   const {theme} = useTheme();
   const styles = getStyles(theme);
@@ -63,9 +71,9 @@ const BookingSlotScreen = () => {
 
   const timeSlots = useMemo(() => {
     return Array.from({length: 24}, (_, i) =>
-      dayjs().startOf('hour').add(i, 'hour'),
+      dayjs(date).startOf('hour').add(i, 'hour'),
     );
-  }, []);
+  }, [date]);
 
   const endTimeSlots = useMemo(() => {
     return Array.from({length: 24 - startTime.hour() - 1}, (_, i) =>
@@ -83,6 +91,23 @@ const BookingSlotScreen = () => {
     setEndTime(time);
     endSheetRef.current?.close();
   };
+
+  const bookedHours = useMemo(() => {
+    const booked = new Set<number>();
+
+    bookingData?.booking?.forEach((booking: any) => {
+      const start = dayjs(booking?.start_time);
+      const end = dayjs(booking?.end_time);
+      const startHour = start.hour();
+      const endHour = end.hour();
+
+      for (let i = startHour; i < endHour; i++) {
+        booked.add(i);
+      }
+    });
+
+    return booked;
+  }, [bookingData?.booking]);
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -133,7 +158,7 @@ const BookingSlotScreen = () => {
               </View>
               <View style={styles.slotContainer}>
                 <DateCarousel />
-            
+
                 <View style={styles.card}>
                   <Text style={styles.label}>Selected Ground</Text>
                   <View style={{flexDirection: 'row', gap: 10}}>
@@ -216,25 +241,34 @@ const BookingSlotScreen = () => {
                         Select Starting Time
                       </Text>
                       <ScrollView contentContainerStyle={styles.grid}>
-                        {timeSlots.map(time => (
-                          <TouchableOpacity
-                            key={time.format()}
-                            style={[
-                              styles.timeSlot,
-                              startTime.isSame(time, 'hour') &&
-                                styles.selectedSlot,
-                            ]}
-                            onPress={() => handleStartTimeSelect(time)}>
-                            <Text
+                        {timeSlots.map(time => {
+                          const hour = time.hour();
+                          const isBooked = bookedHours.has(hour);
+                          const isSelected = startTime.isSame(time, 'hour');
+
+                          return (
+                            <TouchableOpacity
+                              key={time.format()}
                               style={[
-                                styles.slotText,
-                                startTime.isSame(time, 'hour') &&
-                                  styles.selectedSlotText,
-                              ]}>
-                              {time.format('hh:mm A')}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
+                                styles.timeSlot,
+                                isSelected && styles.selectedSlot,
+                                isBooked && styles.bookedSlot,
+                              ]}
+                              onPress={() =>
+                                !isBooked && handleStartTimeSelect(time)
+                              }
+                              disabled={isBooked}>
+                              <Text
+                                style={[
+                                  styles.slotText,
+                                  isSelected && styles.selectedSlotText,
+                                  isBooked && styles.bookedSlotText,
+                                ]}>
+                                {time.format('hh:mm A')}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
                       </ScrollView>
                       <View style={styles.bottom}>
                         <LinearGradient
@@ -270,25 +304,36 @@ const BookingSlotScreen = () => {
                     <BottomSheetView>
                       <Text style={styles.modalTitle}>Select Ending Time</Text>
                       <ScrollView contentContainerStyle={styles.grid}>
-                        {endTimeSlots.map(time => (
-                          <TouchableOpacity
-                            key={time.format()}
-                            style={[
-                              styles.timeSlot,
-                              endTime.isSame(time, 'hour') &&
-                                styles.selectedSlot,
-                            ]}
-                            onPress={() => handleEndTimeSelect(time)}>
-                            <Text
+                        {endTimeSlots.map(time => {
+                          const hour = time.hour();
+                          const isBooked = bookedHours.has(hour);
+                          const isSelected = startTime.isSame(time, 'hour');
+
+                          return (
+                            <TouchableOpacity
+                              key={time.format()}
                               style={[
-                                styles.slotText,
+                                styles.timeSlot,
                                 endTime.isSame(time, 'hour') &&
-                                  styles.selectedSlotText,
-                              ]}>
-                              {time.format('hh:mm A')}
-                            </Text>
-                          </TouchableOpacity>
-                        ))}
+                                  isSelected &&
+                                  styles.selectedSlot,
+                                isBooked && styles.bookedSlot,
+                              ]}
+                              onPress={() =>
+                                !isBooked && handleEndTimeSelect(time)
+                              }
+                              disabled={isBooked}>
+                              <Text
+                                style={[
+                                  styles.slotText,
+                                  endTime.isSame(time, 'hour') &&
+                                    styles.selectedSlotText,
+                                ]}>
+                                {time.format('hh:mm A')}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        })}
                       </ScrollView>
                     </BottomSheetView>
                   </BottomSheetModal>
