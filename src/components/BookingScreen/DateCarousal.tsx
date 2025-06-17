@@ -16,10 +16,12 @@ const DateCarousel = () => {
   const daysInMonth = useMemo(() => {
     const start = currentMonth.startOf('month');
     const today = dayjs();
+
     return Array.from({length: start.daysInMonth()}, (_, i) =>
-      start.add(i, 'day'),
+      start.add(i, 'day').startOf('day'),
     ).filter(date => !date.isBefore(today, 'day'));
   }, [currentMonth]);
+
   useEffect(() => {
     if (selectedDate) {
       setDate(selectedDate.toISOString());
@@ -32,7 +34,7 @@ const DateCarousel = () => {
     return (
       <TouchableOpacity
         style={[styles.dateItem, isSelected && styles.selectedDateItem]}
-        onPress={() => setSelectedDate(item)}>
+        onPress={() => setSelectedDate(item.startOf('day'))}>
         <Text style={[styles.dateText, isSelected && styles.selectedDateText]}>
           {item.format('DD')}
         </Text>

@@ -14,6 +14,7 @@ import AppHeader from '../components/AppHeader';
 import CustomCheckbox from '../components/CustomCheckbox';
 import {useTheme} from '../context/ThemeContext';
 import {useBookingFormStore} from '../store/useBookingFormStore';
+import dayjs from 'dayjs';
 
 const BookingFormScreen = () => {
   const route = useRoute();
@@ -43,7 +44,7 @@ const BookingFormScreen = () => {
       phone: phone,
       name: name,
       venueId: venueId,
-      date: date,
+      date: dayjs(date).add(1, 'day'),
       startTime: startTime,
       endTime: endTime,
       bookedGrounds: bookedGrounds,
