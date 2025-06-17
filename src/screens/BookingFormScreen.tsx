@@ -1,3 +1,4 @@
+import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
   StyleSheet,
@@ -11,9 +12,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {useCreateBooking} from '../api/booking';
 import AppHeader from '../components/AppHeader';
 import CustomCheckbox from '../components/CustomCheckbox';
-import {useBookingFormStore} from '../store/useBookingFormStore';
 import {useTheme} from '../context/ThemeContext';
-import {useRoute} from '@react-navigation/native';
+import {useBookingFormStore} from '../store/useBookingFormStore';
 
 const BookingFormScreen = () => {
   const route = useRoute();
@@ -29,16 +29,14 @@ const BookingFormScreen = () => {
     endTime,
     venueId,
     bookedGrounds,
-    hourlyPrice,
   } = useBookingFormStore();
-  console.log('newdataaa>>>', data);
+
   const hourlyprice = data?.venue?.ground_details?.[0].hourly_price;
   const {mutate, isPending} = useCreateBooking();
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const duration = endTime.diff(startTime, 'hour');
   let totalAmount = duration * hourlyprice;
-  console.log('totalamount>>>', hourlyprice);
 
   const handlerBooking = () => {
     mutate({

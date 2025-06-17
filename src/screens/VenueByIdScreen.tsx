@@ -1,24 +1,24 @@
-import {RouteProp, useFocusEffect, useRoute} from '@react-navigation/native';
-import React, {useRef, useState, useEffect, useCallback} from 'react';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  Animated,
   Image,
   ImageBackground,
   TouchableOpacity,
   View,
-  Animated,
 } from 'react-native';
-import {Text} from 'react-native-paper';
-import AppHeader from '../components/AppHeader';
-import Icon from 'react-native-vector-icons/Ionicons';
-import {getStyles} from '../styles/bookingDetailStyles';
-import BookingCard from '../components/VenueScreen/BookingCard';
 import {RefreshControl, ScrollView} from 'react-native-gesture-handler';
 import PagerView from 'react-native-pager-view';
+import {Text} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {useGetVenueById} from '../api/vanue';
-import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
-import {getBookingByGround} from '../utils/helper';
+import AppHeader from '../components/AppHeader';
+import BookingCard from '../components/VenueScreen/BookingCard';
 import {useTheme} from '../context/ThemeContext';
+import {getStyles} from '../styles/bookingDetailStyles';
+import {getBookingByGround} from '../utils/helper';
 
 dayjs.extend(utc);
 
@@ -39,9 +39,9 @@ const VenueByIdScreen = () => {
   const styles = getStyles(theme);
   const route = useRoute<RouteProp<BookingParamList, 'BookingCalender'>>();
   const {venueId} = route.params;
-  const {data, refetch, isLoading} = useGetVenueById(venueId);
+  const {data, refetch} = useGetVenueById(venueId);
   const [refreshing, setRefreshing] = useState(false);
-  // console.log('data>>>>', data.venue?.ground_details);
+
   const [cardCounts, setCardCounts] = useState<{[key: number]: number}>({});
   const animatedHeight = useRef(new Animated.Value(CARD_HEIGHT)).current;
 
@@ -52,18 +52,6 @@ const VenueByIdScreen = () => {
     await Promise.all([refetch()]);
     setRefreshing(false);
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      let isActive = true;
-
-      refetch();
-
-      return () => {
-        isActive = false;
-      };
-    }, []),
-  );
 
   useEffect(() => {
     const count = cardCounts[activePage] || 1;
@@ -167,46 +155,42 @@ const VenueByIdScreen = () => {
                     return (
                       <View key={index} style={{paddingVertical: 20}}>
                         <View style={{gap: 20}}>
-                          {data?.venue?.bookings &&
-                            data?.venue?.bookings.map(
-                              (booking: any, num: number) => {
-                                const now = dayjs();
-                                const start = dayjs(booking?.start_time);
-                                const end = dayjs(booking?.end_time);
-                                const diffInHours = end.diff(start, 'hour');
-                                if (
-                                  booking?.booked_grounds !==
-                                  activePage + 1
-                                ) {
-                                  return;
-                                }
-                                return (
-                                  <BookingCard
-                                    key={num}
-                                    startTime={dayjs
-                                      .utc(booking?.start_time)
-                                      .local()
-                                      .format('hh:mm A')}
-                                    endTime={dayjs
-                                      .utc(booking?.end_time)
-                                      .local()
-                                      .format('hh:mm A')}
-                                    bgColor={
-                                      dayjs(booking?.start_time)?.isBefore(now)
-                                        ? '#784847'
-                                        : '#514A86'
-                                    }
-                                    name={booking?.customer?.name ?? 'jay'}
-                                    phone={
-                                      booking?.customer?.mobile ?? '9998887770'
-                                    }
-                                    duration={diffInHours.toString()}
-                                    price={booking?.total_amount}
-                                    sport={data?.venue?.game_info?.type}
-                                  />
-                                );
-                              },
-                            )}
+                          {data?.venue?.bookings?.map(
+                            (booking: any, num: number) => {
+                              const now = dayjs();
+                              const start = dayjs(booking?.start_time);
+                              const end = dayjs(booking?.end_time);
+                              const diffInHours = end.diff(start, 'hour');
+                              if (booking?.booked_grounds !== activePage + 1) {
+                                return;
+                              }
+                              return (
+                                <BookingCard
+                                  key={num}
+                                  startTime={dayjs
+                                    .utc(booking?.start_time)
+                                    .local()
+                                    .format('hh:mm A')}
+                                  endTime={dayjs
+                                    .utc(booking?.end_time)
+                                    .local()
+                                    .format('hh:mm A')}
+                                  bgColor={
+                                    dayjs(booking?.start_time)?.isBefore(now)
+                                      ? '#784847'
+                                      : '#514A86'
+                                  }
+                                  name={booking?.customer?.name ?? 'jay'}
+                                  phone={
+                                    booking?.customer?.mobile ?? '9998887770'
+                                  }
+                                  duration={diffInHours.toString()}
+                                  price={booking?.total_amount}
+                                  sport={data?.venue?.game_info?.type}
+                                />
+                              );
+                            },
+                          )}
                         </View>
                       </View>
                     );

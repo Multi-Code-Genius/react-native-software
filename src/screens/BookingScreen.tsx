@@ -1,7 +1,8 @@
 import React, {useCallback, useMemo, useRef, useState} from 'react';
-import  { useEffect } from 'react';
+import {useEffect} from 'react';
 import {
   ImageBackground,
+  RefreshControl,
   Text,
   TouchableOpacity,
   View,
@@ -19,30 +20,37 @@ import {
   BottomSheetModalProvider,
   BottomSheetView,
 } from '@gorhom/bottom-sheet';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { Divider } from 'react-native-paper';
+import {
+  useFocusEffect,
+  useNavigation,
+  NavigationProp,
+} from '@react-navigation/native';
+import {Divider} from 'react-native-paper';
 import BookingCard from '../components/VenueScreen/BookingCard';
-import { getStyles } from '../styles/BookingScreenStyles';
-import { useTheme } from '../context/ThemeContext';
-import { useGetVenue } from '../api/vanue';
-import { useBookingFilter } from '../api/booking';
+import {getStyles} from '../styles/BookingScreenStyles';
+import {useTheme} from '../context/ThemeContext';
+import {useGetVenue} from '../api/vanue';
+import {useBookingFilter} from '../api/booking';
 import DatePicker from 'react-native-date-picker';
 import dayjs from 'dayjs';
+import {A, ParamsTypes, AvailableSlot} from '../utils/helper';
+import {RootStackParamList} from '../navigation/routes';
 
 const BookingScreen = () => {
   const sheetRef = useRef<BottomSheetModal>(null);
   const groundSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['25%'], []);
-  const navigation = useNavigation();
+  const [refreshing, setRefreshing] = useState(false);
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {theme} = useTheme();
   const isDark = theme.dark;
-  const { data, refetch, isLoading } = useGetVenue()
+  const {data, refetch, isLoading} = useGetVenue();
 
   const styles = getStyles(theme);
   const statuses = [
-    { label: 'Completed', color: theme.colors.orange },
-    { label: 'Upcoming', color: theme.colors.violet },
-    { label: 'Available', color: theme.colors.green },
+    {label: 'Completed', color: theme.colors.orange},
+    {label: 'Upcoming', color: theme.colors.violet},
+    {label: 'Available', color: theme.colors.green},
   ];
   const filters = [
     'All',
@@ -52,14 +60,24 @@ const BookingScreen = () => {
     'Cricket',
     'Football',
   ];
-  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(data?.venues?.[0]?.id ?? "");
-  const [selectedVenueName, setSelectedVenueName] = useState<string | null>(data?.venues?.[0]?.name ?? "");
+  const [selectedVenueId, setSelectedVenueId] = useState<string | null>(
+    data?.venues?.[0]?.id ?? '',
+  );
+  const [selectedVenueName, setSelectedVenueName] = useState<string | null>(
+    data?.venues?.[0]?.name ?? '',
+  );
   const [venueIndex, setVenueIndex] = useState<number>(0);
-  const [selectedVenueGround, setSelectedVenueGround] = useState<string | null>(data?.venues?.[venueIndex]?.ground_details?.[0]?.ground ?? "");
+  const [selectedVenueGround, setSelectedVenueGround] = useState<string | null>(
+    data?.venues?.[venueIndex]?.ground_details?.[0]?.ground ?? '',
+  );
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
+  const {data: bookingData, refetch: bookingRefetch} = useBookingFilter({
+    venueId: selectedVenueId,
+    ground: selectedVenueGround,
+    date: dayjs(date).format('YYYY-MM-DD'),
+  });
 
-  
   useFocusEffect(
     useCallback(() => {
       if (!isLoading) {
@@ -67,26 +85,42 @@ const BookingScreen = () => {
       }
     }, [refetch]),
   );
-
-
-  useEffect(() => {
-    setSelectedVenueGround('1')
-  }, [selectedVenueId])
-
-  const { data: bookingData, refetch: bookingRefetch } = useBookingFilter({
-    venueId: selectedVenueId,
-    ground: selectedVenueGround,
-    date: dayjs(date).format('YYYY-MM-DD')
-  })
-
-  console.log('bookingData', bookingData)
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await Promise.all([refetch(), bookingRefetch()]);
+    setRefreshing(false);
+  };
 
   useEffect(() => {
-    bookingRefetch()
-  }, [selectedVenueGround, selectedVenueId, date, bookingRefetch])
+    setSelectedVenueGround('1');
+  }, [selectedVenueId]);
 
+  const {available, completed, upComing, all} = A(bookingData?.booking);
+  console.log('object', bookingData?.booking);
+  const [bookingFData, setBookinFgData] = useState<
+    (ParamsTypes[number] | AvailableSlot)[]
+  >([]);
 
   const [selectedFilter, setSelectedFilter] = useState('All');
+  useEffect(() => {
+    if (selectedFilter === 'Upcoming') {
+      setBookinFgData(upComing);
+    }
+    if (selectedFilter === 'Available') {
+      setBookinFgData(available);
+    }
+    if (selectedFilter === 'Completed') {
+      setBookinFgData(completed);
+    }
+    if (selectedFilter === 'All') {
+      setBookinFgData(all);
+    }
+  }, [bookingData, selectedFilter, all, available, completed, upComing]);
+
+  useEffect(() => {
+    bookingRefetch();
+  }, [selectedVenueGround, selectedVenueId, date, bookingRefetch]);
+
   const openMenu = () => {
     sheetRef.current?.present();
   };
@@ -96,7 +130,7 @@ const BookingScreen = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{flex: 1}}>
       <BottomSheetModalProvider>
         <View style={styles.container}>
           <AppHeader />
@@ -104,7 +138,14 @@ const BookingScreen = () => {
             source={theme.dark && require('../assets/ScreenShaded.png')}
             style={styles.headerGlow}
             resizeMode="cover">
-            <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <ScrollView
+              contentContainerStyle={{flexGrow: 1}}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={handleRefresh}
+                />
+              }>
               <View style={styles.types}>
                 {statuses.map((status, index) => (
                   <View
@@ -115,9 +156,9 @@ const BookingScreen = () => {
                       gap: 5,
                     }}>
                     <View
-                      style={[styles.dot, { backgroundColor: status.color }]}
+                      style={[styles.dot, {backgroundColor: status.color}]}
                     />
-                    <Text style={[styles.type, { color: status.color }]}>
+                    <Text style={[styles.type, {color: status.color}]}>
                       {status.label}
                     </Text>
                   </View>
@@ -134,23 +175,29 @@ const BookingScreen = () => {
                   />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.pill} onPress={openGround}>
-                  <Text style={styles.pillText}>Ground {selectedVenueGround}</Text>
+                  <Text style={styles.pillText}>
+                    Ground {selectedVenueGround}
+                  </Text>
                   <Icon
                     name="chevron-down"
                     color={isDark ? '#fff' : '#000'}
                     size={14}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setOpen(true)} style={styles.pill}>
+                <TouchableOpacity
+                  onPress={() => setOpen(true)}
+                  style={styles.pill}>
                   <Icon
                     name="calendar-outline"
                     color={isDark ? '#fff' : '#000'}
                     size={14}
                   />
-                  <Text style={styles.pillText}>{date.toLocaleDateString('en-GB', {
-                    day: '2-digit',
-                    month: 'short',
-                  })}</Text>
+                  <Text style={styles.pillText}>
+                    {date.toLocaleDateString('en-GB', {
+                      day: '2-digit',
+                      month: 'short',
+                    })}
+                  </Text>
                   <Icon
                     name="chevron-down"
                     color={isDark ? '#fff' : '#000'}
@@ -158,14 +205,14 @@ const BookingScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
-              <Divider style={{ marginVertical: 5, borderColor: '#fff' }} />
+              <Divider style={{marginVertical: 5, borderColor: '#fff'}} />
               <View style={styles.flatlistContainer}>
                 <FlatList
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   data={filters}
                   keyExtractor={item => item}
-                  renderItem={({ item }) => {
+                  renderItem={({item}) => {
                     const isSelected = item === selectedFilter;
                     return (
                       <TouchableOpacity
@@ -190,32 +237,61 @@ const BookingScreen = () => {
                   }}
                 />
               </View>
-              <Divider style={{ marginVertical: 10, borderColor: '#fff' }} />
-              <View style={{ gap: 20, padding: 20 }}>
-                {
-                  bookingData?.booking?.map((booking, index) => {
+              <Divider style={{marginVertical: 10, borderColor: '#fff'}} />
+              <View style={{gap: 20, padding: 20}}>
+                {bookingFData?.map(
+                  (booking: ParamsTypes[number] | AvailableSlot, index) => {
                     const now = dayjs();
-                    const start = dayjs(booking?.start_time);
-                    const end = dayjs(booking?.end_time);
+                    const start = dayjs(booking.start_time);
+                    const end = dayjs(booking.end_time);
                     const diffInHours = end.diff(start, 'hour');
-                    // if (!selectedVenueGround || booking?.booked_grounds != selectedVenueGround + 1) {
-                    //   return;
-                    // }
+                    const isAvailable =
+                      'isAvailable' in booking ? booking.isAvailable : false;
+                    const isBooked = 'customer' in booking && booking.customer;
+
+                    let bgColor = theme.colors.violet;
+                    if (isAvailable) {
+                      bgColor = theme.colors.green;
+                    } else if (isBooked) {
+                      bgColor = dayjs(booking.start_time)?.isBefore(now)
+                        ? theme.colors.orange
+                        : theme.colors.violet;
+                    }
+
                     return (
                       <BookingCard
                         key={index}
-                        startTime={dayjs.utc(booking?.start_time).local().format('hh:mm A')}
-                        endTime={dayjs.utc(booking?.end_time).local().format('hh:mm A')}
-                        bgColor={dayjs(booking?.start_time)?.isBefore(now) ? "#784847" : "#514A86"}
-                        name={booking?.customer?.name }
-                        phone={booking?.customer?.mobile }
+                        isAvailable={isAvailable}
+                        startTime={dayjs
+                          .utc(booking.start_time)
+                          .local()
+                          .format('hh:mm A')}
+                        endTime={dayjs
+                          .utc(booking.end_time)
+                          .local()
+                          .format('hh:mm A')}
+                        bgColor={bgColor}
+                        name={
+                          'customer' in booking
+                            ? booking?.customer?.name ?? ''
+                            : ''
+                        }
+                        phone={
+                          'customer' in booking
+                            ? booking?.customer?.mobile ?? ''
+                            : ''
+                        }
                         duration={diffInHours.toString()}
-                        price={booking?.total_amount}
+                        price={
+                          'total_amount' in booking
+                            ? booking?.total_amount?.toString() ?? ''
+                            : ''
+                        }
                         sport={data?.venues?.[venueIndex]?.game_info?.type}
                       />
-                    )
-                  })
-                }
+                    );
+                  },
+                )}
               </View>
             </ScrollView>
             <DatePicker
@@ -244,7 +320,7 @@ const BookingScreen = () => {
                 pressBehavior="close"
               />
             )}>
-            <BottomSheetView style={{ padding: 16 }}>
+            <BottomSheetView style={{padding: 16}}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -264,45 +340,47 @@ const BookingScreen = () => {
                 </TouchableOpacity>
               </View>
 
-              {data?.venues?.map((venue, index) => (
-                <TouchableOpacity
-                  key={venue.id}
-                  style={[
-                    styles.venueCard,
-                    selectedVenueId === venue.id && styles.venueCardSelected,
-                  ]}
-                  onPress={() => {
-                    setSelectedVenueId(venue.id),
-                      setSelectedVenueName(venue?.name)
-                    setVenueIndex(index)
-
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
+              {data?.venues?.map(
+                (
+                  venue: {id: string; name: string; location: {area: string}},
+                  index: number,
+                ) => (
+                  <TouchableOpacity
+                    key={venue.id}
+                    style={[
+                      styles.venueCard,
+                      selectedVenueId === venue.id && styles.venueCardSelected,
+                    ]}
+                    onPress={() => {
+                      setSelectedVenueId(venue.id),
+                        setSelectedVenueName(venue?.name);
+                      setVenueIndex(index);
                     }}>
-                    <View>
-                      <Text style={styles.venueTitle}>{venue?.name}</Text>
-                      <Text style={styles.venueLocation}>{venue?.location?.area}</Text>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View>
+                        <Text style={styles.venueTitle}>{venue?.name}</Text>
+                        <Text style={styles.venueLocation}>
+                          {venue?.location?.area}
+                        </Text>
+                      </View>
+                      <Icon
+                        name={
+                          selectedVenueId === venue.id
+                            ? 'checkmark-circle'
+                            : 'ellipse-outline'
+                        }
+                        size={22}
+                        color={selectedVenueId === venue.id ? '#fff' : '#888'}
+                      />
                     </View>
-                    <Icon
-                      name={
-                        selectedVenueId === venue.id
-                          ? 'checkmark-circle'
-                          : 'ellipse-outline'
-                      }
-                      size={22}
-                      color={
-                        selectedVenueId === venue.id
-                          ? theme.colors.text
-                          : '#888'
-                      }
-                    />
-                  </View>
-                </TouchableOpacity>
-              ))}
+                  </TouchableOpacity>
+                ),
+              )}
             </BottomSheetView>
           </BottomSheetModal>
           <BottomSheetModal
@@ -321,43 +399,48 @@ const BookingScreen = () => {
                 pressBehavior="close"
               />
             )}>
-            <BottomSheetView style={{ padding: 16 }}>
+            <BottomSheetView style={{padding: 16}}>
               <Text style={styles.text}>Your Listed Grounds of Turf 1</Text>
 
-              {data?.venues?.[venueIndex]?.ground_details?.map((ground, index) => (
-                <TouchableOpacity
-                  key={ground?.ground}
-                  style={[
-                    styles.venueCard,
-                    selectedVenueGround === ground?.ground && styles.venueCardSelected,
-                  ]}
-                  onPress={() => setSelectedVenueGround(ground?.ground)}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <View>
-                      <Text style={styles.venueTitle}>Ground {ground?.ground}</Text>
-                      {/* <Text style={styles.venueLocation}>{venue.location}</Text> */}
+              {data?.venues?.[venueIndex]?.ground_details?.map(
+                (ground: {ground: string}, _index: number) => (
+                  <TouchableOpacity
+                    key={ground?.ground}
+                    style={[
+                      styles.venueCard,
+                      selectedVenueGround === ground?.ground &&
+                        styles.venueCardSelected,
+                    ]}
+                    onPress={() => setSelectedVenueGround(ground?.ground)}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View>
+                        <Text style={styles.venueTitle}>
+                          Ground {ground?.ground}
+                        </Text>
+                        {/* <Text style={styles.venueLocation}>{venue.location}</Text> */}
+                      </View>
+                      <Icon
+                        name={
+                          selectedVenueGround === ground?.ground
+                            ? 'checkmark-circle'
+                            : 'ellipse-outline'
+                        }
+                        size={22}
+                        color={
+                          selectedVenueGround === ground?.ground
+                            ? '#fff'
+                            : '#888'
+                        }
+                      />
                     </View>
-                    <Icon
-                      name={
-                        selectedVenueGround === ground?.ground
-                          ? 'checkmark-circle'
-                          : 'ellipse-outline'
-                      }
-                      size={22}
-                      color={
-                        selectedVenueId === venue.id
-                          ? theme.colors.text
-                          : '#888'
-                      }
-                    />
-                  </View>
-                </TouchableOpacity>
-              ))}
+                  </TouchableOpacity>
+                ),
+              )}
             </BottomSheetView>
           </BottomSheetModal>
         </View>
