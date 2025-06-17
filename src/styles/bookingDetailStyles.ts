@@ -22,9 +22,9 @@ export const getStyles = (theme: any) =>
     },
     name1: {
       fontSize: 16,
-      fontWeight: '600',
+      fontWeight: '700',
       fontFamily: 'Montserrat-Regular',
-      color: '#fff',
+      color: theme.colors.text,
     },
     name: {
       fontSize: 16,
@@ -82,7 +82,7 @@ export const getStyles = (theme: any) =>
       width: '100%',
       paddingHorizontal: 16,
       paddingTop: 10,
-      borderBottomColor: '#918f8f',
+      borderBottomColor: '#B8B8B8',
       borderBottomWidth: 1,
       marginTop: 20,
     },
@@ -95,11 +95,11 @@ export const getStyles = (theme: any) =>
     tabActive: {
       color: '#fff',
       borderBottomWidth: 1,
-      borderBottomColor: '#fff',
+      borderBottomColor: theme.colors.text,
       paddingBottom: 10,
     },
     tabActiveText: {
-      color: '#FFF',
+      color: theme.colors.text,
     },
     groundSize: {
       color: '#888',

@@ -251,7 +251,7 @@ const BookingSlotScreen = () => {
                     ref={startSheetRef}
                     index={0}
                     snapPoints={snapPoints}
-                    backgroundStyle={{backgroundColor: '#0F0F0F'}}
+                    backgroundStyle={{backgroundColor: theme.colors.background}}
                     handleIndicatorStyle={{backgroundColor: '#666'}}
                     backdropComponent={props => (
                       <BottomSheetBackdrop
@@ -307,7 +307,7 @@ const BookingSlotScreen = () => {
                     ref={endSheetRef}
                     index={0}
                     snapPoints={snapPoints}
-                    backgroundStyle={{backgroundColor: '#0F0F0F'}}
+                    backgroundStyle={{backgroundColor: theme.colors.background}}
                     handleIndicatorStyle={{backgroundColor: '#666'}}
                     backdropComponent={props => (
                       <BottomSheetBackdrop
@@ -340,27 +340,12 @@ const BookingSlotScreen = () => {
                           </TouchableOpacity>
                         ))}
                       </ScrollView>
-                      <View style={styles.bottom}>
-                        <LinearGradient
-                          colors={['transparent', '#868685', 'transparent']}
-                          start={{x: 0, y: 0.5}}
-                          end={{x: 1, y: 0.5}}
-                          style={styles.glowBorder}
-                        />
-                        <Text style={styles.booked}>
-                          <View style={styles.dot} /> Booked
-                        </Text>
-                        <Text style={styles.selected}>
-                          <View style={styles.dot1} /> Selected
-                        </Text>
-                      </View>
                     </BottomSheetView>
                   </BottomSheetModal>
                 </View>
-
                 <TouchableOpacity
                   style={styles.button}
-                  onPress={() => navigation.navigate('BookingForm')}>
+                  onPress={() => navigation.navigate('BookingForm', {data})}>
                   <Text style={styles.buttonText}>Next</Text>
                 </TouchableOpacity>
               </View>

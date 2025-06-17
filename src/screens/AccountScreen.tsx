@@ -148,12 +148,18 @@ const AccountScreen = () => {
               <Text style={styles.Text}>Are you sure you want to logout?</Text>
             </Dialog.Content>
             <Dialog.Actions style={styles.buttons}>
-              <Button onPress={hideDialog} style={styles.cancel}>
-                Cancel
-              </Button>
-              <Button onPress={handleLogout} style={styles.logout}>
-                Logout
-              </Button>
+              <TouchableOpacity
+                style={[styles.button]}
+                onPress={hideDialog}
+                disabled={isPending}>
+                <Text style={styles.buttonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.logout]}
+                onPress={handleLogout}
+                disabled={isPending}>
+                <Text style={styles.buttonText}>Logout</Text>
+              </TouchableOpacity>
             </Dialog.Actions>
           </Dialog>
         </Portal>

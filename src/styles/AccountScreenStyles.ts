@@ -30,6 +30,19 @@ export const accountStyle = (theme: any) =>
       width: '100%',
       justifyContent: 'flex-start',
     },
+    button: {
+      padding: 18,
+      backgroundColor: theme.colors.secondary,
+      width: '50%',
+      fontFamily: 'Montserrat-Regular',
+    },
+    buttonText: {
+      color: theme.colors.background,
+      fontFamily: 'Montserrat-Regular',
+      fontSize: 14,
+      fontWeight: '700',
+      textAlign: 'center',
+    },
     cancel: {
       backgroundColor: theme.colors.secondary,
       width: '50%',
@@ -47,7 +60,7 @@ export const accountStyle = (theme: any) =>
       color: 'white',
       fontSize: 14,
       fontWeight: '700',
-      padding: 8,
+      padding: 18,
       lineHeight: 22,
       fontFamily: 'Montserrat-Regular',
       borderRadius: 0,

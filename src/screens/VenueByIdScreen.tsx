@@ -1,5 +1,5 @@
-import { RouteProp, useFocusEffect, useRoute } from '@react-navigation/native';
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import {RouteProp, useFocusEffect, useRoute} from '@react-navigation/native';
+import React, {useRef, useState, useEffect, useCallback} from 'react';
 import {
   Image,
   ImageBackground,
@@ -7,17 +7,18 @@ import {
   View,
   Animated,
 } from 'react-native';
-import { Text } from 'react-native-paper';
+import {Text} from 'react-native-paper';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { styles } from '../styles/bookingDetailStyles';
+import {getStyles} from '../styles/bookingDetailStyles';
 import BookingCard from '../components/VenueScreen/BookingCard';
-import { RefreshControl, ScrollView } from 'react-native-gesture-handler';
+import {RefreshControl, ScrollView} from 'react-native-gesture-handler';
 import PagerView from 'react-native-pager-view';
-import { useGetVenueById } from '../api/vanue';
+import {useGetVenueById} from '../api/vanue';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import { getBookingByGround } from '../utils/helper';
+import {getBookingByGround} from '../utils/helper';
+import {useTheme} from '../context/ThemeContext';
 
 dayjs.extend(utc);
 
@@ -34,16 +35,17 @@ const CARD_HEIGHT = 200;
 
 const VenueByIdScreen = () => {
   const [activePage, setActivePage] = useState(0);
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const route = useRoute<RouteProp<BookingParamList, 'BookingCalender'>>();
-  const { venueId } = route.params;
-  const { data, refetch, isLoading } = useGetVenueById(venueId);
+  const {venueId} = route.params;
+  const {data, refetch, isLoading} = useGetVenueById(venueId);
   const [refreshing, setRefreshing] = useState(false);
-
-  const [cardCounts, setCardCounts] = useState<{ [key: number]: number }>({});
+  // console.log('data>>>>', data.venue?.ground_details);
+  const [cardCounts, setCardCounts] = useState<{[key: number]: number}>({});
   const animatedHeight = useRef(new Animated.Value(CARD_HEIGHT)).current;
 
-  const result  = getBookingByGround(data?.venue)
-
+  const result = getBookingByGround(data?.venue);
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -53,10 +55,14 @@ const VenueByIdScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      if (!isLoading) {
-        refetch();
-      }
-    }, [refetch]),
+      let isActive = true;
+
+      refetch();
+
+      return () => {
+        isActive = false;
+      };
+    }, []),
   );
 
   useEffect(() => {
@@ -70,30 +76,32 @@ const VenueByIdScreen = () => {
   }, [activePage, cardCounts, animatedHeight]);
 
   const registerCardCount = useCallback((index: number, count: number) => {
-    setCardCounts(prev => ({ ...prev, [index]: count }));
+    setCardCounts(prev => ({...prev, [index]: count}));
   }, []);
 
   useEffect(() => {
     result.forEach((val, index) => {
       registerCardCount(index, val.count);
-    })
-  }, [result.length, registerCardCount, result, activePage] );
+    });
+  }, [result.length, registerCardCount, result, activePage]);
 
   return (
     <View style={styles.container}>
       <AppHeader isApp title={`Venue ${venueId}`} />
       <ImageBackground
-        source={require('../assets/ScreenShaded.png')}
+        source={theme.dark && require('../assets/ScreenShaded.png')}
         style={styles.headerGlow}
         resizeMode="cover">
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}  refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
-        }>
+        <ScrollView
+          contentContainerStyle={{flexGrow: 1}}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }>
           <View style={styles.venueListContainer}>
             <View style={styles.card}>
-              <View style={{ flexDirection: 'column', gap: 16 }}>
+              <View style={{flexDirection: 'column', gap: 16}}>
                 <Image
-                  source={{ uri: data?.venue?.images?.[0] }}
+                  source={{uri: data?.venue?.images?.[0]}}
                   style={styles.image}
                 />
                 <Text style={styles.name1}>{data?.venue?.name}</Text>
@@ -108,7 +116,11 @@ const VenueByIdScreen = () => {
                   </Text>
                   <View style={styles.detail}>
                     <Icon name="location" size={20} color={'#888'} />
-                    <Text style={styles.name}>  {data?.venue?.location?.area}, {data?.venue?.location?.city}</Text>
+                    <Text style={styles.name}>
+                      {' '}
+                      {data?.venue?.location?.area},{' '}
+                      {data?.venue?.location?.city}
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.category}>
@@ -117,7 +129,6 @@ const VenueByIdScreen = () => {
                   </Text>
                 </View>
               </View>
-
 
               <View style={styles.tabContainer}>
                 {data?.venue?.ground_details?.map((g: any, i: number) => {
@@ -144,49 +155,62 @@ const VenueByIdScreen = () => {
                 })}
               </View>
 
-              <Animated.View style={{ height: animatedHeight }}>
+              <Animated.View style={{height: animatedHeight}}>
                 <PagerView
                   initialPage={0}
                   onPageSelected={e => {
                     const index = e.nativeEvent.position;
                     setActivePage(index);
                   }}
-                  style={{ flex: 1 }}>
-                  {
-                    data?.venue?.ground_details?.map((i: any, index: number) => {
-                      return (
-                        <View key={index} style={{ paddingVertical: 20 }}>
-                          <View style={{ gap: 20 }}>
-                            {
-                              data?.venue?.bookings.map((booking: any, num: number) => {
+                  style={{flex: 1}}>
+                  {data?.venue?.ground_details?.map((i: any, index: number) => {
+                    return (
+                      <View key={index} style={{paddingVertical: 20}}>
+                        <View style={{gap: 20}}>
+                          {data?.venue?.bookings &&
+                            data?.venue?.bookings.map(
+                              (booking: any, num: number) => {
                                 const now = dayjs();
                                 const start = dayjs(booking?.start_time);
                                 const end = dayjs(booking?.end_time);
                                 const diffInHours = end.diff(start, 'hour');
-                                if (booking?.booked_grounds !== activePage + 1) {
+                                if (
+                                  booking?.booked_grounds !==
+                                  activePage + 1
+                                ) {
                                   return;
                                 }
                                 return (
                                   <BookingCard
                                     key={num}
-                                    startTime={dayjs.utc(booking?.start_time).local().format('hh:mm A')}
-                                    endTime={dayjs.utc(booking?.end_time).local().format('hh:mm A')}
-                                    bgColor=  {  dayjs(booking?.start_time)?.isBefore(now) ? "#784847" : "#514A86"} 
-                                    name={booking?.customer?.name ?? "jay"}
-                                    phone={booking?.customer?.mobile ?? "9998887770"}
+                                    startTime={dayjs
+                                      .utc(booking?.start_time)
+                                      .local()
+                                      .format('hh:mm A')}
+                                    endTime={dayjs
+                                      .utc(booking?.end_time)
+                                      .local()
+                                      .format('hh:mm A')}
+                                    bgColor={
+                                      dayjs(booking?.start_time)?.isBefore(now)
+                                        ? '#784847'
+                                        : '#514A86'
+                                    }
+                                    name={booking?.customer?.name ?? 'jay'}
+                                    phone={
+                                      booking?.customer?.mobile ?? '9998887770'
+                                    }
                                     duration={diffInHours.toString()}
                                     price={booking?.total_amount}
                                     sport={data?.venue?.game_info?.type}
                                   />
-                                )
-                              })
-                            }
-                          </View>
+                                );
+                              },
+                            )}
                         </View>
-
-                      )
-                    })
-                  }
+                      </View>
+                    );
+                  })}
                 </PagerView>
               </Animated.View>
             </View>

@@ -26,10 +26,13 @@ import {
 } from '@gorhom/bottom-sheet';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {RootStackParamList} from '../navigation/routes';
-import {styles} from '../styles/VenueScreenStyles';
+import {useTheme} from '../context/ThemeContext';
+import {getStyles} from '../styles/VenueScreenStyles';
 
 const VenueScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const {data, refetch, isLoading} = useGetVenue();
   const deleteVenue = useDeleteVenue();
   const hasVenues = Array.isArray(data?.venues) && data.venues.length > 0;
@@ -37,7 +40,7 @@ const VenueScreen = () => {
   const snapPoints = useMemo(() => ['25%'], []);
   const [selectedVenue, setSelectedVenue] = useState<any>(null);
   const [dialogVisible, setDialogVisible] = useState(false);
-
+  const isDark = theme.dark;
   const onDismissDialog = () => {
     setDialogVisible(false);
   };
@@ -72,8 +75,7 @@ const VenueScreen = () => {
   const renderItem = ({item}: any) => {
     return (
       <Card
-        style={[styles.card, styles.shadow]}
-        mode="elevated"
+        style={[styles.card]}
         onPress={() =>
           (navigation as any).navigate('bookingData', {
             venueId: item.id,
@@ -123,9 +125,9 @@ const VenueScreen = () => {
         <SafeAreaView style={styles.safeArea} edges={[]}>
           <AppHeader />
 
-          <View style={{flex: 1, backgroundColor: '#000'}}>
+          <View style={{flex: 1, backgroundColor: theme.colors.background}}>
             <ImageBackground
-              source={require('../assets/ScreenShaded.png')}
+              source={theme.dark && require('../assets/ScreenShaded.png')}
               style={styles.headerGlow}
               resizeMode="cover">
               <View style={styles.venueListContainer}>
@@ -137,7 +139,11 @@ const VenueScreen = () => {
                     style={styles.addvenuebutton}
                     onPress={() => navigation.navigate('Addvenue')}>
                     <Text style={styles.text}>Add Venue</Text>
-                    <Icon name="add-circle" size={20} color={'#fff'} />
+                    <Icon
+                      name="add-circle"
+                      size={20}
+                      color={isDark ? '#FFF' : '#000'}
+                    />
                   </TouchableOpacity>
                 </View>
 
@@ -187,7 +193,10 @@ const VenueScreen = () => {
             ref={sheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backgroundStyle={{
+              backgroundColor: theme.colors.background,
+              borderRadius: 8,
+            }}
             backdropComponent={props => (
               <BottomSheetBackdrop
                 {...props}
@@ -198,12 +207,16 @@ const VenueScreen = () => {
             )}>
             <BottomSheetView style={styles.bottomSheetContent}>
               <TouchableOpacity style={styles.menu} onPress={() => {}}>
-                <Icon name="create" size={20} color={'#fff'} />
+                <Icon
+                  name="create"
+                  size={20}
+                  color={isDark ? '#FFF' : '#000'}
+                />
                 <Text style={styles.bottomtext}>Edit Venue</Text>
               </TouchableOpacity>
               <Divider />
               <TouchableOpacity style={styles.menu} onPress={onPressDelete}>
-                <Icon name="trash" size={20} color={'#fff'} />
+                <Icon name="trash" size={20} color={isDark ? '#FFF' : '#000'} />
                 <Text style={styles.bottomtext}>Delete Venue</Text>
               </TouchableOpacity>
             </BottomSheetView>

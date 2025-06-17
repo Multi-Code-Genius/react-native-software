@@ -116,19 +116,23 @@ export const getStyles = (theme: any) =>
     addVenueButton: {
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: '#1C1C1E',
+      backgroundColor: theme.colors.card,
       paddingHorizontal: 12,
       paddingVertical: 6,
       borderRadius: 20,
+      borderWidth: 1,
+      borderColor: theme.colors.border1,
     },
     venueCard: {
-      backgroundColor: '#1C1C1E',
+      backgroundColor: theme.colors.card,
       padding: 16,
       borderRadius: 6,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
       marginTop: 16,
     },
     venueCardSelected: {
-      borderColor: '#fff',
+      borderColor: theme.colors.text,
       borderWidth: 1,
     },
     venueTitle: {

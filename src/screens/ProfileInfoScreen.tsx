@@ -11,13 +11,17 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useAccountInfo, useUpdateAccountInfo} from '../api/account';
-import {styles} from '../styles/ProfileScreenStyles';
+import {getStyles} from '../styles/ProfileScreenStyles';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {useToast} from '../context/ToastContext';
 import {ActivityIndicator} from 'react-native-paper';
+import {useTheme} from '../context/ThemeContext';
 
 const ProfileInfoScreen = () => {
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
+  const isDark = theme.dark;
   const {data} = useAccountInfo();
   const {mutate: updateInfo, isPending} = useUpdateAccountInfo();
   const {showToast} = useToast();
@@ -104,7 +108,7 @@ const ProfileInfoScreen = () => {
                   <Icon
                     name="person-outline"
                     size={20}
-                    color="#fff"
+                    color={isDark ? '#FFF' : '#000'}
                     style={styles.icon}
                   />
                   <TextInput
@@ -122,7 +126,7 @@ const ProfileInfoScreen = () => {
                   <Icon
                     name="phone-portrait"
                     size={20}
-                    color="#fff"
+                    color={isDark ? '#FFF' : '#000'}
                     style={styles.icon}
                   />
                   <TextInput
@@ -140,7 +144,7 @@ const ProfileInfoScreen = () => {
                   <Icon
                     name="mail-outline"
                     size={20}
-                    color="#fff"
+                    color={isDark ? '#FFF' : '#000'}
                     style={styles.icon}
                   />
                   <TextInput

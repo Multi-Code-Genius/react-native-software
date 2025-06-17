@@ -158,7 +158,7 @@ export const getStyles = (theme: any) =>
       textAlign: 'center',
     },
     modalTitle: {
-      color: '#fff',
+      color: theme.colors.text,
       fontSize: 16,
       marginBottom: 12,
       padding: 16,
@@ -173,18 +173,20 @@ export const getStyles = (theme: any) =>
       width: '30%',
       marginVertical: 6,
       padding: 12,
-      backgroundColor: '#323232',
+      backgroundColor: theme.colors.cardcolor,
       alignItems: 'center',
-      borderRadius: 6,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
     },
     selectedSlot: {
-      backgroundColor: '#fff',
+      borderColor: theme.colors.text,
+      borderWidth: 1,
     },
     slotText: {
-      color: '#ccc',
+      color: '#B8B8B8',
     },
     selectedSlotText: {
-      color: '#000',
+      color: theme.colors.text,
       fontWeight: 'bold',
     },
     bottom: {
@@ -192,7 +194,7 @@ export const getStyles = (theme: any) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 15,
-      backgroundColor: '#191919',
+      backgroundColor: theme.colors.background,
       paddingVertical: 15,
       marginTop: 10,
     },
@@ -202,9 +204,10 @@ export const getStyles = (theme: any) =>
       fontFamily: 'Montserrat-Regular',
     },
     selected: {
-      color: '#FFF',
+      color: theme.colors.text,
       fontSize: 12,
       fontFamily: 'Montserrat-Regular',
+      fontWeight: '600',
     },
     glowBorder: {
       position: 'absolute',
@@ -223,7 +226,7 @@ export const getStyles = (theme: any) =>
     dot1: {
       width: 10,
       height: 10,
-      backgroundColor: '#fffefe',
+      backgroundColor: theme.colors.text,
       borderRadius: 15,
     },
     bottomSheetContent: {

@@ -13,8 +13,11 @@ import AppHeader from '../components/AppHeader';
 import CustomCheckbox from '../components/CustomCheckbox';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 import {useTheme} from '../context/ThemeContext';
+import {useRoute} from '@react-navigation/native';
 
 const BookingFormScreen = () => {
+  const route = useRoute();
+  const {data} = route.params;
   const [isChecked, setIsChecked] = useState(false);
   const {
     name,
@@ -28,13 +31,14 @@ const BookingFormScreen = () => {
     bookedGrounds,
     hourlyPrice,
   } = useBookingFormStore();
-
+  console.log('newdataaa>>>', data);
+  const hourlyprice = data?.venue?.ground_details?.[0].hourly_price;
   const {mutate, isPending} = useCreateBooking();
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const duration = endTime.diff(startTime, 'hour');
-  let totalAmount = duration * hourlyPrice;
-  console.log('totalAmount', totalAmount, duration, hourlyPrice);
+  let totalAmount = duration * hourlyprice;
+  console.log('totalamount>>>', hourlyprice);
 
   const handlerBooking = () => {
     mutate({
@@ -239,7 +243,7 @@ const getStyles = (theme: any) =>
       width: '50%',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 40,
+      padding: 30,
     },
     right: {
       width: '50%',

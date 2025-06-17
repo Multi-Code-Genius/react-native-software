@@ -223,7 +223,11 @@ const BookingScreen = () => {
                   style={styles.addVenueButton}
                   onPress={() => navigation.navigate('Addvenue')}>
                   <Text style={styles.text1}>Add Venue</Text>
-                  <Icon name="add-circle" size={20} color={'#fff'} />
+                  <Icon
+                    name="add-circle"
+                    size={20}
+                    color={isDark ? '#FFF' : '#000'}
+                  />
                 </TouchableOpacity>
               </View>
 
@@ -252,7 +256,11 @@ const BookingScreen = () => {
                           : 'ellipse-outline'
                       }
                       size={22}
-                      color={selectedVenueId === venue.id ? '#fff' : '#888'}
+                      color={
+                        selectedVenueId === venue.id
+                          ? theme.colors.text
+                          : '#888'
+                      }
                     />
                   </View>
                 </TouchableOpacity>
@@ -263,7 +271,10 @@ const BookingScreen = () => {
             ref={groundSheetRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle={{backgroundColor: '#0F0F0F', borderRadius: 8}}
+            backgroundStyle={{
+              backgroundColor: theme.colors.background,
+              borderRadius: 8,
+            }}
             backdropComponent={props => (
               <BottomSheetBackdrop
                 {...props}
@@ -300,7 +311,11 @@ const BookingScreen = () => {
                           : 'ellipse-outline'
                       }
                       size={22}
-                      color={selectedVenueId === venue.id ? '#fff' : '#888'}
+                      color={
+                        selectedVenueId === venue.id
+                          ? theme.colors.text
+                          : '#888'
+                      }
                     />
                   </View>
                 </TouchableOpacity>
