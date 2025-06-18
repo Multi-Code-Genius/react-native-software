@@ -65,7 +65,7 @@ const ImageUpload = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.head}>Image</Text>
-      <Text style={styles.label}>Venue Image</Text>
+      <Text style={styles.label}>Venue Image*</Text>
       <View style={styles.imageGrid}>
         {images.map((img, index) => (
           <View key={index} style={styles.imageWrapper}>

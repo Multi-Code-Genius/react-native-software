@@ -5,16 +5,21 @@ import {
   TouchableOpacity,
   View,
   ActivityIndicator,
+  ImageBackground,
 } from 'react-native';
-import {useTheme} from 'react-native-paper';
+// import {useTheme} from 'react-native-paper';
 import {OtpInput} from 'react-native-otp-entry';
 import {useVerifyOtp} from '../api/auth';
 import {useAuthStore} from '../store/authStore';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useToast} from '../context/ToastContext';
+import {useTheme} from '../context/ThemeContext';
 
 const OtpVerificationScreen = () => {
-  const paperTheme = useTheme();
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
+  // const paperTheme = useTheme();
   const route = useRoute();
   const navigation = useNavigation();
   const {phone} = route.params as {phone: string};
@@ -38,7 +43,10 @@ const OtpVerificationScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground
+      source={require('../assets/SplashScreen.png')}
+      style={styles.container}
+      resizeMode="cover">
       <View style={styles.topcontainer}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -46,7 +54,7 @@ const OtpVerificationScreen = () => {
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
 
-        <Text style={styles.head}>OTP Verification</Text>
+        <Text style={styles.head}>Verify OTP</Text>
         <Text style={styles.subtext}>Quick verify and you're in the zone!</Text>
       </View>
 
@@ -55,23 +63,11 @@ const OtpVerificationScreen = () => {
           <Text style={styles.label}>One Time Password</Text>
           <OtpInput
             numberOfDigits={4}
-            focusColor={paperTheme.colors.primary}
+            focusColor={theme.colors.primary}
             hideStick
             autoFocus
             onTextChange={text => {
               setOtp(text);
-              // if (text.length === 4) {
-              //   verifyOtp(
-              //     {phone, otp},
-              //     {
-              //       onSuccess: async ({token}: {token: string}) => {
-              //         if (token) {
-              //           await saveToken(token);
-              //         }
-              //       }
-              //     },
-              //   );
-              // }
             }}
             theme={{
               containerStyle: {
@@ -83,18 +79,18 @@ const OtpVerificationScreen = () => {
                 width: 60,
                 height: 70,
                 borderWidth: 1,
-                borderColor: '#ccc',
+                borderColor: theme.colors.border,
                 borderRadius: 8,
                 justifyContent: 'center',
                 alignItems: 'center',
-                backgroundColor: '#fff',
+                backgroundColor: theme.colors.background,
               },
               focusedPinCodeContainerStyle: {
-                borderColor: paperTheme.colors.primary,
+                borderColor: theme.colors.text,
               },
               pinCodeTextStyle: {
                 fontSize: 24,
-                color: paperTheme.colors.onBackground,
+                color: theme.colors.text,
                 fontWeight: '600',
               },
             }}
@@ -104,14 +100,11 @@ const OtpVerificationScreen = () => {
 
         <View style={styles.buttonContainer}>
           <Text style={styles.resend}>
-            <Text style={styles.bold}>Resend</Text> OTP in 00:30
+            <Text style={styles.bold}>Resend</Text> OTP in 00:30 Sec
           </Text>
 
           <TouchableOpacity
-            style={[
-              styles.button,
-              {backgroundColor: otp.length === 4 ? '#000' : '#999'},
-            ]}
+            style={[styles.button]}
             onPress={handleVerifyOtp}
             disabled={otp.length !== 4 || isPending}>
             {isPending ? (
@@ -122,117 +115,117 @@ const OtpVerificationScreen = () => {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 };
 
 export default OtpVerificationScreen;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'white',
-  },
-  topcontainer: {
-    height: '40%',
-    justifyContent: 'flex-end',
-    alignItems: 'flex-start',
-    backgroundColor: 'black',
-    gap: 2,
-    padding: 24,
-  },
-  text: {
-    fontSize: 12,
-    fontWeight: '500',
-    fontFamily: 'Montserrat-Regular',
-    color: '#888888',
-  },
-  contentContainer: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 24,
-  },
-  formContainer: {
-    flex: 1,
-  },
-  head: {
-    color: 'white',
-    fontFamily: 'ClashGrotesk-Medium',
-    fontSize: 32,
-    lineHeight: 46,
-  },
-  subtext: {
-    fontSize: 12,
-    // fontWeight: '300',
-    color: '#888888',
-    fontFamily: 'Montserrat-Regular',
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 8,
-    backgroundColor: 'white',
-  },
-  label: {
-    fontSize: 12,
-    marginBottom: 8,
-    // fontWeight: '600',
-    fontFamily: 'Montserrat-Medium',
-    color: '#000',
-  },
-  inputWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
-    borderRadius: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginBottom: 16,
-  },
-  icon: {
-    marginRight: 8,
-  },
-  buttonContainer: {
-    paddingBottom: 14,
-  },
-  button: {
-    paddingVertical: 18,
-    backgroundColor: '#000',
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  note: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#A0A0A0',
-  },
-  resend: {
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#888888',
-  },
-  bold: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#000',
-  },
-  backButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: '#333',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1,
-  },
-});
+const getStyles = (theme: any) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    topcontainer: {
+      height: '40%',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-start',
+      gap: 2,
+      padding: 24,
+      borderBottomColor: '#3f3f3f',
+      borderBottomWidth: 1,
+    },
+    text: {
+      fontSize: 12,
+      fontWeight: '500',
+      fontFamily: 'Montserrat-Medium',
+      color: '#888888',
+    },
+    contentContainer: {
+      flex: 1,
+      paddingHorizontal: 24,
+      paddingTop: 24,
+      backgroundColor: theme.colors.background,
+    },
+    formContainer: {
+      flex: 1,
+    },
+    head: {
+      color: 'white',
+      fontFamily: 'ClashGrotesk-Medium',
+      fontSize: 32,
+      lineHeight: 46,
+    },
+    subtext: {
+      fontSize: 12,
+      color: '#FFFFFF',
+      fontFamily: 'Montserrat-Light',
+    },
+    input: {
+      flex: 1,
+      paddingVertical: 8,
+      backgroundColor: 'white',
+    },
+    label: {
+      fontSize: 12,
+      marginBottom: 8,
+      fontFamily: 'Montserrat-SemiBold',
+      color: theme.colors.text,
+    },
+    inputWrapper: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      backgroundColor: '#fff',
+      borderWidth: 1,
+      borderColor: '#e0e0e0',
+      borderRadius: 4,
+      paddingHorizontal: 16,
+      paddingVertical: 8,
+      marginBottom: 16,
+    },
+    icon: {
+      marginRight: 8,
+    },
+    buttonContainer: {
+      paddingBottom: 14,
+    },
+    button: {
+      paddingVertical: 18,
+      backgroundColor: theme.colors.text1,
+    },
+    buttonText: {
+      color: theme.colors.surface,
+      fontSize: 16,
+      fontFamily: 'Montserrat-SemiBold',
+      textAlign: 'center',
+    },
+    note: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: '#A0A0A0',
+    },
+    resend: {
+      textAlign: 'center',
+      fontSize: 12,
+      marginBottom: 8,
+      fontFamily: 'Montserrat-Regular',
+      color: '#888888',
+    },
+    bold: {
+      fontSize: 12,
+      fontFamily: 'Montserrat-Regular',
+      color: theme.colors.text,
+    },
+    backButton: {
+      position: 'absolute',
+      top: 16,
+      left: 16,
+      width: 36,
+      height: 36,
+      borderRadius: 8,
+      backgroundColor: '#333',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1,
+    },
+  });

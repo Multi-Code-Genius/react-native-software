@@ -53,9 +53,8 @@ export const getStyles = (theme: any) =>
     },
     Head: {
       fontSize: 54,
-      fontFamily: 'Montserrat-Regular',
-      fontWeight: 'bold',
-      letterSpacing: 20,
+      fontFamily: 'Montserrat-SemiBold',
+      letterSpacing: 10,
       textAlign: 'center',
       color: theme.colors.text,
       opacity: 0.1,
@@ -92,8 +91,7 @@ export const getStyles = (theme: any) =>
     pillText: {
       color: theme.colors.text,
       fontSize: 12,
-      fontFamily: 'Montserrat-Regular',
-      fontWeight: '700',
+      fontFamily: 'Montserrat-medium',
     },
     sheetContent: {
       padding: 20,
@@ -174,11 +172,14 @@ export const getStyles = (theme: any) =>
     },
     filterItemText: {
       fontSize: 14,
+      fontFamily: 'Montserrat-medium',
     },
     filterItemTextSelected: {
       color: theme.colors.text,
+      fontFamily: 'Montserrat-medium',
     },
     filterItemTextUnselected: {
       color: '#888888',
+      fontFamily: 'Montserrat-medium',
     },
   });

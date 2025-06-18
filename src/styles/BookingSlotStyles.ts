@@ -26,14 +26,12 @@ export const getStyles = (theme: any) =>
     },
     name1: {
       fontSize: 16,
-      fontWeight: '600',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.text,
     },
     name: {
       fontSize: 16,
-      fontWeight: '600',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
       color: '#888888',
       justifyContent: 'center',
       alignItems: 'center',
@@ -53,8 +51,7 @@ export const getStyles = (theme: any) =>
       borderWidth: 1,
       borderRadius: 20,
       color: theme.colors.labelBorder1,
-      fontFamily: 'Montserrat-Regular',
-      fontWeight: 'medium',
+      fontFamily: 'Montserrat-Medium',
       fontSize: 10,
     },
     type1: {
@@ -77,9 +74,9 @@ export const getStyles = (theme: any) =>
     },
     label: {
       fontSize: 12,
-      fontWeight: '600',
       marginBottom: 12,
       color: theme.colors.labeltext,
+      fontFamily: 'Montserrat-SemiBold',
     },
     inputWrapper2: {
       flexDirection: 'row',
@@ -92,6 +89,7 @@ export const getStyles = (theme: any) =>
       fontSize: 16,
       color: '#888888',
       marginLeft: 8,
+      fontFamily: 'Montserrat-Medium',
     },
     inputWrapper2Selected: {
       borderColor: theme.colors.text,
@@ -107,9 +105,11 @@ export const getStyles = (theme: any) =>
     },
     input2Selected: {
       color: theme.colors.text,
+      fontFamily: 'Montserrat-Medium',
     },
     input2Unselected: {
       color: '#898989',
+      fontFamily: 'Montserrat-Medium',
     },
     icon: {
       marginRight: 8,
@@ -143,19 +143,19 @@ export const getStyles = (theme: any) =>
       backgroundColor: theme.colors.surface,
       paddingVertical: 12,
       paddingHorizontal: 20,
-      // borderRadius: 6,
       borderColor: theme.colors.border,
       borderWidth: 1,
     },
     timeText: {
       color: theme.colors.labeltext,
       fontSize: 16,
+      fontFamily: 'Montserrat-Medium',
     },
     duration: {
       color: theme.colors.text,
       fontSize: 14,
-      fontWeight: 'bold',
       textAlign: 'center',
+      fontFamily: 'Montserrat-SemiBold',
     },
     modalTitle: {
       color: theme.colors.text,

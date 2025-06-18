@@ -109,9 +109,8 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: 'left',
     lineHeight: 46,
-    fontWeight: 'medium',
     marginBottom: 40,
-    fontFamily: 'ClashGrotesk-Regular',
+    fontFamily: 'ClashGrotesk-Medium',
   },
   button: {
     backgroundColor: '#B2C000',
@@ -122,8 +121,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'black',
-    fontWeight: '600',
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-SemiBold',
     fontSize: 16,
     textAlign: 'center',
   },

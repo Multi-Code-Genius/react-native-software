@@ -147,13 +147,14 @@ const styles = StyleSheet.create({
   },
   count: {
     fontSize: 32,
-    fontWeight: 'bold',
     color: 'white',
+    fontFamily: 'Montserrat-SemiBold',
   },
   label: {
     fontSize: 14,
     color: 'white',
     textAlign: 'center',
+    fontFamily: 'Montserrat-Medium',
   },
   legendContainer: {
     flexDirection: 'row',
@@ -168,9 +169,8 @@ const styles = StyleSheet.create({
 
   legendCount: {
     fontSize: 24,
-    fontWeight: 'semibold',
     marginBottom: 4,
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-SemiBold',
   },
 
   legendLabelContainer: {
@@ -188,7 +188,6 @@ const styles = StyleSheet.create({
   legendLabel: {
     color: '#888',
     fontSize: 12,
-    fontWeight: 'medium',
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-Medium',
   },
 });

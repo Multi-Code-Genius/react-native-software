@@ -48,8 +48,9 @@ const getstyles = (theme: any) =>
       fontWeight: 'bold',
     },
     label: {
-      fontSize: 16,
+      fontSize: 14,
       color: theme.colors.labeltext,
+      fontFamily: 'Montserrat-Medium',
     },
   });
 

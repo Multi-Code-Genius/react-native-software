@@ -35,7 +35,7 @@ const BookingVenuesScreen = () => {
         mode="elevated"
         onPress={() => navigation.navigate('BookingSlot', {venueId: item?.id})}>
         <Card.Content style={{flexDirection: 'column', gap: 16, flex: 1}}>
-          <Text style={styles.heading}>{`Venue ${index + 1}`}</Text>
+          <Text style={styles.heading}>{`VENUE ${index + 1}`}</Text>
           <Image
             source={{
               uri: `${item?.images?.[0]}`,
@@ -120,8 +120,7 @@ const getStyles = (theme: any) =>
     },
     name1: {
       fontSize: 16,
-      fontWeight: '700',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.text,
     },
     detail: {
@@ -130,8 +129,7 @@ const getStyles = (theme: any) =>
     },
     name: {
       fontSize: 16,
-      fontWeight: '600',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
       color: '#888888',
       justifyContent: 'center',
       alignItems: 'center',
@@ -143,8 +141,7 @@ const getStyles = (theme: any) =>
     heading: {
       color: theme.colors.text1,
       fontSize: 12,
-      fontWeight: '700',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-SemiBold',
     },
     category: {
       flexDirection: 'row',
@@ -157,8 +154,7 @@ const getStyles = (theme: any) =>
       borderWidth: 1,
       borderRadius: 20,
       color: theme.colors.labelBorder1,
-      fontFamily: 'Montserrat-Regular',
-      fontWeight: 'medium',
+      fontFamily: 'Montserrat-Medium',
       fontSize: 10,
     },
     type1: {
@@ -168,8 +164,7 @@ const getStyles = (theme: any) =>
       borderWidth: 1,
       borderRadius: 20,
       color: theme.colors.labelBorder2,
-      fontFamily: 'Montserrat-Regular',
-      fontWeight: 'medium',
+      fontFamily: 'Montserrat-Medium',
       fontSize: 10,
     },
   });

@@ -316,62 +316,69 @@ const BookingScreen = () => {
                 pressBehavior="close"
               />
             )}>
-            <BottomSheetView style={{padding: 16}}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.text}>Your Listed Venue</Text>
-                <TouchableOpacity
-                  style={styles.addVenueButton}
-                  onPress={() => navigation.navigate('Addvenue')}>
-                  <Text style={styles.text1}>Add Venue</Text>
-                  <Icon
-                    name="add-circle"
-                    size={20}
-                    color={isDark ? '#FFF' : '#000'}
-                  />
-                </TouchableOpacity>
-              </View>
-
-              {data?.venues?.map((venue: any, index: number) => (
-                <TouchableOpacity
-                  key={venue.id}
-                  style={[
-                    styles.venueCard,
-                    selectedVenueId === venue.id && styles.venueCardSelected,
-                  ]}
-                  onPress={() => {
-                    setSelectedVenueId(venue.id);
-                    setSelectedVenueName(venue.name);
-                    setVenueIndex(index);
+            <BottomSheetView style={{padding: 16, flex: 1}}>
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
                   }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}>
-                    <View>
-                      <Text style={styles.venueTitle}>{venue.name}</Text>
-                      <Text style={styles.venueLocation}>
-                        {venue.location?.area}
-                      </Text>
-                    </View>
+                  <Text style={styles.text}>Your Listed Venue</Text>
+                  <TouchableOpacity
+                    style={styles.addVenueButton}
+                    onPress={() => navigation.navigate('Addvenue')}>
+                    <Text style={styles.text1}>Add Venue</Text>
                     <Icon
-                      name={
-                        selectedVenueId === venue.id
-                          ? 'checkmark-circle'
-                          : 'ellipse-outline'
-                      }
-                      size={22}
-                      color={selectedVenueId === venue.id ? '#fff' : '#888'}
+                      name="add-circle"
+                      size={20}
+                      color={isDark ? '#FFF' : '#000'}
                     />
-                  </View>
-                </TouchableOpacity>
-              ))}
+                  </TouchableOpacity>
+                </View>
+
+                {data?.venues?.map((venue: any, index: number) => (
+                  <TouchableOpacity
+                    key={venue.id}
+                    style={[
+                      styles.venueCard,
+                      selectedVenueId === venue.id && styles.venueCardSelected,
+                    ]}
+                    onPress={() => {
+                      setSelectedVenueId(venue.id);
+                      setSelectedVenueName(venue.name);
+                      setVenueIndex(index);
+                      sheetRef.current?.close();
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View>
+                        <Text style={styles.venueTitle}>{venue.name}</Text>
+                        <Text style={styles.venueLocation}>
+                          {venue.location?.area}
+                        </Text>
+                      </View>
+                      <Icon
+                        name={
+                          selectedVenueId === venue.id
+                            ? 'checkmark-circle'
+                            : 'ellipse-outline'
+                        }
+                        size={22}
+                        color={
+                          selectedVenueId === venue.id
+                            ? theme.colors.text
+                            : '#888'
+                        }
+                      />
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </BottomSheetView>
           </BottomSheetModal>
 

@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {ImageBackground} from 'react-native';
+import {Image, ImageBackground} from 'react-native';
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 
 const WelcomeScreen = () => {
@@ -15,10 +15,11 @@ const WelcomeScreen = () => {
           <Text style={styles.title1}>Welcome To </Text>
           <Text style={styles.title2}>Turf Keeper</Text>
         </View>
+        <Image source={require('../assets/Welcome.png')} style={styles.image} />
         <View style={styles.textContainer}>
           <View style={styles.titlecontainer}>
             <Text style={styles.title}>
-              You're all set. Let’s take a few steps to manage your turf
+              You're all set. Let’s take a few steps to manage your Sports Venue
               business
             </Text>
           </View>
@@ -51,17 +52,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   imageWrapper: {
-    flex: 1,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    paddingVertical: 80,
+    paddingTop: 80,
     paddingLeft: 20,
   },
   image: {
-    width: 220,
-    height: 220,
-    resizeMode: 'contain',
+    width: 186,
+    height: 300,
   },
   textContainer: {
     alignItems: 'flex-start',
@@ -90,11 +89,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   title: {
-    color: 'white',
+    color: '#888888',
     fontSize: 14,
     textAlign: 'center',
     lineHeight: 20,
-    fontWeight: '400',
     marginBottom: 20,
     width: '80%',
     marginHorizontal: 'auto',
@@ -103,7 +101,6 @@ const styles = StyleSheet.create({
   title1: {
     color: 'white',
     fontSize: 24,
-    fontWeight: '400',
     fontFamily: 'Montserrat-Regular',
   },
   backButton: {
@@ -121,8 +118,7 @@ const styles = StyleSheet.create({
   title2: {
     color: '#B2C000',
     fontSize: 40,
-    fontWeight: '600',
-    fontFamily: 'Montserrat-Regular',
+    fontFamily: 'Montserrat-SemiBold',
   },
   button: {
     backgroundColor: '#B2C000',
@@ -139,14 +135,14 @@ const styles = StyleSheet.create({
 
   buttonText: {
     color: 'black',
-    fontWeight: '600',
     fontSize: 16,
+    fontFamily: 'Montserrat-SemiBold',
     textAlign: 'center',
   },
   buttonText2: {
     color: 'white',
-    fontWeight: '600',
     fontSize: 16,
+    fontFamily: 'Montserrat-SemiBold',
     textAlign: 'center',
   },
   buttoncontainer: {

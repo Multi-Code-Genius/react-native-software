@@ -178,7 +178,6 @@ const getStyles = (theme: any) =>
     image: {
       flex: 1,
       width: '100%',
-      // height: '30%',
     },
     stepIndicatorWrapper: {
       position: 'relative',
@@ -232,12 +231,12 @@ const getStyles = (theme: any) =>
     },
     text: {
       textAlign: 'center',
-      fontWeight: 'bold',
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.surface,
     },
     text1: {
       textAlign: 'center',
-      fontWeight: 'bold',
+      fontFamily: 'Montserrat-SemiBold',
       color: '#fff',
     },
 
@@ -251,7 +250,7 @@ const getStyles = (theme: any) =>
     },
     headerText: {
       fontSize: 20,
-      fontWeight: '400',
+      fontFamily: 'Montserrat-SemiBold',
       textAlign: 'center',
       color: '#fff',
     },

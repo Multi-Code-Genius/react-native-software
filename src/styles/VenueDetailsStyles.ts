@@ -15,8 +15,8 @@ export const getStyles = (theme: any) =>
     },
     head: {
       fontSize: 16,
-      fontWeight: '500',
       paddingVertical: 15,
+      fontFamily: 'Montserrat-SemiBold',
       borderBottomColor: theme.colors.border,
       borderBottomWidth: 1,
       paddingLeft: 15,
@@ -24,14 +24,14 @@ export const getStyles = (theme: any) =>
     },
     label: {
       fontSize: 14,
-      fontWeight: '500',
+      fontFamily: 'Montserrat-SemiBold',
       marginBottom: 8,
       color: theme.colors.labeltext,
     },
     label1: {
       fontSize: 12,
-      fontWeight: '500',
       color: '#888',
+      fontFamily: 'Montserrat-SemiBold',
       paddingBottom: 5,
     },
     inputWrapper: {
@@ -57,7 +57,15 @@ export const getStyles = (theme: any) =>
     input: {
       flex: 1,
       fontSize: 14,
-      color: 'white',
+      color: theme.colors.text,
+      fontFamily: 'Montserrat-Medium',
+      paddingVertical: 20,
+    },
+    input1: {
+      flex: 1,
+      fontSize: 14,
+      color: theme.colors.surface,
+      fontFamily: 'Montserrat-Medium',
       paddingVertical: 20,
     },
     inputWrapper1: {
@@ -134,6 +142,7 @@ export const getStyles = (theme: any) =>
       fontSize: 16,
       color: theme.colors.timetext,
       marginLeft: 8,
+      fontFamily: 'Montserrat-Medium',
     },
 
     inputWrapper3: {
@@ -146,8 +155,9 @@ export const getStyles = (theme: any) =>
 
     input3: {
       fontSize: 16,
-      color: '#fff',
+      color: theme.colors.text,
       textAlign: 'center',
+      fontFamily: 'Montserrat-Medium',
     },
     backButton: {
       width: 36,
@@ -181,7 +191,7 @@ export const getStyles = (theme: any) =>
     head1: {
       fontSize: 16,
       color: theme.colors.text,
-      fontWeight: '500',
       marginBottom: 10,
+      fontFamily: 'Montserrat-Medium',
     },
   });

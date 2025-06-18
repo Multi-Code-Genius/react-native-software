@@ -86,7 +86,7 @@ const VenueGround = () => {
                         color="#717171"
                       />
                       <TextInput
-                        style={styles.input}
+                        style={styles.input1}
                         placeholder="Enter Width"
                         placeholderTextColor="#717171"
                         keyboardType="numeric"
@@ -106,7 +106,7 @@ const VenueGround = () => {
                         color="#717171"
                       />
                       <TextInput
-                        style={styles.input}
+                        style={styles.input1}
                         placeholder="Enter Height"
                         placeholderTextColor="#717171"
                         keyboardType="numeric"
@@ -129,7 +129,7 @@ const VenueGround = () => {
                         color="#717171"
                       />
                       <TextInput
-                        style={styles.input}
+                        style={styles.input1}
                         placeholder="Enter Capacity"
                         placeholderTextColor="#717171"
                         keyboardType="numeric"
@@ -145,7 +145,7 @@ const VenueGround = () => {
                     <View style={styles.inputBox}>
                       <Icon name="currency-rupee" size={20} color="#717171" />
                       <TextInput
-                        style={styles.input}
+                        style={styles.input1}
                         placeholder="Enter Price"
                         placeholderTextColor="#717171"
                         keyboardType="numeric"

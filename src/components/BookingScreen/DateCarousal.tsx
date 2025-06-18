@@ -104,7 +104,7 @@ const getStyles = (theme: any) =>
     monthText: {
       fontSize: 16,
       color: theme.colors.text,
-      fontWeight: '600',
+      fontFamily: 'Montserrat-Medium',
     },
     arrow: {
       fontSize: 18,
@@ -122,20 +122,20 @@ const getStyles = (theme: any) =>
     dateText: {
       fontSize: 20,
       color: '#888888',
-      fontWeight: 'bold',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
     },
     dayText: {
       fontSize: 12,
       color: '#888888',
-      fontWeight: 'medium',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
     },
     selectedDateText: {
       color: theme.colors.surface,
+      fontFamily: 'Montserrat-Medium',
     },
     selectedDayText: {
       color: theme.colors.surface,
+      fontFamily: 'Montserrat-Medium',
     },
     separator: {
       width: 1.5,

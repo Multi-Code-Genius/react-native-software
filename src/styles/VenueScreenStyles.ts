@@ -190,7 +190,6 @@ export const getStyles = (theme: any) =>
     },
     headerText: {
       fontSize: 16,
-      fontWeight: '600',
       fontFamily: 'Montserrat-Regular',
       color: theme.colors.text,
     },

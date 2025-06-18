@@ -173,8 +173,8 @@ const getStyles = (theme: any) =>
     },
     label: {
       fontSize: 12,
-      fontWeight: '600',
       marginBottom: 8,
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.labeltext,
     },
     form: {
@@ -195,6 +195,7 @@ const getStyles = (theme: any) =>
       fontSize: 14,
       color: theme.colors.text,
       paddingVertical: 20,
+      fontFamily: 'Montserrat-Medium',
     },
     checkboxContainer: {
       flexDirection: 'row',
@@ -215,6 +216,7 @@ const getStyles = (theme: any) =>
       fontSize: 14,
       fontWeight: '600',
       color: theme.colors.text,
+      fontFamily: 'Montserrat-SemiBold',
     },
     text1: {
       fontSize: 12,

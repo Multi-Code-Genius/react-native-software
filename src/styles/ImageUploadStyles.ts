@@ -17,11 +17,11 @@ export const getStyles = (theme: any) =>
     },
     head: {
       fontSize: 16,
-      fontWeight: '500',
       paddingVertical: 15,
       borderBottomColor: '#252525',
       borderBottomWidth: 1,
       paddingLeft: 15,
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.text,
     },
     imageWrapper: {
@@ -44,9 +44,9 @@ export const getStyles = (theme: any) =>
     },
     label: {
       fontSize: 14,
-      fontWeight: '500',
       marginTop: 8,
       color: theme.colors.labeltext,
+      fontFamily: 'Montserrat-SemiBold',
       padding: 10,
     },
     backButton: {

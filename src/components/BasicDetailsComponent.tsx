@@ -16,7 +16,7 @@ const BasicDetailsComponent = () => {
       showsVerticalScrollIndicator={false}>
       <Text style={styles.head}>Location Details</Text>
       <View style={styles.card}>
-        <Text style={styles.label}>City</Text>
+        <Text style={styles.label}>City*</Text>
         <View style={styles.inputWrapper}>
           <Icon name="city" size={25} color="#717171" style={styles.icon} />
           <TextInput
@@ -29,7 +29,7 @@ const BasicDetailsComponent = () => {
         </View>
       </View>
       <View style={styles.card}>
-        <Text style={styles.label}>Area</Text>
+        <Text style={styles.label}>Area*</Text>
         <View style={styles.inputWrapper}>
           <Icon
             name="map-marker-radius"
@@ -88,7 +88,7 @@ const getStyles = (theme: any) =>
     },
     head: {
       fontSize: 16,
-      fontWeight: '500',
+      fontFamily: 'Montserrat-SemiBold',
       paddingVertical: 15,
       borderBottomColor: theme.colors.border,
       borderBottomWidth: 1,
@@ -101,8 +101,8 @@ const getStyles = (theme: any) =>
     },
     label: {
       fontSize: 16,
-      fontWeight: '600',
       marginBottom: 8,
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.labeltext,
     },
     inputWrapper: {
@@ -123,6 +123,7 @@ const getStyles = (theme: any) =>
       fontSize: 14,
       color: theme.colors.text,
       paddingVertical: 20,
+      fontFamily: 'Montserrat-Medium',
     },
     textareaInput: {
       flex: 1,

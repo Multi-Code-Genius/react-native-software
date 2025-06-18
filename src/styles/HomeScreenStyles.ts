@@ -51,15 +51,14 @@ export const getStyles = (theme: any) =>
     },
     analyticsValue: {
       fontSize: 32,
-      fontWeight: 'semibold',
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.text,
     },
     analyticsLabel: {
       fontSize: 14,
-      fontWeight: 'medium',
       color: theme.colors.textSecondary,
       textAlign: 'left',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
     },
     container: {
       backgroundColor: theme.colors.background,
@@ -72,8 +71,7 @@ export const getStyles = (theme: any) =>
     },
     heading: {
       fontSize: 12,
-      fontWeight: 'bold',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-SemiBold',
       color: theme.colors.textSecondary,
       letterSpacing: 5,
     },
@@ -212,8 +210,7 @@ export const getStyles = (theme: any) =>
     dateText: {
       color: theme.colors.text,
       fontSize: 14,
-      fontWeight: '500',
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
     },
     ChartCard: {
       backgroundColor: theme.colors.card,
@@ -222,11 +219,10 @@ export const getStyles = (theme: any) =>
     chartcontainer: {},
     bottomText: {
       fontSize: 50,
-      fontWeight: 'medium',
       lineHeight: 55,
       color: theme.colors.text,
       letterSpacing: 3,
-      fontFamily: 'ClashGrotesk-Regular',
+      fontFamily: 'ClashGrotesk-Medium',
       opacity: 0.1,
     },
   });
