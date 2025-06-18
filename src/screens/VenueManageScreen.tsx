@@ -25,7 +25,6 @@ const VenueManageScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const {colors} = useTheme();
   const {data, isLoading} = useGetVenue();
-  console.log('data,', data);
 
   const {mutate: deleteVenueMutation, isPending} = useDeleteVenue(() => {
     setShowCancelConfirm(false);

@@ -17,7 +17,7 @@ import {useGetVenueById} from '../api/vanue';
 import {RootStackParamList} from '../navigation/routes';
 import {styles} from '../styles/VenueByIdScreenStyles';
 
-export const VenueByIdDetailsScreen = () => {
+const VenueByIdDetailsScreen = () => {
   const route = useRoute();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const venueById = route.params as {id?: string};
@@ -159,3 +159,5 @@ export const VenueByIdDetailsScreen = () => {
     </SafeAreaView>
   );
 };
+
+export default VenueByIdDetailsScreen;

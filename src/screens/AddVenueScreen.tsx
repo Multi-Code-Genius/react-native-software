@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
-  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,

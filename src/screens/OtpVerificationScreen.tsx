@@ -157,14 +157,15 @@ const styles = StyleSheet.create({
   },
   head: {
     color: 'white',
+    fontFamily: 'ClashGrotesk-Medium',
     fontSize: 32,
-    fontWeight: '500',
     lineHeight: 46,
   },
   subtext: {
     fontSize: 12,
-    fontWeight: '300',
-    color: '#FFFFFF',
+    // fontWeight: '300',
+    color: '#888888',
+    fontFamily: 'Montserrat-Regular',
   },
   input: {
     flex: 1,
@@ -174,7 +175,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 12,
     marginBottom: 8,
-    fontWeight: '600',
+    // fontWeight: '600',
+    fontFamily: 'Montserrat-Medium',
     color: '#000',
   },
   inputWrapper: {

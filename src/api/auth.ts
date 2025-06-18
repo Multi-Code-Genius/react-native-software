@@ -70,8 +70,8 @@ export const useVerifyOtp = (
     },
     onError: (err: any) => {
       showToast({
-        title: err.message,
-        message: 'Failed to verified OTP',
+        title: 'Wrong OTP!',
+        message: 'Incorrect OTP - Please retry',
         type: 'error',
       });
     },

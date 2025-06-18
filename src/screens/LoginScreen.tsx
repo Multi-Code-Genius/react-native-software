@@ -139,7 +139,7 @@ const getStyles = (theme: any) =>
     },
     head: {
       color: 'white',
-      fontFamily: 'ClashGrotesk-Regular',
+      fontFamily: 'ClashGrotesk-Medium',
       fontSize: 32,
       fontWeight: 'medium',
       lineHeight: 46,
@@ -154,8 +154,8 @@ const getStyles = (theme: any) =>
       fontSize: 12,
       marginBottom: 4,
       color: theme.colors.text,
-      fontWeight: '700',
-      fontFamily: 'Montserrat-Regular',
+      fontWeight: '600',
+      fontFamily: 'Montserrat-Medium',
     },
     inputWrapper: {
       flexDirection: 'row',
@@ -195,9 +195,8 @@ const getStyles = (theme: any) =>
     },
     buttonText: {
       color: theme.colors.background,
-      fontFamily: 'Montserrat-Regular',
+      fontFamily: 'Montserrat-Medium',
       fontSize: 16,
-      fontWeight: '700',
       textAlign: 'center',
     },
   });
