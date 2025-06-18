@@ -8,13 +8,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {styles} from '../styles/VenueDetailsStyles';
+import {getStyles} from '../styles/VenueDetailsStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Asset, launchImageLibrary} from 'react-native-image-picker';
 import {useVenueStore} from '../store/useVenueStore';
+import {useTheme} from '../context/ThemeContext';
 
 const MAX_IMAGES = 10;
 const VenueImage = () => {
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const [images, setImages] = useState<Asset[]>([]);
   const updateField = useVenueStore(state => state.updateField);
   const requestPermission = async () => {

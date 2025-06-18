@@ -11,12 +11,15 @@ import {
 } from 'react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import {useVenueStore} from '../store/useVenueStore';
-import {styles} from '../styles/ImageUploadStyles';
+import {getStyles} from '../styles/ImageUploadStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {useTheme} from '../context/ThemeContext';
 
 const MAX_IMAGES = 10;
 
 const ImageUpload = () => {
+  const {theme} = useTheme();
+  const styles = getStyles(theme);
   const [images, setImages] = useState<any[]>([]);
   const updateField = useVenueStore(state => state.updateField);
 
@@ -79,7 +82,7 @@ const ImageUpload = () => {
             <View
               style={{
                 width: '100%',
-                backgroundColor: '#323232',
+                backgroundColor: theme.colors.card,
                 padding: 80,
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -88,7 +91,7 @@ const ImageUpload = () => {
                 borderColor: '#202020',
               }}>
               <Pressable onPress={pickImage} style={styles.backButton}>
-                <Icon name="plus" size={24} color="#000" />
+                <Icon name="plus" size={24} color={theme.colors.surface} />
               </Pressable>
             </View>
           </View>

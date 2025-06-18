@@ -8,6 +8,7 @@ export const getStyles = (theme: any) =>
     content: {
       padding: 10,
     },
+    content1: {},
     card: {
       padding: 16,
       marginBottom: 16,
@@ -26,6 +27,12 @@ export const getStyles = (theme: any) =>
       fontWeight: '500',
       marginBottom: 8,
       color: theme.colors.labeltext,
+    },
+    label1: {
+      fontSize: 12,
+      fontWeight: '500',
+      color: '#888',
+      paddingBottom: 5,
     },
     inputWrapper: {
       flexDirection: 'row',
@@ -52,6 +59,9 @@ export const getStyles = (theme: any) =>
       fontSize: 14,
       color: 'white',
       paddingVertical: 20,
+    },
+    inputWrapper1: {
+      flex: 1,
     },
     turfContainer: {
       flexDirection: 'row',
