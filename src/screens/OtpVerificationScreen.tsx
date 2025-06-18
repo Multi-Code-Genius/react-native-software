@@ -12,6 +12,7 @@ import {useVerifyOtp} from '../api/auth';
 import {useAuthStore} from '../store/authStore';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useToast} from '../context/ToastContext';
 
 const OtpVerificationScreen = () => {
   const paperTheme = useTheme();
@@ -21,16 +22,24 @@ const OtpVerificationScreen = () => {
   const [otp, setOtp] = useState('');
   const {mutate: verifyOtp, isPending} = useVerifyOtp();
   const {saveToken} = useAuthStore();
+  const {showToast} = useToast();
 
   const handleVerifyOtp = () => {
     verifyOtp(
       {phone, otp},
       {
-        onSuccess: async ({token}: {token: string}) => {
+        onSuccess: async ({token}) => {
           if (token) {
             await saveToken(token);
           }
-        }
+        },
+        onError: () => {
+          showToast({
+            message: 'Wrong OTP! Incorrect OTP – Please Retry',
+            type: 'error',
+            showIcon: true,
+          });
+        },
       },
     );
   };

@@ -19,6 +19,7 @@ const LoginScreen = () => {
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState('');
   const [name, setName] = useState('');
   const {mutate: requestOtp, isPending} = useRequestOtp();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -28,22 +29,15 @@ const LoginScreen = () => {
   const isFormValid = phone.length === 10;
 
   const sendOtp = () => {
-    if (!isFormValid) {
-      showToast({
-        message: 'Please enter a valid 10-digit number',
-        showIcon: true,
-        type: 'error',
-      });
-
+    if (!/^\d{10}$/.test(phone)) {
+      setPhoneError('Please enter a valid 10‑digit mobile number');
       return;
     }
-
+    setPhoneError('');
     requestOtp(
       {phone, name},
       {
-        onSuccess: () => {
-          navigation.navigate('OtpVerify', {phone});
-        },
+        onSuccess: () => navigation.navigate('OtpVerify', {phone}),
       },
     );
   };
@@ -61,7 +55,11 @@ const LoginScreen = () => {
       <View style={styles.contentContainer}>
         <View style={styles.formContainer}>
           <Text style={styles.label}>Mobile Number</Text>
-          <View style={styles.inputWrapper}>
+          <View
+            style={[
+              styles.inputWrapper,
+              phoneError && {borderColor: theme.colors.error},
+            ]}>
             <Icon
               name="smartphone"
               size={20}
@@ -77,14 +75,21 @@ const LoginScreen = () => {
               value={phone}
               onChangeText={text => {
                 const numericText = text.replace(/[^0-9]/g, '');
-                if (numericText.length <= 10) {
-                  setPhone(numericText);
+                setPhone(numericText);
+                if (phoneError) setPhoneError('');
+              }}
+              onBlur={() => {
+                if (!/^\d{10}$/.test(phone)) {
+                  setPhoneError('Please enter a valid 10‑digit mobile number');
                 }
               }}
             />
           </View>
-
-          <Text style={styles.note}>Use Email Address Instead</Text>
+          {!!phoneError && (
+            <Text style={[styles.errorText, {color: theme.colors.error}]}>
+              {phoneError}
+            </Text>
+          )}
         </View>
 
         <View style={styles.buttonContainer}>
@@ -126,6 +131,10 @@ const getStyles = (theme: any) =>
     },
     formContainer: {
       flex: 1,
+    },
+    errorText: {
+      fontSize: 12,
+      marginTop: 4,
     },
     head: {
       color: 'white',
