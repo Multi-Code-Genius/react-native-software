@@ -162,7 +162,7 @@ const getStyles = (theme: any) =>
       flex: 1,
       paddingVertical: 8,
       backgroundColor: theme.colors.surfcae,
-      color: '#000',
+      color: theme.colors.text,
       fontFamily: 'Montserrat-Regular',
     },
 

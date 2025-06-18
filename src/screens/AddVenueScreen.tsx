@@ -66,7 +66,7 @@ const AddVenueScreen = () => {
     } else {
       console.log('form', form);
 
-      const images = form.images || [];
+      const images = form?.images || [];
       try {
         const result = await createVenueMutation.mutateAsync(form);
         const venueId = result.venue?.id;
@@ -81,7 +81,7 @@ const AddVenueScreen = () => {
 
         console.log('Venue Created:', result);
       } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error:', error?.message);
       }
     }
   };
@@ -218,14 +218,14 @@ const getStyles = (theme: any) =>
       width: '100%',
     },
     input: {
-      backgroundColor: '#B2C000',
+      backgroundColor: theme.colors.text1,
       paddingHorizontal: 24,
       paddingVertical: 18,
       marginVertical: 16,
       flex: 1,
     },
     disabledButton: {
-      backgroundColor: '#3E4102',
+      backgroundColor: theme.colors.disable,
       paddingHorizontal: 24,
       paddingVertical: 18,
       marginVertical: 16,
@@ -234,7 +234,7 @@ const getStyles = (theme: any) =>
     text: {
       textAlign: 'center',
       fontWeight: 'bold',
-      color: '#000',
+      color: theme.colors.surface,
     },
     text1: {
       textAlign: 'center',

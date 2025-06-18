@@ -28,6 +28,7 @@ export type ColorPalette = {
   violettext: string;
   header: string;
   timetext: string;
+  disable: string;
 };
 
 export const LightColors: ColorPalette = {
@@ -60,6 +61,7 @@ export const LightColors: ColorPalette = {
   violettext: '#CBB2FE',
   header: '#000',
   timetext: '#000',
+  disable: '#888888',
 };
 
 export const DarkColors: ColorPalette = {
@@ -92,4 +94,5 @@ export const DarkColors: ColorPalette = {
   violettext: '#B8B8B8',
   header: '	#00000000',
   timetext: '#888',
+  disable: '#3E4102',
 };
