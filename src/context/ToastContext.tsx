@@ -9,6 +9,7 @@ interface ToastState {
   actionLabel?: string;
   onActionPress?: () => void;
   showIcon?: boolean;
+  title: string | undefined;
 }
 
 interface ToastContextType {
@@ -26,6 +27,7 @@ export const ToastProvider: React.FC<{children: React.ReactNode}> = ({
     visible: false,
     message: '',
     type: 'success',
+    title: '',
     showIcon: false,
   });
 
@@ -37,6 +39,7 @@ export const ToastProvider: React.FC<{children: React.ReactNode}> = ({
       actionLabel: toastData.actionLabel,
       showIcon: toastData.showIcon,
       onActionPress: toastData.onActionPress,
+      title: toastData.title,
     });
 
     setTimeout(() => {

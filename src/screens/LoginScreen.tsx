@@ -12,7 +12,6 @@ import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
-import {useToast} from '../context/ToastContext';
 import {useTheme} from '../context/ThemeContext';
 
 const LoginScreen = () => {
@@ -20,13 +19,9 @@ const LoginScreen = () => {
   const styles = getStyles(theme);
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('');
-  const [name, setName] = useState('');
+  const [name, _] = useState('');
   const {mutate: requestOtp, isPending} = useRequestOtp();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const {showToast} = useToast();
-
-  const isFormValid = phone.length === 10;
 
   const sendOtp = () => {
     if (!/^\d{10}$/.test(phone)) {
@@ -37,7 +32,11 @@ const LoginScreen = () => {
     requestOtp(
       {phone, name},
       {
-        onSuccess: () => navigation.navigate('OtpVerify', {phone}),
+        onSuccess: () => {
+          setTimeout(() => {
+            navigation.navigate('OtpVerify', {phone});
+          }, 1500);
+        },
       },
     );
   };
@@ -76,7 +75,9 @@ const LoginScreen = () => {
               onChangeText={text => {
                 const numericText = text.replace(/[^0-9]/g, '');
                 setPhone(numericText);
-                if (phoneError) setPhoneError('');
+                if (phoneError) {
+                  setPhoneError('');
+                }
               }}
               onBlur={() => {
                 if (!/^\d{10}$/.test(phone)) {

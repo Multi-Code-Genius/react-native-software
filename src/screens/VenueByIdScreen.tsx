@@ -1,7 +1,7 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   Animated,
   Image,
@@ -18,7 +18,8 @@ import AppHeader from '../components/AppHeader';
 import BookingCard from '../components/VenueScreen/BookingCard';
 import {useTheme} from '../context/ThemeContext';
 import {getStyles} from '../styles/bookingDetailStyles';
-import {getBookingByGround} from '../utils/helper';
+import {A, AvailableSlot, ParamsTypes} from '../utils/helper';
+import {useBookingFilter} from '../api/booking';
 
 dayjs.extend(utc);
 
@@ -45,11 +46,50 @@ const VenueByIdScreen = () => {
   const [cardCounts, setCardCounts] = useState<{[key: number]: number}>({});
   const animatedHeight = useRef(new Animated.Value(CARD_HEIGHT)).current;
 
-  const result = getBookingByGround(data?.venue);
+  const {data: bookingData, refetch: bookingRefetch} = useBookingFilter({
+    venueId: venueId,
+    ground: activePage + 1,
+    date: dayjs().format('YYYY-MM-DD'),
+  });
+
+  const {all} = A(bookingData?.booking);
+
+  const filteredBookings = useMemo(() => {
+    return all;
+  }, [all]);
+
+  const getBookingStatus = (booking: ParamsTypes[number] | AvailableSlot) => {
+    const now = dayjs();
+    const start = dayjs(booking.start_time);
+    const end = dayjs(booking.end_time);
+    const diffInHours = end.diff(start, 'hour');
+    const isAvailable = 'isAvailable' in booking ? booking.isAvailable : false;
+    const isBooked = 'customer' in booking && booking.customer;
+
+    let bgColor = theme.colors.violet;
+    if (isAvailable) {
+      bgColor = theme.colors.green;
+    } else if (isBooked) {
+      bgColor = start.isBefore(now) ? theme.colors.orange : theme.colors.violet;
+    }
+
+    return {
+      startTime: start.utc().local().format('hh:mm A'),
+      endTime: end.utc().local().format('hh:mm A'),
+      duration: diffInHours.toString(),
+      isAvailable,
+      isBooked,
+      bgColor,
+      name: isBooked ? booking.customer?.name ?? '' : '',
+      phone: isBooked ? booking.customer?.mobile ?? '' : '',
+      price:
+        'total_amount' in booking ? booking.total_amount?.toString() ?? '' : '',
+    };
+  };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await Promise.all([refetch()]);
+    await Promise.all([refetch(), bookingRefetch()]);
     setRefreshing(false);
   };
 
@@ -68,10 +108,8 @@ const VenueByIdScreen = () => {
   }, []);
 
   useEffect(() => {
-    result.forEach((val, index) => {
-      registerCardCount(index, val.count);
-    });
-  }, [result.length, registerCardCount, result, activePage]);
+    registerCardCount(activePage, filteredBookings?.length);
+  }, [registerCardCount, activePage, filteredBookings?.length]);
 
   return (
     <View style={styles.container}>
@@ -155,42 +193,24 @@ const VenueByIdScreen = () => {
                     return (
                       <View key={index} style={{paddingVertical: 20}}>
                         <View style={{gap: 20}}>
-                          {data?.venue?.bookings?.map(
-                            (booking: any, num: number) => {
-                              const now = dayjs();
-                              const start = dayjs(booking?.start_time);
-                              const end = dayjs(booking?.end_time);
-                              const diffInHours = end.diff(start, 'hour');
-                              if (booking?.booked_grounds !== activePage + 1) {
-                                return;
-                              }
-                              return (
-                                <BookingCard
-                                  key={num}
-                                  startTime={dayjs
-                                    .utc(booking?.start_time)
-                                    .local()
-                                    .format('hh:mm A')}
-                                  endTime={dayjs
-                                    .utc(booking?.end_time)
-                                    .local()
-                                    .format('hh:mm A')}
-                                  bgColor={
-                                    dayjs(booking?.start_time)?.isBefore(now)
-                                      ? '#784847'
-                                      : '#514A86'
-                                  }
-                                  name={booking?.customer?.name ?? 'jay'}
-                                  phone={
-                                    booking?.customer?.mobile ?? '9998887770'
-                                  }
-                                  duration={diffInHours.toString()}
-                                  price={booking?.total_amount}
-                                  sport={data?.venue?.game_info?.type}
-                                />
-                              );
-                            },
-                          )}
+                          {filteredBookings?.map((booking, index) => {
+                            const details = getBookingStatus(booking);
+                            console.log('details', details);
+                            return (
+                              <BookingCard
+                                key={index}
+                                isAvailable={details.isAvailable}
+                                startTime={details.startTime}
+                                endTime={details.endTime}
+                                duration={details.duration}
+                                price={details.price}
+                                name={details.name}
+                                phone={details.phone}
+                                sport={data?.venue?.game_info?.type}
+                                bgColor={details.bgColor}
+                              />
+                            );
+                          })}
                         </View>
                       </View>
                     );

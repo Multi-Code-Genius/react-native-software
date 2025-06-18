@@ -106,7 +106,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   }}
                 />
               </View>
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 style={{
                   backgroundColor: '#B2C000',
                   paddingHorizontal: 8,
@@ -123,7 +123,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({
                   }}>
                   theme changer
                 </Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               <TouchableOpacity
                 style={{
                   backgroundColor: '#B2C000',

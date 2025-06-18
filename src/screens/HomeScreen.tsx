@@ -227,6 +227,7 @@ const HomeScreen = () => {
               minimumDate={new Date(2020, 1)}
               maximumDate={new Date(2025, 12)}
               locale="en"
+              mode="short"
             />
           )}
         </ImageBackground>

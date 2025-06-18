@@ -26,15 +26,17 @@ export const useRequestOtp = (
     mutationFn: (payload: {phone: string; name: string}) => requestOtp(payload),
     onSuccess: data => {
       showToast({
-        message: 'OTP Sent!',
-        showIcon: true,
+        message: 'OTP Sent to Your Number',
+        title: 'OTP Sent!',
         type: 'success',
       });
+
       _onSuccess?.(data);
     },
     onError: (err: any) => {
       showToast({
-        message: err.message || 'Failed to send OTP',
+        title: err.message || 'Failed to send OTP',
+        message: err.message,
         type: 'error',
       });
       _onError?.(err);
@@ -43,15 +45,13 @@ export const useRequestOtp = (
 };
 
 export const verifyOtp = async (data: {phone: string; otp: string}) => {
+  const response = await api('/auth/verify-otp', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data),
+  });
 
-    const response = await api('/auth/verify-otp', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data),
-    });
-  
-    return response
-  
+  return response;
 };
 
 export const useVerifyOtp = (
@@ -63,14 +63,15 @@ export const useVerifyOtp = (
     mutationFn: (data: {phone: string; otp: string}) => verifyOtp(data),
     onSuccess: () => {
       showToast({
+        title: 'OTP verified',
         message: 'OTP verified successfully',
         type: 'success',
-        showIcon: true,
       });
     },
     onError: (err: any) => {
       showToast({
-        message: err.message,
+        title: err.message,
+        message: 'Failed to verified OTP',
         type: 'error',
       });
     },

@@ -83,7 +83,7 @@ export const getStyles = (theme: any) =>
       paddingHorizontal: 16,
       paddingTop: 10,
       borderBottomColor: '#B8B8B8',
-      borderBottomWidth: 1,
+      // borderBottomWidth: 1,
       marginTop: 20,
     },
     tabText: {

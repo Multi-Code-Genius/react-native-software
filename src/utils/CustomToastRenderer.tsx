@@ -6,11 +6,10 @@ export const CustomToastRenderer = () => {
 
   return (
     <CustomToast
+      title={toast.title || ''}
       visible={toast.visible}
       message={toast.message}
       type={toast.type}
-      actionLabel={toast.actionLabel}
-      onActionPress={toast.onActionPress}
     />
   );
 };

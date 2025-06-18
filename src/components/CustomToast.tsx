@@ -1,19 +1,19 @@
 import React, {useEffect} from 'react';
 import {Animated, Dimensions, StyleSheet, Text, View} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons'; // Or any icon lib
 
 const {width} = Dimensions.get('window');
 
 interface CustomToastProps {
   visible: boolean;
+  title: string;
   message: string;
   type?: 'success' | 'error';
-  actionLabel?: string;
-  showIcon?: boolean;
-  onActionPress?: () => void;
 }
 
 const CustomToast: React.FC<CustomToastProps> = ({
   visible,
+  title,
   message,
   type = 'success',
 }) => {
@@ -37,6 +37,8 @@ const CustomToast: React.FC<CustomToastProps> = ({
     }
   }, [visible, fadeAnim]);
 
+  const isSuccess = type === 'success';
+
   return (
     <Animated.View
       style={[
@@ -53,14 +55,39 @@ const CustomToast: React.FC<CustomToastProps> = ({
           ],
         },
       ]}>
-      <View style={styles.toastBox}>
-        <Text
-          style={[styles.text]}
-          numberOfLines={2}
-          adjustsFontSizeToFit
-          minimumFontScale={0.8}>
-          {message}
-        </Text>
+      <View
+        style={[
+          styles.toastBox,
+          isSuccess ? styles.successBox : styles.errorBox,
+        ]}>
+        <View
+          style={[
+            styles.iconBox,
+            isSuccess ? styles.successIconBox : styles.errorIconBox,
+          ]}>
+          <Icon
+            name={isSuccess ? 'check' : 'warning'}
+            size={24}
+            color={'#121212'}
+          />
+        </View>
+
+        <View style={styles.textContainer}>
+          <Text
+            style={[
+              styles.title,
+              isSuccess ? styles.successText : styles.errorText,
+            ]}>
+            {title}
+          </Text>
+          <Text
+            style={[
+              styles.subtitle,
+              isSuccess ? styles.successSubtitle : styles.errorSubtitle,
+            ]}>
+            {message}
+          </Text>
+        </View>
       </View>
     </Animated.View>
   );
@@ -75,28 +102,66 @@ const styles = StyleSheet.create({
     zIndex: 9999,
   },
   toastBox: {
-    backgroundColor: '#1c1c1e',
-    padding: 12,
-    borderRadius: 12,
-    maxWidth: '90%',
     flexDirection: 'row',
+    alignItems: 'center',
+    width: 342,
+    height: 64,
+    borderWidth: 0.5,
+    borderRadius: 0,
+    paddingHorizontal: 12,
+    backgroundColor: '#1A1A1A',
+  },
+  successBox: {
+    borderColor: '#08B88C',
+    backgroundColor: 'rgba(8, 184, 140, 0.1)',
+  },
+  errorBox: {
+    borderColor: '#D43F3F',
+    backgroundColor: 'rgba(212, 63, 63, 0.1)',
+  },
+  iconBox: {
+    width: 40,
+    height: 40,
+    borderRadius: 4,
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 12,
   },
-  left: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  successIconBox: {
+    backgroundColor: '#08B88C',
   },
-  icon: {
-    marginRight: 6,
+  errorIconBox: {
+    backgroundColor: '#D43F3F',
   },
-  text: {
-    color: '#fff',
-    fontSize: 16,
-    textAlign: 'center',
+  textContainer: {
+    flexDirection: 'column',
+    gap: 2,
   },
-  actionText: {
+  title: {
+    fontFamily: 'Montserrat',
+    fontSize: 12,
     fontWeight: '600',
+    textTransform: 'capitalize',
+    lineHeight: 15,
+  },
+  subtitle: {
+    fontFamily: 'Montserrat',
+    fontSize: 10,
+    fontWeight: '500',
+    lineHeight: 12,
+    textTransform: 'capitalize',
+  },
+  successText: {
+    color: '#08B88C',
+  },
+  errorText: {
+    color: '#D43F3F',
+  },
+  successSubtitle: {
+    color: 'rgba(8, 184, 140, 0.8)',
+  },
+  errorSubtitle: {
+    color: 'rgba(212, 63, 63, 0.8)',
   },
 });
 
