@@ -183,9 +183,7 @@ const BookingScreen = () => {
                   </View>
                 ))}
               </View>
-
               <Text style={styles.Head}>BOOKING</Text>
-
               <View style={styles.filterContainer}>
                 <TouchableOpacity style={styles.pill} onPress={openMenu}>
                   <Text style={styles.pillText}>
@@ -232,9 +230,7 @@ const BookingScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
-
               <Divider style={{marginVertical: 5, borderColor: '#fff'}} />
-
               <View style={styles.flatlistContainer}>
                 <FlatList
                   horizontal
@@ -266,14 +262,33 @@ const BookingScreen = () => {
                   }}
                 />
               </View>
-
               <Divider style={{marginVertical: 10, borderColor: '#fff'}} />
-
+              {bookingData?.booking?.length === 0 && (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      lineHeight: 20,
+                      fontFamily: 'Montserrat-Regular',
+                      textTransform: 'capitalize',
+                      color: isDark ? 'white' : 'black',
+                    }}>
+                    {' '}
+                    No Bookings Yet!
+                  </Text>
+                </View>
+              )}
               <View style={{gap: 20, padding: 20}}>
                 {filteredBookings.map((booking, index) => {
                   const details = getBookingStatus(booking);
                   return (
                     <BookingCard
+                      bookingId={details?.id}
                       key={index}
                       isAvailable={details.isAvailable}
                       startTime={details.startTime}
