@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  ScrollView,
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -19,7 +20,6 @@ import CustomCheckbox from '../components/CustomCheckbox';
 import {useTheme} from '../context/ThemeContext';
 import {useBookingFormStore} from '../store/useBookingFormStore';
 import dayjs from 'dayjs';
-import {ScrollView} from 'react-native-gesture-handler';
 
 const BookingFormScreen = () => {
   const route = useRoute();
@@ -176,17 +176,17 @@ const getStyles = (theme: any) =>
   StyleSheet.create({
     scrollContent: {
       flexGrow: 1,
-      paddingBottom: 30,
+      justifyContent: 'space-between',
+    },
+    innerWrapper: {
+      flex: 1,
+      justifyContent: 'space-between',
     },
     container: {
       backgroundColor: theme.colors.background,
-      justifyContent: 'space-between',
     },
     card: {
       padding: 10,
-    },
-    fixedButtonWrapper: {
-      backgroundColor: '#272727',
     },
     label: {
       fontSize: 12,
@@ -219,14 +219,11 @@ const getStyles = (theme: any) =>
       alignItems: 'center',
       marginTop: 8,
     },
-    checkboxLabel: {
-      color: '#B8B8B8',
-      fontSize: 14,
-    },
     bottomCard: {
       backgroundColor: theme.colors.card,
       padding: 20,
       justifyContent: 'space-between',
+      marginTop: 'auto',
     },
     text: {
       fontSize: 14,

@@ -64,7 +64,7 @@ export const getStyles = (theme: any) =>
     input1: {
       flex: 1,
       fontSize: 14,
-      color: theme.colors.surface,
+      color: '#FFF',
       fontFamily: 'Montserrat-Medium',
       paddingVertical: 20,
     },

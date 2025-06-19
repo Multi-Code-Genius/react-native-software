@@ -257,7 +257,7 @@ const getBookingByFilter = async (payload: any) => {
       cache: 'no-store',
     },
   );
-
+  console.log('response>>>', response);
   return response;
 };
 

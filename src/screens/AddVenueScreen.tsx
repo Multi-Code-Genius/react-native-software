@@ -26,7 +26,7 @@ const AddVenueScreen = () => {
   const styles = getStyles(theme);
   const isDark = theme.dark;
   const [currentStep, setCurrentStep] = useState(0);
-  const {formData: form} = useVenueStore();
+  const {formData: form, resetForm} = useVenueStore();
   const {createVenueMutation, uploadImagesMutation} = useVenueMutations();
   const navigation = useNavigation();
   const labels = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
@@ -77,7 +77,7 @@ const AddVenueScreen = () => {
           });
           console.log('Image Upload Success:', result2);
         }
-
+        resetForm();
         console.log('Venue Created:', result);
       } catch (error) {
         console.error('Error:', error?.message);

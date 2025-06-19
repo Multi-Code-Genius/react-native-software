@@ -1,9 +1,9 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getStyles} from '../../styles/bookingDetailStyles';
 import {useTheme} from '../../context/ThemeContext';
-
+import {useCancelBooking} from '../../api/booking';
 interface BookingCardProps {
   startTime: string;
   endTime: string;
@@ -14,10 +14,12 @@ interface BookingCardProps {
   price: string;
   sport: string;
   isAvailable?: boolean;
+  bookingId: string;
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({
   startTime,
+  bookingId,
   endTime,
   bgColor = '#784847',
   name,
@@ -27,9 +29,17 @@ const BookingCard: React.FC<BookingCardProps> = ({
   sport,
   isAvailable,
 }) => {
+  const {mutate: cancelBooking, isPending} = useCancelBooking();
   const {theme} = useTheme();
   const isDark = theme.dark;
   const styles = getStyles(theme);
+  const handleDelete = () => {
+    Alert.alert(
+      'Cancel Booking',
+      'Are you sure you want to cancel this booking?',
+      [{text: 'No'}, {text: 'Yes', onPress: () => cancelBooking(bookingId)}],
+    );
+  };
   return (
     <View style={styles.booking}>
       <View style={[styles.left, {backgroundColor: bgColor}]}>
@@ -77,9 +87,12 @@ const BookingCard: React.FC<BookingCardProps> = ({
           </View>
 
           <View style={{flexDirection: 'row', gap: 10, marginTop: 5}}>
-            <View style={styles.icon}>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={handleDelete}
+              disabled={isPending}>
               <Icon name="trash" size={20} color={'#fff'} />
-            </View>
+            </TouchableOpacity>
             <View style={styles.icon}>
               <Icon name="create-outline" size={20} color={'#fff'} />
             </View>

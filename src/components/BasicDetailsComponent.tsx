@@ -58,12 +58,6 @@ const BasicDetailsComponent = () => {
               paddingTop: 5,
             },
           ]}>
-          <Icon
-            name="office-building-marker"
-            size={20}
-            color="#666"
-            style={styles.newIcon}
-          />
           <TextInput
             style={[styles.textareaInput]}
             placeholder="Enter Your Turf Detailed Address"

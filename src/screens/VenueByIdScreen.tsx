@@ -57,7 +57,7 @@ const VenueByIdScreen = () => {
   const filteredBookings = useMemo(() => {
     return all;
   }, [all]);
-
+  console.log('filterdbookings>>>', bookingData);
   const getBookingStatus = (booking: ParamsTypes[number] | AvailableSlot) => {
     const now = dayjs();
     const start = dayjs(booking.start_time);
@@ -201,6 +201,7 @@ const VenueByIdScreen = () => {
                             return (
                               <BookingCard
                                 key={index}
+                                bookingId={booking?.id}
                                 isAvailable={details.isAvailable}
                                 startTime={details.startTime}
                                 endTime={details.endTime}
