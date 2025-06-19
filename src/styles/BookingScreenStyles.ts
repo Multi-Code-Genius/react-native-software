@@ -27,7 +27,7 @@ export const getStyles = (theme: any) =>
       marginHorizontal: 'auto',
       marginVertical: 15,
       flexDirection: 'row',
-      gap: 55,
+      gap: 45,
       borderColor: theme.colors.border,
       borderWidth: 1,
       paddingVertical: 16,

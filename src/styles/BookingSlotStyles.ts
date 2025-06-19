@@ -30,7 +30,7 @@ export const getStyles = (theme: any) =>
       color: theme.colors.text,
     },
     name: {
-      fontSize: 16,
+      fontSize: 12,
       fontFamily: 'Montserrat-Medium',
       color: '#888888',
       justifyContent: 'center',
@@ -148,7 +148,8 @@ export const getStyles = (theme: any) =>
     },
     timeText: {
       color: theme.colors.labeltext,
-      fontSize: 16,
+      fontSize: 12,
+      textAlign: 'center',
       fontFamily: 'Montserrat-Medium',
     },
     duration: {
@@ -184,10 +185,12 @@ export const getStyles = (theme: any) =>
     },
     slotText: {
       color: '#B8B8B8',
+      fontSize: 12,
     },
     selectedSlotText: {
       color: theme.colors.text,
       fontWeight: 'bold',
+      fontSize: 12,
     },
     bottom: {
       flexDirection: 'row',
@@ -239,5 +242,6 @@ export const getStyles = (theme: any) =>
     },
     bookedSlotText: {
       color: '#fff',
+      fontSize: 12,
     },
   });

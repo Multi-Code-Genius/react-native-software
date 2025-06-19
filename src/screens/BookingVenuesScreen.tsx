@@ -128,7 +128,7 @@ const getStyles = (theme: any) =>
       gap: 5,
     },
     name: {
-      fontSize: 16,
+      fontSize: 12,
       fontFamily: 'Montserrat-Medium',
       color: '#888888',
       justifyContent: 'center',
