@@ -73,13 +73,11 @@ export const useCreateBooking = (
   return useMutation({
     mutationFn: (data: any) => createBooking(data),
     onSuccess: () => {
-      showToast({
-        message: 'Booking Done!',
-        type: 'success',
-      });
-      setTimeout(() => {
-        navigation.navigate('BookingSuccess');
-      }, 1500);
+      // showToast({
+      //   message: 'Booking Done!',
+      //   type: 'success',
+      // });
+      navigation.navigate('BookingSuccess');
       useBookingFormStore.getState().resetForm();
     },
     onError: (err: any) => {
@@ -250,29 +248,27 @@ export const useSuggestedCustomer = (number: string) => {
   });
 };
 
-const getBookingByFilter = async(payload : any) => {
-
-    const response = await api(`/booking/filter/${payload.venueId}/${payload.ground}/${payload.date}`, {
-      method : 'GET',
+const getBookingByFilter = async (payload: any) => {
+  const response = await api(
+    `/booking/filter/${payload.venueId}/${payload.ground}/${payload.date}`,
+    {
+      method: 'GET',
       headers: {'Content-Type': 'application/json'},
       cache: 'no-store',
+    },
+  );
 
-    })
+  return response;
+};
 
-    return response;
-
-
-}
-
-export const useBookingFilter = (payload : any) => {
+export const useBookingFilter = (payload: any) => {
   return useQuery({
-    queryKey : ['booking-filter', payload.venueId, payload.ground, payload.date],
+    queryKey: ['booking-filter', payload.venueId, payload.ground, payload.date],
     queryFn: () => getBookingByFilter(payload),
-    staleTime : 0,
+    staleTime: 0,
     refetchOnMount: true,
     refetchOnWindowFocus: true,
     retry: 0,
     enabled: !!payload.venueId,
-  })
-}
-
+  });
+};

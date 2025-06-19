@@ -17,13 +17,14 @@ import BookingSlotScreen from '../screens/BookingSlotScreen';
 import BookingSuccess from '../screens/BookingSuccess';
 import BookingVenuesScreen from '../screens/BookingVenuesScreen';
 import VenueByIdScreen from '../screens/VenueByIdScreen';
+import PrivateRoute from '../routes/PrivateRoute';
 
 const ProfileInfoScreen = lazy(() => import('../screens/ProfileInfoScreen'));
 const AddVenueScreen = lazy(() => import('../screens/AddVenueScreen'));
 const LoginScreen = lazy(() => import('../screens/LoginScreen'));
 const OnboardingScreen = lazy(() => import('../screens/OnboardingScreen'));
 const WelcomeScreen = lazy(() => import('../screens/WelcomeScreen'));
-const PrivateRoute = lazy(() => import('../routes/PrivateRoute'));
+
 const VenueByIdDetailsScreen = lazy(
   () => import('../screens/VenueByIdDetailsScreen'),
 );

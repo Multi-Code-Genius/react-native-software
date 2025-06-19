@@ -6,20 +6,21 @@ import {
   View,
   ActivityIndicator,
   ImageBackground,
+  TouchableWithoutFeedback,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-// import {useTheme} from 'react-native-paper';
 import {OtpInput} from 'react-native-otp-entry';
 import {useVerifyOtp} from '../api/auth';
 import {useAuthStore} from '../store/authStore';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useToast} from '../context/ToastContext';
 import {useTheme} from '../context/ThemeContext';
 
 const OtpVerificationScreen = () => {
   const {theme} = useTheme();
   const styles = getStyles(theme);
-  // const paperTheme = useTheme();
   const route = useRoute();
   const navigation = useNavigation();
   const {phone} = route.params as {phone: string};
@@ -28,6 +29,7 @@ const OtpVerificationScreen = () => {
   const {saveToken} = useAuthStore();
 
   const handleVerifyOtp = () => {
+    Keyboard.dismiss();
     verifyOtp(
       {phone, otp},
       {
@@ -43,79 +45,91 @@ const OtpVerificationScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/SplashScreen.png')}
-      style={styles.container}
-      resizeMode="cover">
-      <View style={styles.topcontainer}>
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.backButton}>
-          <Icon name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{flex: 1}}>
+        <ImageBackground
+          source={require('../assets/SplashScreen.png')}
+          style={styles.container}
+          resizeMode="cover">
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{flex: 1}}>
+            <View style={styles.topcontainer}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.backButton}>
+                <Icon name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
 
-        <Text style={styles.head}>Verify OTP</Text>
-        <Text style={styles.subtext}>Quick verify and you're in the zone!</Text>
+              <Text style={styles.head}>Verify OTP</Text>
+              <Text style={styles.subtext}>
+                Quick verify and you're in the zone!
+              </Text>
+            </View>
+
+            <View style={styles.contentContainer}>
+              <View style={styles.formContainer}>
+                <Text style={styles.label}>One Time Password</Text>
+                <OtpInput
+                  numberOfDigits={4}
+                  focusColor={theme.colors.primary}
+                  hideStick
+                  autoFocus
+                  onTextChange={text => {
+                    setOtp(text);
+                  }}
+                  theme={{
+                    containerStyle: {
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      marginBottom: 16,
+                    },
+                    pinCodeContainerStyle: {
+                      width: 60,
+                      height: 70,
+                      borderWidth: 1,
+                      borderColor: theme.colors.border,
+                      borderRadius: 8,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: theme.colors.background,
+                    },
+                    focusedPinCodeContainerStyle: {
+                      borderColor: theme.colors.text,
+                    },
+                    pinCodeTextStyle: {
+                      fontSize: 24,
+                      color: theme.colors.text,
+                      fontWeight: '600',
+                    },
+                  }}
+                />
+                <Text style={styles.text}>
+                  we have sent the otp on +1216546
+                </Text>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <Text style={styles.resend}>
+                  <Text style={styles.bold}>Resend</Text> OTP in 00:30 Sec
+                </Text>
+
+                <TouchableOpacity
+                  style={[styles.button]}
+                  onPress={handleVerifyOtp}
+                  disabled={otp.length !== 4 || isPending}>
+                  {isPending ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Verify OTP</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
       </View>
-
-      <View style={styles.contentContainer}>
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>One Time Password</Text>
-          <OtpInput
-            numberOfDigits={4}
-            focusColor={theme.colors.primary}
-            hideStick
-            autoFocus
-            onTextChange={text => {
-              setOtp(text);
-            }}
-            theme={{
-              containerStyle: {
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginBottom: 16,
-              },
-              pinCodeContainerStyle: {
-                width: 60,
-                height: 70,
-                borderWidth: 1,
-                borderColor: theme.colors.border,
-                borderRadius: 8,
-                justifyContent: 'center',
-                alignItems: 'center',
-                backgroundColor: theme.colors.background,
-              },
-              focusedPinCodeContainerStyle: {
-                borderColor: theme.colors.text,
-              },
-              pinCodeTextStyle: {
-                fontSize: 24,
-                color: theme.colors.text,
-                fontWeight: '600',
-              },
-            }}
-          />
-          <Text style={styles.text}>we have sent the otp on +1216546</Text>
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <Text style={styles.resend}>
-            <Text style={styles.bold}>Resend</Text> OTP in 00:30 Sec
-          </Text>
-
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={handleVerifyOtp}
-            disabled={otp.length !== 4 || isPending}>
-            {isPending ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Verify OTP</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 

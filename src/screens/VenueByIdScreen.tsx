@@ -49,7 +49,7 @@ const VenueByIdScreen = () => {
   const {data: bookingData, refetch: bookingRefetch} = useBookingFilter({
     venueId: venueId,
     ground: activePage + 1,
-    date: dayjs().format('YYYY-MM-DD'),
+    date: '2025-06-20',
   });
 
   const {all} = A(bookingData?.booking);
@@ -110,6 +110,8 @@ const VenueByIdScreen = () => {
   useEffect(() => {
     registerCardCount(activePage, filteredBookings?.length);
   }, [registerCardCount, activePage, filteredBookings?.length]);
+
+  console.log('filteredBookings', bookingData?.booking);
 
   return (
     <View style={styles.container}>
@@ -195,7 +197,7 @@ const VenueByIdScreen = () => {
                         <View style={{gap: 20}}>
                           {filteredBookings?.map((booking, index) => {
                             const details = getBookingStatus(booking);
-                            console.log('details', details);
+
                             return (
                               <BookingCard
                                 key={index}

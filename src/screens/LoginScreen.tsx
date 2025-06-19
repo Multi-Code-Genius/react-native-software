@@ -7,12 +7,16 @@ import {
   View,
   ActivityIndicator,
   ImageBackground,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import {useRequestOtp} from '../api/auth';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
 import {RootStackParamList} from '../navigation/routes';
 import {useTheme} from '../context/ThemeContext';
+import {TouchableWithoutFeedback} from 'react-native';
 
 const LoginScreen = () => {
   const {theme} = useTheme();
@@ -24,6 +28,7 @@ const LoginScreen = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const sendOtp = () => {
+    Keyboard.dismiss();
     if (!/^\d{10}$/.test(phone)) {
       setPhoneError('Please enter a valid 10‑digit mobile number');
       return;
@@ -42,71 +47,81 @@ const LoginScreen = () => {
   };
 
   return (
-    <ImageBackground
-      source={require('../assets/SplashScreen.png')}
-      style={styles.container}
-      resizeMode="cover">
-      <View style={styles.topcontainer}>
-        <Text style={styles.head}>Login or Signup</Text>
-        <Text style={styles.subtext}>Run Your Turf Like a Pro.</Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={{flex: 1}}>
+        <ImageBackground
+          source={require('../assets/SplashScreen.png')}
+          style={styles.container}
+          resizeMode="cover">
+          <KeyboardAvoidingView
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+            style={{flex: 1}}>
+            <View style={styles.topcontainer}>
+              <Text style={styles.head}>Login or Signup</Text>
+              <Text style={styles.subtext}>Run Your Turf Like a Pro.</Text>
+            </View>
+            <View style={styles.contentContainer}>
+              <View style={styles.formContainer}>
+                <Text style={styles.label}>Mobile Number</Text>
+                <View
+                  style={[
+                    styles.inputWrapper,
+                    phoneError && {borderColor: theme.colors.error},
+                  ]}>
+                  <Icon
+                    name="smartphone"
+                    size={20}
+                    color="#717171"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter your mobile number"
+                    placeholderTextColor="#717171"
+                    keyboardType="numeric"
+                    maxLength={10}
+                    returnKeyType="done"
+                    value={phone}
+                    onChangeText={text => {
+                      const numericText = text.replace(/[^0-9]/g, '');
+                      setPhone(numericText);
+                      if (phoneError) {
+                        setPhoneError('');
+                      }
+                    }}
+                    onBlur={() => {
+                      if (!/^\d{10}$/.test(phone)) {
+                        setPhoneError(
+                          'Please enter a valid 10‑digit mobile number',
+                        );
+                      }
+                    }}
+                    onSubmitEditing={Keyboard.dismiss}
+                  />
+                </View>
+                {!!phoneError && (
+                  <Text style={[styles.errorText, {color: theme.colors.error}]}>
+                    {phoneError}
+                  </Text>
+                )}
+              </View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.button]}
+                  onPress={sendOtp}
+                  disabled={isPending}>
+                  {isPending ? (
+                    <ActivityIndicator color="#fff" />
+                  ) : (
+                    <Text style={styles.buttonText}>Send OTP</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
       </View>
-
-      <View style={styles.contentContainer}>
-        <View style={styles.formContainer}>
-          <Text style={styles.label}>Mobile Number</Text>
-          <View
-            style={[
-              styles.inputWrapper,
-              phoneError && {borderColor: theme.colors.error},
-            ]}>
-            <Icon
-              name="smartphone"
-              size={20}
-              color="#717171"
-              style={styles.icon}
-            />
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your mobile number"
-              placeholderTextColor="#717171"
-              keyboardType="numeric"
-              maxLength={10}
-              value={phone}
-              onChangeText={text => {
-                const numericText = text.replace(/[^0-9]/g, '');
-                setPhone(numericText);
-                if (phoneError) {
-                  setPhoneError('');
-                }
-              }}
-              onBlur={() => {
-                if (!/^\d{10}$/.test(phone)) {
-                  setPhoneError('Please enter a valid 10‑digit mobile number');
-                }
-              }}
-            />
-          </View>
-          {!!phoneError && (
-            <Text style={[styles.errorText, {color: theme.colors.error}]}>
-              {phoneError}
-            </Text>
-          )}
-        </View>
-
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity
-            style={[styles.button]}
-            onPress={sendOtp}
-            disabled={isPending}>
-            {isPending ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.buttonText}>Send OTP</Text>
-            )}
-          </TouchableOpacity>
-        </View>
-      </View>
-    </ImageBackground>
+    </TouchableWithoutFeedback>
   );
 };
 

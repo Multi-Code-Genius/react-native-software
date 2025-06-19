@@ -1,12 +1,14 @@
 import {useRoute} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
@@ -41,7 +43,6 @@ const BookingFormScreen = () => {
   const styles = getStyles(theme);
   const duration = endTime.diff(startTime, 'hour');
   let totalAmount = duration * hourlyprice;
-  console.log('date>>>>>', date);
   const handlerBooking = () => {
     mutate({
       phone: phone,
@@ -56,112 +57,116 @@ const BookingFormScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      style={{flex: 1}}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <AppHeader isApp title="23 may 2025" />
-        <View style={styles.container}>
-          <View style={styles.form}>
-            <View style={styles.card}>
-              <Text style={styles.label}>Booking Name</Text>
-              <View style={styles.inputWrapper}>
-                <Icon
-                  name="person-outline"
-                  size={25}
-                  color="#717171"
-                  style={styles.icon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Booking Name"
-                  placeholderTextColor="#717171"
-                  value={name}
-                  onChangeText={setName}
-                />
-              </View>
-            </View>
-            <View style={styles.card}>
-              <Text style={styles.label}>Booking Number</Text>
-              <View style={styles.inputWrapper}>
-                <Icon
-                  name="call-outline"
-                  size={25}
-                  color="#717171"
-                  style={styles.icon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Booking Number"
-                  placeholderTextColor="#717171"
-                  value={phone}
-                  onChangeText={setPhone}
-                />
-              </View>
-            </View>
-            <View style={styles.card}>
-              <Text style={styles.label}>Booking Mail</Text>
-              <View style={styles.inputWrapper}>
-                <Icon
-                  name="mail-outline"
-                  size={25}
-                  color="#717171"
-                  style={styles.icon}
-                />
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter Booking Mail"
-                  placeholderTextColor="#717171"
-                />
-              </View>
-            </View>
-            <View style={styles.card}>
-              <View style={styles.checkboxContainer}>
-                <CustomCheckbox
-                  checked={isChecked}
-                  onToggle={() => setIsChecked(prev => !prev)}
-                  label="Send booking notification to user's mobile"
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.bottomCard}>
-            <View style={{flex: 1, gap: 20}}>
-              <View
-                style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
-                <Text style={styles.text}>Venue 1 , Vesu</Text>
-                <Text style={styles.text1}>( Ground {bookedGrounds})</Text>
-              </View>
-
-              <View style={styles.bookingdetail}>
-                <View style={styles.left}>
-                  <Text style={styles.title}>Booking Time</Text>
-                  <Text style={styles.subTitle}>
-                    {startTime.format('h a')} to {endTime.format('h a')}
-                  </Text>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        style={{flex: 1}}>
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <AppHeader isApp title="23 may 2025" />
+          <View style={styles.container}>
+            <View style={styles.form}>
+              <View style={styles.card}>
+                <Text style={styles.label}>Booking Name</Text>
+                <View style={styles.inputWrapper}>
+                  <Icon
+                    name="person-outline"
+                    size={25}
+                    color="#717171"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Booking Name"
+                    placeholderTextColor="#717171"
+                    value={name}
+                    returnKeyType="done"
+                    onChangeText={setName}
+                  />
                 </View>
-                <View style={styles.separator} />
-                <View style={styles.right}>
-                  <Text style={styles.title}>Booking Price</Text>
-                  <Text style={styles.subTitle}>₹ {totalAmount}</Text>
+              </View>
+              <View style={styles.card}>
+                <Text style={styles.label}>Booking Number</Text>
+                <View style={styles.inputWrapper}>
+                  <Icon
+                    name="call-outline"
+                    size={25}
+                    color="#717171"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Booking Number"
+                    placeholderTextColor="#717171"
+                    value={phone}
+                    keyboardType="numeric"
+                    onChangeText={setPhone}
+                  />
+                </View>
+              </View>
+              <View style={styles.card}>
+                <Text style={styles.label}>Booking Mail</Text>
+                <View style={styles.inputWrapper}>
+                  <Icon
+                    name="mail-outline"
+                    size={25}
+                    color="#717171"
+                    style={styles.icon}
+                  />
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter Booking Mail"
+                    placeholderTextColor="#717171"
+                  />
+                </View>
+              </View>
+              <View style={styles.card}>
+                <View style={styles.checkboxContainer}>
+                  <CustomCheckbox
+                    checked={isChecked}
+                    onToggle={() => setIsChecked(prev => !prev)}
+                    label="Send booking notification to user's mobile"
+                  />
                 </View>
               </View>
             </View>
+            <View style={styles.bottomCard}>
+              <View style={{flex: 1, gap: 20}}>
+                <View
+                  style={{flexDirection: 'row', gap: 5, alignItems: 'center'}}>
+                  <Text style={styles.text}>Venue 1 , Vesu</Text>
+                  <Text style={styles.text1}>( Ground {bookedGrounds})</Text>
+                </View>
 
-            <TouchableOpacity
-              disabled={isPending}
-              style={styles.button}
-              onPress={() => handlerBooking()}>
-              {isPending ? (
-                <ActivityIndicator />
-              ) : (
-                <Text style={styles.buttonText}>Book Venue</Text>
-              )}
-            </TouchableOpacity>
+                <View style={styles.bookingdetail}>
+                  <View style={styles.left}>
+                    <Text style={styles.title}>Booking Time</Text>
+                    <Text style={styles.subTitle}>
+                      {startTime.format('h a')} to {endTime.format('h a')}
+                    </Text>
+                  </View>
+                  <View style={styles.separator} />
+                  <View style={styles.right}>
+                    <Text style={styles.title}>Booking Price</Text>
+                    <Text style={styles.subTitle}>₹ {totalAmount}</Text>
+                  </View>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                disabled={isPending}
+                style={styles.button}
+                onPress={() => handlerBooking()}>
+                {isPending ? (
+                  <ActivityIndicator />
+                ) : (
+                  <Text style={styles.buttonText}>Book Venue</Text>
+                )}
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -246,7 +251,7 @@ const getStyles = (theme: any) =>
       fontFamily: 'Montserrat-Medium',
     },
     subTitle: {
-      fontSize: 16,
+      fontSize: 13,
       color: '#FFF',
       fontFamily: 'Montserrat-SemiBold',
     },
@@ -254,13 +259,13 @@ const getStyles = (theme: any) =>
       width: '50%',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 30,
+      padding: 24,
     },
     right: {
       width: '50%',
       justifyContent: 'center',
       alignItems: 'center',
-      padding: 40,
+      padding: 34,
     },
     button: {
       backgroundColor: theme.colors.primary,
