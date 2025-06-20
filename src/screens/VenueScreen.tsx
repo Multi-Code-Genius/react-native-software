@@ -9,7 +9,6 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -18,7 +17,7 @@ import {useGetVenue, useDeleteVenue} from '../api/vanue';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
+import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetModal,
   BottomSheetModalProvider,
@@ -47,7 +46,7 @@ const VenueScreen = () => {
 
   const openMenu = (venue: any) => {
     setSelectedVenue(venue);
-    sheetRef.current?.present();
+    sheetRef.current?.expand();
   };
 
   const onPressDelete = () => {
@@ -189,42 +188,52 @@ const VenueScreen = () => {
             </ImageBackground>
           </View>
 
-          <BottomSheetModal
-            ref={sheetRef}
-            index={0}
-            snapPoints={snapPoints}
-            backgroundStyle={{
-              backgroundColor: theme.colors.background,
-              borderRadius: 8,
-            }}
-            backdropComponent={props => (
-              <BottomSheetBackdrop
-                {...props}
-                disappearsOnIndex={-1}
-                appearsOnIndex={0}
-                pressBehavior="close"
-              />
-            )}>
-            <BottomSheetView style={styles.bottomSheetContent}>
-              <TouchableOpacity
-                style={styles.menu}
-                onPress={() => {
-                  navigation.navigate('Addvenue', {venueId: selectedVenue?.id});
-                }}>
-                <Icon
-                  name="create"
-                  size={20}
-                  color={isDark ? '#FFF' : '#000'}
+          <Portal>
+            <BottomSheet
+              ref={sheetRef}
+              index={0}
+              snapPoints={snapPoints}
+              enablePanDownToClose
+              enableDynamicSizing
+              backgroundStyle={{
+                backgroundColor: theme.colors.background,
+                borderRadius: 8,
+              }}
+              backdropComponent={props => (
+                <BottomSheetBackdrop
+                  {...props}
+                  disappearsOnIndex={-1}
+                  appearsOnIndex={0}
+                  pressBehavior="close"
                 />
-                <Text style={styles.bottomtext}>Edit Venue</Text>
-              </TouchableOpacity>
-              <Divider />
-              <TouchableOpacity style={styles.menu} onPress={onPressDelete}>
-                <Icon name="trash" size={20} color={isDark ? '#FFF' : '#000'} />
-                <Text style={styles.bottomtext}>Delete Venue</Text>
-              </TouchableOpacity>
-            </BottomSheetView>
-          </BottomSheetModal>
+              )}>
+              <BottomSheetView style={styles.bottomSheetContent}>
+                <TouchableOpacity
+                  style={styles.menu}
+                  onPress={() => {
+                    navigation.navigate('Addvenue', {
+                      venueId: selectedVenue?.id,
+                    });
+                  }}>
+                  <Icon
+                    name="create"
+                    size={20}
+                    color={isDark ? '#FFF' : '#000'}
+                  />
+                  <Text style={styles.bottomtext}>Edit Venue</Text>
+                </TouchableOpacity>
+                <Divider />
+                <TouchableOpacity style={styles.menu} onPress={onPressDelete}>
+                  <Icon
+                    name="trash"
+                    size={20}
+                    color={isDark ? '#FFF' : '#000'}
+                  />
+                  <Text style={styles.bottomtext}>Delete Venue</Text>
+                </TouchableOpacity>
+              </BottomSheetView>
+            </BottomSheet>
+          </Portal>
           <Portal>
             <Dialog
               visible={dialogVisible}

@@ -82,6 +82,7 @@ const BookingSlotScreen = () => {
   }, [startTime]);
 
   const handleStartTimeSelect = (time: dayjs.Dayjs) => {
+    console.log('triigggerrr');
     setStartTime(time);
     setEndTime(time.add(1, 'hour'));
     startSheetRef.current?.close();

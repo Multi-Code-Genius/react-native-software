@@ -13,12 +13,7 @@ import {
 } from 'react-native-gesture-handler';
 import AppHeader from '../components/AppHeader';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {
-  BottomSheetBackdrop,
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetView,
-} from '@gorhom/bottom-sheet';
+import {BottomSheetModal, BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import {Divider} from 'react-native-paper';
 import BookingCard from '../components/VenueScreen/BookingCard';
@@ -31,6 +26,12 @@ import dayjs from 'dayjs';
 import {A, ParamsTypes, AvailableSlot} from '../utils/helper';
 import {RootStackParamList} from '../navigation/routes';
 import {NavigationProp} from '@react-navigation/native';
+
+import BottomSheet, {
+  BottomSheetBackdrop,
+  BottomSheetScrollView,
+} from '@gorhom/bottom-sheet';
+import {Portal} from 'react-native-paper';
 
 const BookingScreen = () => {
   const sheetRef = useRef<BottomSheetModal>(null);
@@ -82,7 +83,7 @@ const BookingScreen = () => {
   };
 
   const openMenu = () => {
-    sheetRef.current?.present();
+    sheetRef.current?.expand();
   };
 
   useEffect(() => {
@@ -182,9 +183,7 @@ const BookingScreen = () => {
                   </View>
                 ))}
               </View>
-
               <Text style={styles.Head}>BOOKING</Text>
-
               <View style={styles.filterContainer}>
                 <TouchableOpacity style={styles.pill} onPress={openMenu}>
                   <Text style={styles.pillText}>
@@ -199,7 +198,7 @@ const BookingScreen = () => {
 
                 <TouchableOpacity
                   style={styles.pill}
-                  onPress={() => groundSheetRef.current?.present()}>
+                  onPress={() => groundSheetRef.current?.expand()}>
                   <Text style={styles.pillText}>
                     Ground {selectedVenueGround}
                   </Text>
@@ -231,9 +230,7 @@ const BookingScreen = () => {
                   />
                 </TouchableOpacity>
               </View>
-
               <Divider style={{marginVertical: 5, borderColor: '#fff'}} />
-
               <View style={styles.flatlistContainer}>
                 <FlatList
                   horizontal
@@ -265,14 +262,33 @@ const BookingScreen = () => {
                   }}
                 />
               </View>
-
               <Divider style={{marginVertical: 10, borderColor: '#fff'}} />
-
+              {bookingData?.booking?.length === 0 && (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 16,
+                      lineHeight: 20,
+                      fontFamily: 'Montserrat-Regular',
+                      textTransform: 'capitalize',
+                      color: isDark ? 'white' : 'black',
+                    }}>
+                    {' '}
+                    No Bookings Yet!
+                  </Text>
+                </View>
+              )}
               <View style={{gap: 20, padding: 20}}>
                 {filteredBookings.map((booking, index) => {
                   const details = getBookingStatus(booking);
                   return (
                     <BookingCard
+                      bookingId={details?.id}
                       key={index}
                       isAvailable={details.isAvailable}
                       startTime={details.startTime}
@@ -303,65 +319,128 @@ const BookingScreen = () => {
             />
           </ImageBackground>
 
-          <BottomSheetModal
-            ref={sheetRef}
-            index={0}
-            snapPoints={snapPoints}
-            backgroundStyle={styles.bottommodal}
-            backdropComponent={props => (
-              <BottomSheetBackdrop
-                {...props}
-                disappearsOnIndex={-1}
-                appearsOnIndex={0}
-                pressBehavior="close"
-              />
-            )}>
-            <BottomSheetView style={{flex: 1, padding: 16}}>
-              <View style={{flex: 1}}>
-                <ScrollView
-                  contentContainerStyle={{
-                    paddingBottom: 100,
-                    flexGrow: 1, // ✅ important for scroll inside BottomSheet
-                  }}
-                  onContentSizeChange={(width, height) => {
-                    console.log('ScrollView content height:', height);
-                  }}
-                  keyboardShouldPersistTaps="handled"
-                  // contentContainerStyle={{paddingBottom: 100}}
-                  showsVerticalScrollIndicator={false}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: 16,
-                    }}>
-                    <Text style={styles.text}>Your Listed Venue</Text>
-                    <TouchableOpacity
-                      style={styles.addVenueButton}
-                      onPress={() => navigation.navigate('Addvenue')}>
-                      <Text style={styles.text1}>Add Venue</Text>
-                      <Icon
-                        name="add-circle"
-                        size={20}
-                        color={isDark ? '#FFF' : '#000'}
-                      />
-                    </TouchableOpacity>
-                  </View>
+          <Portal>
+            <BottomSheet
+              ref={sheetRef}
+              index={-1}
+              snapPoints={snapPoints}
+              enablePanDownToClose
+              enableDynamicSizing
+              backdropComponent={props => (
+                <BottomSheetBackdrop
+                  {...props}
+                  disappearsOnIndex={-1}
+                  appearsOnIndex={0}
+                  pressBehavior="close"
+                />
+              )}
+              backgroundStyle={styles.bottommodal}
+              handleIndicatorStyle={{backgroundColor: theme.colors.secondary}}>
+              <BottomSheetScrollView
+                contentContainerStyle={{padding: 16, paddingBottom: 100}}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    marginBottom: 16,
+                  }}>
+                  <Text style={styles.text}>Your Listed Venue</Text>
+                  <TouchableOpacity
+                    style={styles.addVenueButton}
+                    onPress={() => navigation.navigate('Addvenue')}>
+                    <Text style={styles.text1}>Add Venue</Text>
+                    <Icon
+                      name="add-circle"
+                      size={20}
+                      color={isDark ? '#FFF' : '#000'}
+                    />
+                  </TouchableOpacity>
+                </View>
 
-                  {data?.venues?.map((venue: any, index: number) => (
+                {data?.venues?.map((venue: any, index: number) => (
+                  <TouchableOpacity
+                    key={venue.id}
+                    style={[
+                      styles.venueCard,
+                      selectedVenueId === venue.id && styles.venueCardSelected,
+                    ]}
+                    onPress={() => {
+                      setSelectedVenueId(venue.id);
+                      setSelectedVenueName(venue.name);
+                      setVenueIndex(index);
+                      sheetRef.current?.close();
+                    }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                      }}>
+                      <View>
+                        <Text style={styles.venueTitle}>{venue.name}</Text>
+                        <Text style={styles.venueLocation}>
+                          {venue.location?.area}
+                        </Text>
+                      </View>
+                      <Icon
+                        name={
+                          selectedVenueId === venue.id
+                            ? 'checkmark-circle'
+                            : 'ellipse-outline'
+                        }
+                        size={22}
+                        color={
+                          selectedVenueId === venue.id
+                            ? theme.colors.text
+                            : '#888'
+                        }
+                      />
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </BottomSheetScrollView>
+            </BottomSheet>
+          </Portal>
+          <Portal>
+            <BottomSheet
+              ref={groundSheetRef}
+              index={-1}
+              snapPoints={snapPoints}
+              enablePanDownToClose
+              enableDynamicSizing
+              backdropComponent={props => (
+                <BottomSheetBackdrop
+                  {...props}
+                  disappearsOnIndex={-1}
+                  appearsOnIndex={0}
+                  pressBehavior="close"
+                />
+              )}
+              backgroundStyle={{
+                backgroundColor: theme.colors.background,
+                borderRadius: 8,
+              }}
+              handleIndicatorStyle={{backgroundColor: theme.colors.secondary}}>
+              <BottomSheetScrollView
+                contentContainerStyle={{padding: 16, paddingBottom: 100}}
+                keyboardShouldPersistTaps="handled"
+                showsVerticalScrollIndicator={false}>
+                <Text style={styles.text}>Your Listed Grounds of Turf 1</Text>
+                {data?.venues?.[venueIndex]?.ground_details?.map(
+                  (ground: any) => (
                     <TouchableOpacity
-                      key={venue.id}
+                      key={ground.ground}
                       style={[
                         styles.venueCard,
-                        selectedVenueId === venue.id &&
+                        selectedVenueGround === ground.ground &&
                           styles.venueCardSelected,
                       ]}
                       onPress={() => {
-                        setSelectedVenueId(venue.id);
-                        setSelectedVenueName(venue.name);
-                        setVenueIndex(index);
-                        sheetRef.current?.close();
+                        setSelectedVenueGround(ground.ground);
+                        groundSheetRef.current?.close();
                       }}>
                       <View
                         style={{
@@ -369,89 +448,29 @@ const BookingScreen = () => {
                           justifyContent: 'space-between',
                           alignItems: 'center',
                         }}>
-                        <View>
-                          <Text style={styles.venueTitle}>{venue.name}</Text>
-                          <Text style={styles.venueLocation}>
-                            {venue.location?.area}
-                          </Text>
-                        </View>
+                        <Text style={styles.venueTitle}>
+                          Ground {ground.ground}
+                        </Text>
                         <Icon
                           name={
-                            selectedVenueId === venue.id
+                            selectedVenueGround === ground.ground
                               ? 'checkmark-circle'
                               : 'ellipse-outline'
                           }
                           size={22}
                           color={
-                            selectedVenueId === venue.id
-                              ? theme.colors.text
+                            selectedVenueGround === ground.ground
+                              ? '#fff'
                               : '#888'
                           }
                         />
                       </View>
                     </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-            </BottomSheetView>
-          </BottomSheetModal>
-
-          <BottomSheetModal
-            ref={groundSheetRef}
-            index={0}
-            snapPoints={snapPoints}
-            backgroundStyle={{
-              backgroundColor: theme.colors.background,
-              borderRadius: 8,
-            }}
-            backdropComponent={props => (
-              <BottomSheetBackdrop
-                {...props}
-                disappearsOnIndex={-1}
-                appearsOnIndex={0}
-                pressBehavior="close"
-              />
-            )}>
-            <BottomSheetView style={{padding: 16}}>
-              <Text style={styles.text}>Your Listed Grounds of Turf 1</Text>
-              {data?.venues?.[venueIndex]?.ground_details?.map(
-                (ground: any) => (
-                  <TouchableOpacity
-                    key={ground.ground}
-                    style={[
-                      styles.venueCard,
-                      selectedVenueGround === ground.ground &&
-                        styles.venueCardSelected,
-                    ]}
-                    onPress={() => setSelectedVenueGround(ground.ground)}>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}>
-                      <Text style={styles.venueTitle}>
-                        Ground {ground.ground}
-                      </Text>
-                      <Icon
-                        name={
-                          selectedVenueGround === ground.ground
-                            ? 'checkmark-circle'
-                            : 'ellipse-outline'
-                        }
-                        size={22}
-                        color={
-                          selectedVenueGround === ground.ground
-                            ? '#fff'
-                            : '#888'
-                        }
-                      />
-                    </View>
-                  </TouchableOpacity>
-                ),
-              )}
-            </BottomSheetView>
-          </BottomSheetModal>
+                  ),
+                )}
+              </BottomSheetScrollView>
+            </BottomSheet>
+          </Portal>
         </View>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>

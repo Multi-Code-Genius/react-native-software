@@ -32,7 +32,7 @@ type BookingParamList = {
   };
 };
 
-const CARD_HEIGHT = 200;
+const CARD_HEIGHT = 250;
 
 const VenueByIdScreen = () => {
   const [activePage, setActivePage] = useState(0);
@@ -110,8 +110,6 @@ const VenueByIdScreen = () => {
   useEffect(() => {
     registerCardCount(activePage, filteredBookings?.length);
   }, [registerCardCount, activePage, filteredBookings?.length]);
-
-  console.log('filteredBookings', bookingData?.booking);
 
   return (
     <View style={styles.container}>
