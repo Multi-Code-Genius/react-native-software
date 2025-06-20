@@ -240,7 +240,11 @@ const BookingSlotScreen = () => {
                       <Text style={styles.modalTitle}>
                         Select Starting Time
                       </Text>
-                      <ScrollView contentContainerStyle={styles.grid}>
+                      <ScrollView
+                        contentContainerStyle={[
+                          styles.grid,
+                          {paddingBottom: 30},
+                        ]}>
                         {timeSlots.map(time => {
                           const hour = time.hour();
                           const isBooked = bookedHours.has(hour);

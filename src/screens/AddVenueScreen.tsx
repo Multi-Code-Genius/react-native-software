@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -14,22 +14,62 @@ import BasicDetailsComponent from '../components/BasicDetailsComponent';
 import VenueDetails from '../components/VenueDetails';
 import {useVenueStore} from '../store/useVenueStore';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import {useNavigation} from '@react-navigation/native';
+import {
+  RouteProp,
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import VenueGround from '../components/VenueGround';
 import LinearGradient from 'react-native-linear-gradient';
 import ImageUpload from '../components/ImageUplod';
-import {useVenueMutations} from '../api/vanue';
+import {
+  useEditVenueDetails,
+  useGetVenueById,
+  useVenueMutations,
+} from '../api/vanue';
 import {useTheme} from '../context/ThemeContext';
+import {RootStackParamList} from '../navigation/routes';
 
 const AddVenueScreen = () => {
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const isDark = theme.dark;
   const [currentStep, setCurrentStep] = useState(0);
-  const {formData: form, resetForm} = useVenueStore();
+  const {formData: form, resetForm, setFormData} = useVenueStore();
   const {createVenueMutation, uploadImagesMutation} = useVenueMutations();
+  const editVenueMutation = useEditVenueDetails();
   const navigation = useNavigation();
   const labels = ['Step 1', 'Step 2', 'Step 3', 'Step 4'];
+  const route = useRoute<RouteProp<RootStackParamList, 'Addvenue'>>();
+  const {venueId} = route.params || {};
+  const {data: venueData, isLoading, isError} = useGetVenueById(venueId);
+  console.log('venueid>>>>', venueId);
+  console.log('venueData>>>', venueData);
+
+  useEffect(() => {
+    if (venueId && venueData) {
+      setFormData({
+        name: venueData.venue.name || '',
+        description: venueData.venue.description || '',
+        category: venueData.venue.category || '',
+        address: venueData.venue.address || '',
+        location: {
+          city: venueData.venue.location?.city || '',
+          lat: venueData.venue.location?.lat || 0,
+          lng: venueData.venue.location?.lng || 0,
+          area: venueData.venue.location?.area || '',
+        },
+        gameInfo: {
+          type: venueData.venue.game_info?.type || '',
+          openingTime: venueData.venue.game_info?.openingTime || '',
+          closingTime: venueData.venue.game_info?.closingTime || '',
+        },
+        ground_details: venueData.venue.ground_details || [],
+      });
+    }
+  }, [venueId, venueData]);
+
   const customStyles = {
     stepIndicatorSize: 30,
     currentStepIndicatorSize: 30,
@@ -52,6 +92,13 @@ const AddVenueScreen = () => {
     currentStepLabelColor: '#B2C000',
   };
 
+  useFocusEffect(
+    useCallback(() => {
+      if (!venueId) {
+        resetForm();
+      }
+    }, [venueId]),
+  );
   const steps = [
     <BasicDetailsComponent key="step1" />,
     <VenueDetails key="step2" />,
@@ -64,21 +111,33 @@ const AddVenueScreen = () => {
       setCurrentStep(currentStep + 1);
     } else {
       console.log('form', form);
-
       const images = form?.images || [];
-      try {
-        const result = await createVenueMutation.mutateAsync(form);
-        const venueId = result.venue?.id;
 
-        if (venueId && images.length > 0) {
+      try {
+        let venueIdToUse = venueId;
+
+        if (venueIdToUse) {
+          const result = await editVenueMutation.mutateAsync({
+            data: form,
+            gameId: venueIdToUse,
+          });
+
+          resetForm();
+          console.log('Venue Updated:', result);
+        } else {
+          const result = await createVenueMutation.mutateAsync(form);
+          venueIdToUse = result.venue?.id;
+          console.log('Venue Created:', result);
+        }
+
+        if (venueIdToUse && images.length > 0) {
           const result2 = await uploadImagesMutation.mutateAsync({
-            venueId,
+            venueId: venueIdToUse,
             images,
           });
           console.log('Image Upload Success:', result2);
         }
         resetForm();
-        console.log('Venue Created:', result);
       } catch (error) {
         console.error('Error:', error?.message);
       }

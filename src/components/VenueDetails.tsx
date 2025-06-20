@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ScrollView,
   Text,
@@ -17,21 +17,46 @@ const VenueDetails = () => {
   const formData = useVenueStore(state => state.formData);
   const {theme} = useTheme();
   const styles = getStyles(theme);
-  const isdark = theme.dark;
-  console.log('formdata>>', formData);
   const sportTypes = ['Cricket', 'Football'];
   const venueTypes = ['Outdoor', 'Indoor', 'Roof'];
+  const opening = formData.gameInfo?.openingTime;
+  const closing = formData.gameInfo?.closingTime;
 
-  const [openingTime, setOpeningTime] = useState(
-    formData?.gameInfo?.openingTime
-      ? new Date(formData.gameInfo.openingTime)
-      : new Date(),
+  const formatLocalTime = (isoString: string) => {
+    const date = new Date(isoString);
+    let hours = date.getUTCHours();
+    const mins = String(date.getUTCMinutes()).padStart(2, '0');
+    const suffix = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12 || 12;
+    return `${hours}:${mins} ${suffix}`;
+  };
+
+  const getLocalDateFromUTC = (isoString: string) => {
+    const date = new Date(isoString);
+    return new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+  };
+
+  const getUTCISOStringFromLocal = (date: Date) => {
+    return new Date(
+      date.getTime() - date.getTimezoneOffset() * 60000,
+    ).toISOString();
+  };
+
+  const [openingTime, setOpeningTime] = useState<Date>(
+    opening ? getLocalDateFromUTC(opening) : new Date(),
   );
-  const [closingTime, setClosingTime] = useState(
-    formData?.gameInfo?.closingTime
-      ? new Date(formData.gameInfo.closingTime)
-      : new Date(),
+  const [closingTime, setClosingTime] = useState<Date>(
+    closing ? getLocalDateFromUTC(closing) : new Date(),
   );
+
+  useEffect(() => {
+    if (opening) {
+      setOpeningTime(new Date(opening));
+    }
+    if (closing) {
+      setClosingTime(new Date(closing));
+    }
+  }, [opening, closing]);
 
   const [showOpeningPicker, setShowOpeningPicker] = useState(false);
   const [showClosingPicker, setShowClosingPicker] = useState(false);
@@ -74,10 +99,7 @@ const VenueDetails = () => {
                     formData.gameInfo?.type === type
                       ? theme.colors.text
                       : theme.colors.border,
-                  backgroundColor:
-                    formData.gameInfo?.type === type
-                      ? theme.colors.card
-                      : theme.colors.card,
+                  backgroundColor: theme.colors.card,
                 },
               ]}>
               <Icon
@@ -119,10 +141,7 @@ const VenueDetails = () => {
                     formData.category === type
                       ? theme.colors.text
                       : theme.colors.border,
-                  backgroundColor:
-                    formData.category === type
-                      ? theme.colors.card
-                      : theme.colors.card,
+                  backgroundColor: theme.colors.card,
                 },
               ]}>
               <Text
@@ -153,7 +172,9 @@ const VenueDetails = () => {
                 color={theme.colors.timetext}
                 style={styles.icon}
               />
-              <Text style={styles.input2}>{formatTime(openingTime)}</Text>
+              <Text style={styles.input2}>
+                {opening ? formatLocalTime(opening) : formatTime(openingTime)}
+              </Text>
             </TouchableOpacity>
             <DatePicker
               modal
@@ -163,7 +184,10 @@ const VenueDetails = () => {
               onConfirm={date => {
                 setShowOpeningPicker(false);
                 setOpeningTime(date);
-                updateField('openingTime', date.toISOString());
+                updateField('gameInfo', {
+                  ...formData.gameInfo,
+                  openingTime: getUTCISOStringFromLocal(date),
+                });
               }}
               onCancel={() => setShowOpeningPicker(false)}
             />
@@ -180,7 +204,9 @@ const VenueDetails = () => {
                 color={theme.colors.timetext}
                 style={styles.icon}
               />
-              <Text style={styles.input2}>{formatTime(closingTime)}</Text>
+              <Text style={styles.input2}>
+                {closing ? formatLocalTime(closing) : formatTime(closingTime)}
+              </Text>
             </TouchableOpacity>
             <DatePicker
               modal
@@ -190,7 +216,10 @@ const VenueDetails = () => {
               onConfirm={date => {
                 setShowClosingPicker(false);
                 setClosingTime(date);
-                updateField('closingTime', date.toISOString());
+                updateField('gameInfo', {
+                  ...formData.gameInfo,
+                  closingTime: getUTCISOStringFromLocal(date),
+                });
               }}
               onCancel={() => setShowClosingPicker(false)}
             />

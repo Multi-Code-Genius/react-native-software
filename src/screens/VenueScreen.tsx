@@ -206,7 +206,11 @@ const VenueScreen = () => {
               />
             )}>
             <BottomSheetView style={styles.bottomSheetContent}>
-              <TouchableOpacity style={styles.menu} onPress={() => {}}>
+              <TouchableOpacity
+                style={styles.menu}
+                onPress={() => {
+                  navigation.navigate('Addvenue', {venueId: selectedVenue?.id});
+                }}>
                 <Icon
                   name="create"
                   size={20}

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Image,
@@ -14,6 +14,9 @@ import {useVenueStore} from '../store/useVenueStore';
 import {getStyles} from '../styles/ImageUploadStyles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {useTheme} from '../context/ThemeContext';
+import {useGetVenueById} from '../api/vanue';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {RootStackParamList} from '../navigation/routes';
 
 const MAX_IMAGES = 10;
 
@@ -22,7 +25,26 @@ const ImageUpload = () => {
   const styles = getStyles(theme);
   const [images, setImages] = useState<any[]>([]);
   const updateField = useVenueStore(state => state.updateField);
+  const route = useRoute<RouteProp<RootStackParamList, 'Addvenue'>>();
+  const {venueId} = route.params || {};
+  const {data: venueData, isLoading, isError} = useGetVenueById(venueId);
+  console.log('venueData>>>', venueData);
+  const image = venueData?.venue?.images;
+  console.log('image>>', image);
 
+  useEffect(() => {
+    if (venueId && venueData?.venue?.images) {
+      const formattedImages = venueData.venue.images.map((img: string) => ({
+        uri: img,
+        width: 800,
+        height: 600,
+        mime: 'image/jpeg',
+      }));
+
+      setImages(formattedImages);
+      updateField('images', formattedImages);
+    }
+  }, [venueId, venueData]);
   const pickImage = async () => {
     try {
       ImagePicker.openPicker({

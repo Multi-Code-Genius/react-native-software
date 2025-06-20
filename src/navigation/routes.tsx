@@ -65,7 +65,7 @@ export type RootStackParamList = {
   ground: undefined;
   BookingByID: {id: string};
   Notifications: undefined;
-  Addvenue: undefined;
+  Addvenue: {venueId?: string};
   Login: undefined;
   BookingSlot: {venueId: string};
   BookingForm: {data: undefined};
