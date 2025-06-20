@@ -33,6 +33,7 @@ export const getStyles = (theme: any) =>
       color: '#888888',
       justifyContent: 'center',
       alignItems: 'center',
+      flexWrap: 'wrap',
     },
     detail: {
       flexDirection: 'row',

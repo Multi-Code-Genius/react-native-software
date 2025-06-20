@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import {getStyles} from '../../styles/bookingDetailStyles';
 import {useTheme} from '../../context/ThemeContext';
 import {useCancelBooking} from '../../api/booking';
+import {useNavigation} from '@react-navigation/native';
 interface BookingCardProps {
   startTime: string;
   endTime: string;
@@ -31,6 +32,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
 }) => {
   const {mutate: cancelBooking, isPending} = useCancelBooking();
   const {theme} = useTheme();
+  const navigation = useNavigation();
   const isDark = theme.dark;
   const styles = getStyles(theme);
   const handleDelete = () => {
@@ -93,9 +95,13 @@ const BookingCard: React.FC<BookingCardProps> = ({
               disabled={isPending}>
               <Icon name="trash" size={20} color={'#fff'} />
             </TouchableOpacity>
-            <View style={styles.icon}>
+            <TouchableOpacity
+              style={styles.icon}
+              onPress={() =>
+                navigation.navigate('BookingSlot', {id: bookingId})
+              }>
               <Icon name="create-outline" size={20} color={'#fff'} />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
       )}

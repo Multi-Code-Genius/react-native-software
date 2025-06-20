@@ -31,7 +31,11 @@ import {useBookingFormStore} from '../store/useBookingFormStore';
 import {BookingFormState} from '../store/useBookingFormStore';
 import {useTheme} from '../context/ThemeContext';
 import {getStyles} from '../styles/BookingSlotStyles';
-import {useBookingFilter} from '../api/booking';
+import {
+  useBookingById,
+  useBookingFilter,
+  useBookingMutation,
+} from '../api/booking';
 
 const BookingSlotScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'BookingSlot'>>();
@@ -62,13 +66,15 @@ const BookingSlotScreen = () => {
     date: dayjs(date).format('YYYY-MM-DD'),
   });
 
+  // const {bookingdata: bookingbyid} = useBookingById({
+  //   venueId: venueId,
+  // });
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const startSheetRef = useRef<BottomSheetModal>(null);
   const endSheetRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['50%'], []);
   const duration = endTime.diff(startTime, 'hour');
-
   const timeSlots = useMemo(() => {
     return Array.from({length: 24}, (_, i) =>
       dayjs(date).startOf('hour').add(i, 'hour'),

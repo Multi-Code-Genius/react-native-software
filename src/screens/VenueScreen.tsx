@@ -102,9 +102,13 @@ const VenueScreen = () => {
             <Text style={styles.name}>
               ₹ {item.ground_details?.[0]?.hourly_price} / Per Hour
             </Text>
+
             <View style={styles.detail}>
               <Icon name="location" size={20} color={'#888'} />
-              <Text style={styles.name}>
+              <Text
+                style={[styles.name, {maxWidth: 150}]}
+                numberOfLines={1}
+                ellipsizeMode="tail">
                 {item?.location?.area}, {item?.location?.city}
               </Text>
             </View>
