@@ -174,39 +174,40 @@ const BookingSlotScreen = () => {
                 <DateCarousel />
                 <View style={styles.card}>
                   <Text style={styles.label}>Selected Ground</Text>
-                  <View style={{flexDirection: 'row', gap: 10}}>
-                    {data?.venue?.ground_details?.map(
-                      (ground: any, index: number) => {
-                        const isSelected = bookedGrounds === ground.ground;
-
-                        return (
-                          <TouchableOpacity
-                            key={ground.ground}
-                            onPress={() => {
-                              setIndex(index);
-                              setBookedGrounds(ground?.ground);
-                              setHourlyPrice(ground?.hourly_price);
-                            }}
-                            style={[
-                              styles.inputWrapper2,
-                              isSelected
-                                ? styles.inputWrapper2Selected
-                                : styles.inputWrapper2Unselected,
-                            ]}>
-                            <Text
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <View style={{flexDirection: 'row', gap: 10}}>
+                      {data?.venue?.ground_details?.map(
+                        (ground: any, index: number) => {
+                          const isSelected = bookedGrounds === ground.ground;
+                          return (
+                            <TouchableOpacity
+                              key={ground.ground}
+                              onPress={() => {
+                                setIndex(index);
+                                setBookedGrounds(ground?.ground);
+                                setHourlyPrice(ground?.hourly_price);
+                              }}
                               style={[
-                                styles.input2,
+                                styles.inputWrapper2,
                                 isSelected
-                                  ? styles.input2Selected
-                                  : styles.input2Unselected,
+                                  ? styles.inputWrapper2Selected
+                                  : styles.inputWrapper2Unselected,
                               ]}>
-                              Ground {ground.ground}
-                            </Text>
-                          </TouchableOpacity>
-                        );
-                      },
-                    )}
-                  </View>
+                              <Text
+                                style={[
+                                  styles.input2,
+                                  isSelected
+                                    ? styles.input2Selected
+                                    : styles.input2Unselected,
+                                ]}>
+                                Ground {ground.ground}
+                              </Text>
+                            </TouchableOpacity>
+                          );
+                        },
+                      )}
+                    </View>
+                  </ScrollView>
                 </View>
                 <View style={styles.container1}>
                   <View style={styles.block}>
