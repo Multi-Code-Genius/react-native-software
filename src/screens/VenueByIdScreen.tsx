@@ -42,7 +42,7 @@ const VenueByIdScreen = () => {
   const {venueId} = route.params;
   const {data, refetch} = useGetVenueById(venueId);
   const [refreshing, setRefreshing] = useState(false);
-
+  const [selectedTab, setSelectedTab] = useState(0);
   const [cardCounts, setCardCounts] = useState<{[key: number]: number}>({});
   const animatedHeight = useRef(new Animated.Value(CARD_HEIGHT)).current;
 
@@ -107,6 +107,16 @@ const VenueByIdScreen = () => {
     setCardCounts(prev => ({...prev, [index]: count}));
   }, []);
 
+  const tabOptions = useMemo(() => {
+    return (
+      data?.venue?.ground_details?.map((g: any) => `Ground ${g.ground}`) || []
+    );
+  }, [data]);
+
+  const isGrounds = tabOptions.length > 2;
+
+  console.log('taboptions>>', isGrounds);
+
   useEffect(() => {
     registerCardCount(activePage, filteredBookings?.length);
   }, [registerCardCount, activePage, filteredBookings?.length]);
@@ -155,31 +165,54 @@ const VenueByIdScreen = () => {
                   </Text>
                 </View>
               </View>
-
-              <View style={styles.tabContainer}>
-                {data?.venue?.ground_details?.map((g: any, i: number) => {
-                  return (
-                    <TouchableOpacity
-                      key={i}
-                      onPress={() => setActivePage(i)}
-                      style={[
-                        styles.tabs,
-                        activePage === i && styles.tabActive,
-                      ]}>
-                      <Text
+              {!isGrounds ? (
+                <View style={styles.tabContainer1}>
+                  {data?.venue?.ground_details?.map((g: any, i: number) => {
+                    return (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => setActivePage(i)}
                         style={[
-                          styles.tabText,
-                          activePage === i && styles.tabActiveText,
+                          styles.tabs,
+                          activePage === i && styles.tabActive,
                         ]}>
-                        Ground {g?.ground}
-                      </Text>
-                      <Text style={styles.groundSize}>
-                        {g?.width} * {g?.height} feet
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                        <Text
+                          style={[
+                            styles.tabText,
+                            activePage === i && styles.tabActiveText,
+                          ]}>
+                          Ground {g?.ground}
+                        </Text>
+                        <Text style={styles.groundSize}>
+                          {g?.width} * {g?.height} feet
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              ) : (
+                <View style={styles.tabContainer2}>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {data?.venue?.ground_details?.map((g: any, i: number) => (
+                      <TouchableOpacity
+                        key={i}
+                        onPress={() => setActivePage(i)}
+                        style={[
+                          styles.tabs2,
+                          activePage === i && styles.tabActive2,
+                        ]}>
+                        <Text
+                          style={[
+                            styles.tabText2,
+                            activePage === i && styles.tabActiveText2,
+                          ]}>
+                          Ground {g?.ground}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
 
               <Animated.View style={{height: animatedHeight}}>
                 <PagerView

@@ -31,18 +31,28 @@ import {useBookingFormStore} from '../store/useBookingFormStore';
 import {BookingFormState} from '../store/useBookingFormStore';
 import {useTheme} from '../context/ThemeContext';
 import {getStyles} from '../styles/BookingSlotStyles';
-import {
-  useBookingById,
-  useBookingFilter,
-  useBookingMutation,
-} from '../api/booking';
+import {useBookingById, useBookingFilter} from '../api/booking';
 
 const BookingSlotScreen = () => {
   const route = useRoute<RouteProp<RootStackParamList, 'BookingSlot'>>();
-  const {venueId} = route.params;
+  const {venueId, bookingId} = route.params;
   const {data, isLoading} = useGetVenueById(venueId);
+  const {data: bookingByIdData} = useBookingById(bookingId || '');
+
   const [index, setIndex] = useState(0);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  useEffect(() => {
+    if (bookingByIdData) {
+      setStartTime(dayjs(bookingByIdData?.start_time));
+      setEndTime(dayjs(bookingByIdData?.end_time));
+      setBookedGrounds(bookingByIdData?.ground);
+      setHourlyPrice(bookingByIdData?.hourly_price);
+    }
+  }, [bookingByIdData]);
+
+  console.log('bookingid>>>', bookingId);
+  console.log('bookingByIdData>>>', bookingByIdData);
   const {
     setBookedGrounds,
     setEndTime,
@@ -66,9 +76,6 @@ const BookingSlotScreen = () => {
     date: dayjs(date).format('YYYY-MM-DD'),
   });
 
-  // const {bookingdata: bookingbyid} = useBookingById({
-  //   venueId: venueId,
-  // });
   const {theme} = useTheme();
   const styles = getStyles(theme);
   const startSheetRef = useRef<BottomSheetModal>(null);
@@ -165,7 +172,6 @@ const BookingSlotScreen = () => {
               </View>
               <View style={styles.slotContainer}>
                 <DateCarousel />
-
                 <View style={styles.card}>
                   <Text style={styles.label}>Selected Ground</Text>
                   <View style={{flexDirection: 'row', gap: 10}}>

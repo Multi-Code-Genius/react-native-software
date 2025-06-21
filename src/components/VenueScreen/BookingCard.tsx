@@ -97,9 +97,7 @@ const BookingCard: React.FC<BookingCardProps> = ({
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.icon}
-              onPress={() =>
-                navigation.navigate('BookingSlot', {id: bookingId})
-              }>
+              onPress={() => navigation.navigate('BookingSlot', {bookingId})}>
               <Icon name="create-outline" size={20} color={'#fff'} />
             </TouchableOpacity>
           </View>

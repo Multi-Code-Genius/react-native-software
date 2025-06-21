@@ -48,6 +48,63 @@ export const getStyles = (theme: any) =>
       flexDirection: 'row',
       gap: 10,
     },
+    tabContainer1: {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      paddingVertical: 10,
+      backgroundColor: '#f5f5f5',
+    },
+    tabContainer2: {
+      marginTop: 10,
+      paddingHorizontal: 10,
+    },
+
+    tabs2: {
+      paddingVertical: 8,
+      paddingHorizontal: 16,
+      marginRight: 10,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: '#aaa',
+      backgroundColor: '#f5f5f5',
+    },
+
+    tabActive2: {
+      borderColor: '#000',
+      backgroundColor: '#fff',
+    },
+
+    tabText2: {
+      color: '#888',
+      fontWeight: '500',
+    },
+
+    tabActiveText2: {
+      color: '#000',
+      fontWeight: 'bold',
+    },
+    tab: {
+      paddingVertical: 6,
+      paddingHorizontal: 16,
+      borderRadius: 20,
+      borderWidth: 1,
+      borderColor: 'transparent',
+    },
+
+    activeTab: {
+      borderColor: '#000',
+    },
+
+    tabLabel: {
+      fontSize: 14,
+      color: '#888',
+    },
+
+    activeTabLabel: {
+      color: '#000',
+      fontWeight: 'bold',
+    },
+
     type: {
       borderColor: theme.colors.labelBorder1,
       paddingHorizontal: 10,

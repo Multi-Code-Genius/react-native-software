@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   ScrollView,
   Text,
@@ -24,6 +24,13 @@ const VenueGround = () => {
       prev.includes(id) ? prev.filter(e => e !== id) : [...prev, id],
     );
   };
+
+  useEffect(() => {
+    if (grounds.length === 0) {
+      addGround();
+      setExpandedIds([1]);
+    }
+  }, []);
 
   const handleChange = (
     index: number,
@@ -162,7 +169,7 @@ const VenueGround = () => {
           </View>
         ))}
 
-        {isGroundFilled(grounds[grounds.length - 1]) && (
+        {grounds.length > 0 && isGroundFilled(grounds[grounds.length - 1]) && (
           <View
             style={{
               borderWidth: 1,
